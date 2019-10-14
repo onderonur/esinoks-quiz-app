@@ -3,9 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.5.1",
+    "@material-ui/icons": "^4.5.1",
+    "konva": "^4.0.14",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
-    "react-scripts": "3.2.0"
+    "react-full-screen": "^0.2.4",
+    "react-konva": "^16.10.1-0",
+    "react-scripts": "3.2.0",
+    "react-starfield-animation": "^1.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
