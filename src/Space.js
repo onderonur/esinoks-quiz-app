@@ -1,7 +1,6 @@
 import React from "react";
 import StarfieldAnimation from "react-starfield-animation";
 import starfieldJpg from "./assets/starfield.jpg";
-import { Box } from "@material-ui/core";
 
 const Space = ({ children }) => {
   return (
@@ -20,7 +19,7 @@ const Space = ({ children }) => {
           height: "100%"
         }}
       />
-      <Box component="main">{children}</Box>
+      {children}
     </div>
   );
 };

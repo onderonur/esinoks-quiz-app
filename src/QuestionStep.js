@@ -1,9 +1,21 @@
-import React from "react";
-import { Rect } from "react-konva";
+import React, { useState } from "react";
+import { Circle } from "react-konva";
 
 function QuestionStep({ x, y }) {
+  const [hover, setHover] = useState(false);
+
   return (
-    <Rect x={x} y={y} width={50} height={50} fill="#ff0000" shadowBlur={5} />
+    <Circle
+      radius={40}
+      x={x}
+      y={y}
+      fill="#ff0000"
+      strokeWidth={hover ? 5 : 0}
+      stroke="yellow"
+      onClick={() => alert("deneme")}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    />
   );
 }
 
