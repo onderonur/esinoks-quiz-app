@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Circle } from "react-konva";
 
-function QuestionStep({ x, y }) {
+function QuestionStep({ x, y, radius }) {
   const [hover, setHover] = useState(false);
 
   return (
     <Circle
-      radius={40}
+      radius={radius}
       x={x}
       y={y}
       fill="#ff0000"

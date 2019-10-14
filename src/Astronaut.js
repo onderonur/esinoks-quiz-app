@@ -5,7 +5,7 @@ import astronautPng from "./assets/astronaut.png";
 const image = new Image();
 image.src = astronautPng;
 
-function Astronaut() {
+function Astronaut({ size }) {
   const [astronaut, setAstronaut] = useState(null);
 
   useEffect(() => {
@@ -14,7 +14,7 @@ function Astronaut() {
     };
   }, []);
 
-  return <KonvaImage image={astronaut} width={120} height={120} />;
+  return <KonvaImage image={astronaut} width={size} height={size} />;
 }
 
 export default Astronaut;

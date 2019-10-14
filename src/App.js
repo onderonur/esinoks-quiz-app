@@ -13,8 +13,8 @@ const questions = Array.from(Array(questionCount));
 
 // lets think you want to make all your objects visible in
 // 700x700 scene
-const CANVAS_VIRTUAL_WIDTH = 700;
-const CANVAS_VIRTUAL_HEIGHT = 700;
+const CANVAS_VIRTUAL_WIDTH = window.innerWidth;
+const CANVAS_VIRTUAL_HEIGHT = window.innerHeight;
 
 function App() {
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -59,13 +59,18 @@ function App() {
             scaleX={scale}
             scaleY={scale}
           >
-            <Layer x={120}>
+            <Layer>
               {questions.map((question, i) => (
-                <QuestionStep key={i} x={i * (80 + 40)} y={300} />
+                <QuestionStep
+                  key={i}
+                  radius={CANVAS_VIRTUAL_WIDTH / (questions.length * 2) - 20}
+                  x={i * (CANVAS_VIRTUAL_WIDTH / questions.length) + 2 * 20}
+                  y={300}
+                />
               ))}
             </Layer>
             <Layer>
-              <Astronaut />
+              <Astronaut size={CANVAS_VIRTUAL_WIDTH / questions.length} />
             </Layer>
           </Stage>
         </Space>
