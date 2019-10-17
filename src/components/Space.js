@@ -1,6 +1,6 @@
 import React from "react";
 import StarfieldAnimation from "react-starfield-animation";
-import starfieldJpg from "./assets/starfield.jpg";
+import starfieldJpg from "assets/starfield.jpg";
 
 const Space = ({ children }) => {
   return (
@@ -9,7 +9,8 @@ const Space = ({ children }) => {
         backgroundImage: `url(${starfieldJpg})`,
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
-        minHeight: "100vh"
+        height: "100vh",
+        overflow: "hidden"
       }}
     >
       <StarfieldAnimation
