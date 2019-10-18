@@ -24,3 +24,7 @@ export const answerQuestion = (questionId, choiceId) => ({
   questionId,
   choiceId
 });
+
+export const restartQuiz = () => ({
+  type: actionTypes.RESTART_QUIZ
+});

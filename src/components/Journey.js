@@ -7,9 +7,10 @@ const Journey = () => {
   return (
     <Box
       display="flex"
-      justifyContent="space-between"
+      justifyContent="flex-end"
       alignItems="center"
-      padding={10}
+      height={200}
+      position="relative"
     >
       <Astronaut />
       <Earth />

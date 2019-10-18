@@ -29,16 +29,21 @@ const useStyles = makeStyles(theme => ({
 const QuestionDialog = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const question = useSelector(state => selectors.selectActiveQuestion(state));
-  const [isOpen, setIsOpen] = useState(!!question);
   const isFetching = useSelector(state =>
     selectors.selectIsFetchingAnswer(state)
   );
+
+  const question = useSelector(state => selectors.selectActiveQuestion(state));
+  const [isOpen, setIsOpen] = useState(!!question);
   const answerId = useSelector(state =>
     question ? selectors.selectAnswerIdByQuestionId(state, question.id) : null
   );
   const selectedChoiceId = useSelector(state =>
     question ? selectors.selectChoiceIdByQuestionId(state, question.id) : null
+  );
+
+  const questionIndex = useSelector(state =>
+    question ? selectors.selectQuestionIndexById(state, question.id) : null
   );
 
   const choices = question ? question.choices : [];
@@ -69,13 +74,13 @@ const QuestionDialog = () => {
     >
       <DialogTitle disableTypography className={classes.title}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6">Question</Typography>
+          <Typography variant="h6">Soru {questionIndex + 1}</Typography>
           <IconButton className={classes.closeButton} onClick={handleClose}>
             <CloseIcon />
           </IconButton>
         </Box>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent dividers>
         <DialogContentText variant="h6">{question.text}</DialogContentText>
         <QuestionDialogChoiceList choices={choices} />
       </DialogContent>

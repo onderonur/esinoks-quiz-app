@@ -24,13 +24,35 @@ const questionsSelectors = bindSelectors(
   fromQuestions.selectors
 );
 
+const answerSelectors = bindSelectors(
+  state => state.answers,
+  fromAnswers.selectors
+);
+
+const selectAllAnswerResults = state => {
+  const questionIds = questionsSelectors.selectAllQuestionIds(state);
+  const answerResults = questionIds.map(questionId =>
+    answerSelectors.selectAnswerResultByQuestionId(state, questionId)
+  );
+
+  return answerResults;
+};
+
 export const selectors = {
   selectActiveQuestion: state => {
     const id = activeQuestionIdSelectors.selectActiveQuestionId(state);
     const activeQuestion = questionsSelectors.selectQuestionById(state, id);
     return activeQuestion;
   },
+  selectTotalTrueAnswerCount: state => {
+    const answerResults = selectAllAnswerResults(state);
+    const trueAnswerResults = answerResults.filter(
+      result => result === fromAnswers.ANSWER_RESULTS.true
+    );
+
+    return trueAnswerResults.length;
+  },
   ...bindSelectors(state => state.quiz, fromQuiz.selectors),
   ...questionsSelectors,
-  ...bindSelectors(state => state.answers, fromAnswers.selectors)
+  ...answerSelectors
 };

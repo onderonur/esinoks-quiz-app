@@ -1,40 +1,28 @@
 import React from "react";
 import earthPng from "assets/earth.png";
 import { makeStyles } from "@material-ui/styles";
-import { useSpring, animated } from "react-spring";
 
 const useStyles = makeStyles(theme => ({
   image: {
-    width: "15%"
+    width: 160,
+    position: "absolute",
+    right: "5%",
+    animation: "$rotating 60s linear infinite"
+  },
+  "@keyframes rotating": {
+    "0%": {
+      transform: "rotate(0deg)"
+    },
+    "100%": {
+      transform: "rotate(360deg)"
+    }
   }
 }));
 
 const Earth = () => {
   const classes = useStyles();
-  const props = useSpring({
-    from: {
-      transform: "rotate(0deg)"
-    },
-    to: async next => {
-      let counter = 1;
-      while (true) {
-        await next({ transform: `rotate(${counter * 360}deg)` });
-        counter++;
-      }
-    },
-    config: {
-      duration: 60000
-    }
-  });
 
-  return (
-    <animated.img
-      className={classes.image}
-      style={props}
-      src={earthPng}
-      alt="astronaut"
-    />
-  );
+  return <img className={classes.image} src={earthPng} alt="astronaut" />;
 };
 
 export default Earth;

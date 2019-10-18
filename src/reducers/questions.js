@@ -464,5 +464,8 @@ export default questions;
 
 export const selectors = {
   selectAllQuestionIds: state => state.allIds,
+  selectQuestionIndexById: (state, questionId) =>
+    state.allIds.indexOf(questionId),
+  selectTotalQuestionsCount: state => state.allIds.length,
   selectQuestionById: (state, questionId) => state.byId[questionId]
 };

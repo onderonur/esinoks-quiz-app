@@ -12,6 +12,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+// TODO: Sometimes toggling fullscreen mode crashes the browser.
+// It may be caused by react-spring. I'm not sure.
+// Will look into it.
 const FullscreenButton = () => {
   const classes = useStyles();
   const dispatch = useDispatch();

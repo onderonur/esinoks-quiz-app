@@ -2,6 +2,7 @@ import createReducer from "./higherOrderReducers/createReducer";
 import * as actionTypes from "constants/actionTypes";
 import set from "lodash.set";
 import get from "lodash.get";
+import createReset from "./higherOrderReducers/createReset";
 
 export const ANSWER_RESULTS = {
   true: "true",
@@ -14,22 +15,26 @@ const initialState = {
   byQuestionId: {}
 };
 
-const answers = createReducer(initialState, {
-  [actionTypes.SELECT_CHOICE]: (state, { questionId, choiceId }) => {
-    set(state.byQuestionId, [questionId, "choiceId"], choiceId);
-  },
-  [actionTypes.ANSWER_QUESTION_REQUEST]: state => {
-    state.isFetching = true;
-  },
-  [actionTypes.ANSWER_QUESTION_SUCCESS]: (
-    state,
-    { questionId, choiceId, answerId }
-  ) => {
-    state.isFetching = false;
-    set(state.byQuestionId, [questionId, "choiceId"], choiceId);
-    set(state.byQuestionId, [questionId, "answerId"], answerId);
-  }
-});
+const answers = createReset(
+  actionTypes.RESTART_QUIZ,
+  initialState,
+  createReducer(initialState, {
+    [actionTypes.SELECT_CHOICE]: (state, { questionId, choiceId }) => {
+      set(state.byQuestionId, [questionId, "choiceId"], choiceId);
+    },
+    [actionTypes.ANSWER_QUESTION_REQUEST]: state => {
+      state.isFetching = true;
+    },
+    [actionTypes.ANSWER_QUESTION_SUCCESS]: (
+      state,
+      { questionId, choiceId, answerId }
+    ) => {
+      state.isFetching = false;
+      set(state.byQuestionId, [questionId, "choiceId"], choiceId);
+      set(state.byQuestionId, [questionId, "answerId"], answerId);
+    }
+  })
+);
 
 export default answers;
 

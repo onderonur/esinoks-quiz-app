@@ -10,15 +10,13 @@ import FullscreenButton from "./FullscreenButton";
 import RestartQuizButton from "./RestartQuizButton";
 import SignInWithGoogleButton from "./SignInWithGoogleButton";
 import SignOutButton from "./SignOutButton";
-import UserDisplayName from "./UserDisplayName";
 
-const App = () => {
+const SpaceContent = () => {
   const isPlaying = useSelector(state => selectors.selectIsPlaying(state));
 
   return (
     <>
       <Box display="flex" justifyContent="flex-end">
-        <UserDisplayName />
         <SignInWithGoogleButton />
         <SignOutButton />
         <RestartQuizButton />
@@ -37,4 +35,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default SpaceContent;

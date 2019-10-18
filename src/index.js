@@ -1,20 +1,23 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "components/App";
 import * as serviceWorker from "./serviceWorker";
 import { ThemeProvider } from "@material-ui/styles";
 import theme from "./theme";
 import { Provider } from "react-redux";
 import configureStore from "store";
+import FirebaseProvider from "components/FirebaseProvider";
+import Root from "components/Root";
 
 const store = configureStore();
 
 ReactDOM.render(
-  <Provider store={store}>
-    <ThemeProvider theme={theme}>
-      <App />
-    </ThemeProvider>
-  </Provider>,
+  <FirebaseProvider>
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <Root />
+      </ThemeProvider>
+    </Provider>
+  </FirebaseProvider>,
   document.getElementById("root")
 );
 

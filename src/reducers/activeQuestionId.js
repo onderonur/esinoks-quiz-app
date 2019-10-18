@@ -1,11 +1,18 @@
 import createReducer from "./higherOrderReducers/createReducer";
 import * as actionTypes from "constants/actionTypes";
+import createReset from "./higherOrderReducers/createReset";
 
 const initialState = null;
 
-const activeQuestionId = createReducer(initialState, {
-  [actionTypes.SELECT_QUESTION]: (state, { questionId }) => questionId
-});
+const activeQuestionId = createReset(
+  actionTypes.RESTART_QUIZ,
+  initialState,
+  createReducer(initialState, {
+    [actionTypes.SELECT_QUESTION]: (state, { questionId }) => questionId,
+    [actionTypes.ANSWER_QUESTION_SUCCESS]: (state, { choiceId, answerId }) =>
+      choiceId === answerId ? null : state
+  })
+);
 
 export default activeQuestionId;
 
