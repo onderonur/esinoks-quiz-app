@@ -2,7 +2,7 @@ import createReducer from "./higherOrderReducers/createReducer";
 import * as actionTypes from "constants/actionTypes";
 
 const initialState = {
-  isPlaying: true, // TODO: false yap
+  isPlaying: false, // TODO: Gerek kalmadı buna
   isFullscreen: false
 };
 

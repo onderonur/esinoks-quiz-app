@@ -1,38 +1,21 @@
 import React from "react";
 import { Box } from "@material-ui/core";
-import { useSelector } from "react-redux";
-import { selectors } from "reducers";
-import StartScreen from "components/StartScreen";
-import QuestionGridList from "./QuestionGridList";
-import QuestionDialog from "./QuestionDialog";
-import Journey from "./Journey";
 import FullscreenButton from "./FullscreenButton";
 import RestartQuizButton from "./RestartQuizButton";
 import SignInWithGoogleButton from "./SignInWithGoogleButton";
-import SignOutButton from "./SignOutButton";
-import UserDisplayName from "./UserDisplayName";
+import Routes from "./Routes";
+import UserButtonMenu from "./UserButtonMenu";
 
 const App = () => {
-  const isPlaying = useSelector(state => selectors.selectIsPlaying(state));
-
   return (
     <>
-      <Box display="flex" justifyContent="flex-end">
-        <UserDisplayName />
+      <Box display="flex" justifyContent="flex-end" alignItems="center">
         <SignInWithGoogleButton />
-        <SignOutButton />
         <RestartQuizButton />
         <FullscreenButton />
+        <UserButtonMenu />
       </Box>
-      {isPlaying ? (
-        <>
-          <Journey />
-          <QuestionGridList />
-          <QuestionDialog />
-        </>
-      ) : (
-        <StartScreen />
-      )}
+      <Routes />
     </>
   );
 };

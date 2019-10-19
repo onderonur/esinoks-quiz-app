@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import configureStore from "store";
 import FirebaseProvider from "components/FirebaseProvider";
 import Root from "components/Root";
+import { BrowserRouter } from "react-router-dom";
 
 const store = configureStore();
 
@@ -14,7 +15,9 @@ ReactDOM.render(
   <FirebaseProvider>
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        <Root />
+        <BrowserRouter>
+          <Root />
+        </BrowserRouter>
       </ThemeProvider>
     </Provider>
   </FirebaseProvider>,

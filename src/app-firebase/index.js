@@ -27,6 +27,9 @@ class Firebase {
   doSignInWithGoogle = () => this.auth.signInWithPopup(this.googleProvider);
 
   doSignOut = () => this.auth.signOut();
+
+  user = uid => this.db.ref(`users/${uid}`);
+  users = () => this.db.ref("users");
 }
 
 const firebase = new Firebase();

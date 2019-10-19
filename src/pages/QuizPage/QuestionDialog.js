@@ -14,7 +14,7 @@ import { selectors } from "reducers";
 import { answerQuestion, selectQuestion } from "actions";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/styles";
-import BaseButton from "./BaseButton";
+import BaseButton from "components/BaseButton";
 import QuestionDialogChoiceList from "./QuestionDialogChoiceList";
 
 const useStyles = makeStyles(theme => ({

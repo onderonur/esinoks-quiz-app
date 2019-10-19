@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { selectors } from "reducers";
-import BaseGridList from "./BaseGridList";
+import BaseGridList from "components/BaseGridList";
 import QuestionGridListItem from "./QuestionGridListItem";
 
 const QuestionGridList = () => {

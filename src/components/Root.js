@@ -20,7 +20,7 @@ const Root = () => {
       onChange={enabled => dispatch(toggleFullscreen(enabled))}
     >
       <CssBaseline />
-      <Box minWidth={1200}>
+      <Box minWidth={800}>
         <Space>
           <Container maxWidth="lg">
             <App />
