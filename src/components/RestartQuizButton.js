@@ -1,16 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
-import {
-  IconButton,
-  makeStyles,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button
-} from "@material-ui/core";
+import { IconButton, makeStyles } from "@material-ui/core";
 import { restartQuiz } from "actions";
 import ReplayIcon from "@material-ui/icons/Replay";
+import ConfirmationDialog from "./ConfirmationDialog";
+import useDialogToggle from "hooks/useDialogToggle";
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -21,38 +15,26 @@ const useStyles = makeStyles(theme => ({
 const RestartQuizButton = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
-
-  const openConfirmation = () => {
-    setIsConfirmationOpen(true);
-  };
-
-  const closeConfirmation = () => {
-    setIsConfirmationOpen(false);
-  };
+  const [isConfirmationOpen, { openDialog, closeDialog }] = useDialogToggle();
 
   const handleRestartConfirmed = () => {
-    closeConfirmation();
+    closeDialog();
     dispatch(restartQuiz());
   };
 
   return (
     <>
-      <IconButton className={classes.button} onClick={openConfirmation}>
+      <IconButton className={classes.button} onClick={openDialog}>
         <ReplayIcon />
       </IconButton>
-      <Dialog open={isConfirmationOpen} onClose={closeConfirmation} fullWidth>
-        <DialogTitle>Quiz'i Tekrarla?</DialogTitle>
-        <DialogContent dividers>Quiz en baştan başlatılacaktır.</DialogContent>
-        <DialogActions>
-          <Button onClick={closeConfirmation} color="primary">
-            İptal
-          </Button>
-          <Button onClick={handleRestartConfirmed} color="primary">
-            Tekrarla
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ConfirmationDialog
+        isOpen={isConfirmationOpen}
+        title="Quiz'i Tekrarla?"
+        content="Quiz en baştan başlatılacaktır."
+        confirmText="Tekrarla"
+        onConfirm={handleRestartConfirmed}
+        onCancel={closeDialog}
+      />
     </>
   );
 };

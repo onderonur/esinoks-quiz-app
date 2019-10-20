@@ -29,6 +29,9 @@ class Firebase {
 
   user = uid => this.db.collection("users").doc(uid);
   users = () => this.db.collection("users");
+
+  quiz = uid => this.db.collection("quizzes").doc(uid);
+  quizzes = () => this.db.collection("quizzes");
 }
 
 const firebase = new Firebase();

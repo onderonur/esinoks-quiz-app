@@ -1,12 +1,12 @@
 import React from "react";
 import useFirebase from "hooks/useFirebase";
 import { Button } from "@material-ui/core";
-import useAuthStateListener from "hooks/useAuthStateListener";
+import useSelectAuthUser from "hooks/useSelectAuthUser";
 
 // TODO: Icon vb eklenebilir.
 const SignInWithGoogleButton = () => {
   const firebase = useFirebase();
-  const authUser = useAuthStateListener();
+  const authUser = useSelectAuthUser();
 
   const handleClick = async () => {
     try {

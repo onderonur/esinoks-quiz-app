@@ -1,6 +1,8 @@
 import React from "react";
 import { Paper, Box, makeStyles } from "@material-ui/core";
 import SignInWithGoogleButton from "components/SignInWithGoogleButton";
+import { Redirect } from "react-router-dom";
+import useSelectAuthUser from "hooks/useSelectAuthUser";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -14,8 +16,11 @@ const useStyles = makeStyles(theme => ({
 
 const HomePage = () => {
   const classes = useStyles();
+  const authUser = useSelectAuthUser();
 
-  return (
+  return authUser ? (
+    <Redirect to="/profile" />
+  ) : (
     <Box display="flex" justifyContent="center">
       <Paper className={classes.paper}>
         <SignInWithGoogleButton />

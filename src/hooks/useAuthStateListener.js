@@ -1,20 +1,20 @@
 import useFirebase from "./useFirebase";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { authStateChanged } from "actions";
 
 const useAuthStateListener = () => {
   const firebase = useFirebase();
-  const [authUser, setAuthUser] = useState();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const listener = firebase.auth.onAuthStateChanged(authUser => {
-      setAuthUser(authUser);
+      dispatch(authStateChanged(authUser));
     });
 
     // Removing the listener on clean up.
     return () => listener();
-  }, [firebase]);
-
-  return authUser;
+  }, [firebase, dispatch]);
 };
 
 export default useAuthStateListener;

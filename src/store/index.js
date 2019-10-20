@@ -7,7 +7,7 @@ import rootEpic from "epics";
 const epicMiddleware = createEpicMiddleware();
 
 // https://redux.js.org/recipes/configuring-your-store
-function configureStore(preloadedState) {
+const configureStore = preloadedState => {
   const middlewares = [epicMiddleware];
   const middlewareEnhancer = applyMiddleware(...middlewares);
 
@@ -19,6 +19,6 @@ function configureStore(preloadedState) {
   epicMiddleware.run(rootEpic);
 
   return store;
-}
+};
 
 export default configureStore;

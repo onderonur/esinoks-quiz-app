@@ -1,6 +1,6 @@
 import React from "react";
-import useAuthStateListener from "hooks/useAuthStateListener";
 import { Avatar, Typography, makeStyles, Box } from "@material-ui/core";
+import useSelectAuthUser from "hooks/useSelectAuthUser";
 
 const AVATAR_SIZE = 120;
 
@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
 
 const ProfileHeader = () => {
   const classes = useStyles();
-  const authUser = useAuthStateListener();
+  const authUser = useSelectAuthUser();
 
   const { displayName, email, photoURL } = authUser || {};
 
@@ -23,7 +23,7 @@ const ProfileHeader = () => {
       <Avatar className={classes.avatar} src={photoURL} />
       <Box>
         <Typography variant="h5">{displayName}</Typography>
-        <Typography variant="subtitle" color="textSecondary">
+        <Typography variant="subtitle1" color="textSecondary">
           {email}
         </Typography>
       </Box>

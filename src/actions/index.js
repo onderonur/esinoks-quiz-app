@@ -28,3 +28,22 @@ export const answerQuestion = (questionId, choiceId) => ({
 export const restartQuiz = () => ({
   type: actionTypes.RESTART_QUIZ
 });
+
+export const authStateChanged = authUser => ({
+  type: actionTypes.AUTH_STATE_CHANGED,
+  authUser
+});
+
+export const openQuizFormDialog = quizId => ({
+  type: actionTypes.OPEN_QUIZ_FORM_DIALOG,
+  quizId
+});
+
+export const closeQuizFormDialog = () => ({
+  type: actionTypes.CLOSE_QUIZ_FORM_DIALOG
+});
+
+export const receiveOwnQuizzes = ownQuizzes => ({
+  type: actionTypes.RECEIVE_OWN_QUIZZES,
+  ownQuizzes
+});

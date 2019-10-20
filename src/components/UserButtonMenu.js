@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import useAuthStateListener from "hooks/useAuthStateListener";
 import { Avatar } from "@material-ui/core";
 import useFirebase from "hooks/useFirebase";
 import RouterLink from "./RouterLink";
+import useSelectAuthUser from "hooks/useSelectAuthUser";
 
 // TODO: Fix this name
 const UserButtonMenu = () => {
-  const authUser = useAuthStateListener();
+  const authUser = useSelectAuthUser();
   const firebase = useFirebase();
   const [anchorEl, setAnchorEl] = useState(null);
 

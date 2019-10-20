@@ -4,12 +4,18 @@ import questions, * as fromQuestions from "./questions";
 import activeQuestionId, * as fromActiveQuestionId from "./activeQuestionId";
 import quiz, * as fromQuiz from "./quiz";
 import answers, * as fromAnswers from "./answers";
+import authUser, * as fromAuthUser from "./authUser";
+import dialogs, * as fromDialogs from "./dialogs";
+import ownQuizzes, * as fromOwnQuizzes from "./ownQuizzes";
 
 const rootReducer = combineReducers({
   questions,
   activeQuestionId,
   quiz,
-  answers
+  answers,
+  authUser,
+  dialogs,
+  ownQuizzes
 });
 
 export default rootReducer;
@@ -54,5 +60,8 @@ export const selectors = {
   },
   ...bindSelectors(state => state.quiz, fromQuiz.selectors),
   ...questionsSelectors,
-  ...answerSelectors
+  ...answerSelectors,
+  ...bindSelectors(state => state.authUser, fromAuthUser.selectors),
+  ...bindSelectors(state => state.dialogs, fromDialogs.selectors),
+  ...bindSelectors(state => state.ownQuizzes, fromOwnQuizzes.selectors)
 };

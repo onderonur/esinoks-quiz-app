@@ -4,9 +4,7 @@ import { Typography } from "@material-ui/core";
 
 const DEFAULT_ITEMS = [];
 
-function defaultKeyExtractor(id) {
-  return id;
-}
+const defaultKeyExtractor = id => id;
 
 const useStyles = makeStyles(theme => ({
   flexList: {
@@ -19,7 +17,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function BaseGridList({
+const BaseGridList = ({
   items = DEFAULT_ITEMS,
   loading,
   renderItem,
@@ -27,14 +25,14 @@ function BaseGridList({
   minItemWidth = 120,
   keyExtractor = defaultKeyExtractor,
   listEmptyMessage = "Nothing has been found"
-}) {
+}) => {
   const classes = useStyles({ minItemWidth, spacing });
 
-  function extractItemKey(item, index) {
+  const extractItemKey = (item, index) => {
     return typeof keyExtractor === "string"
       ? item[keyExtractor]
       : keyExtractor(item, index);
-  }
+  };
 
   return !items.length && !loading ? (
     typeof listEmptyMessage === "string" ? (
@@ -49,6 +47,6 @@ function BaseGridList({
       ))}
     </ul>
   );
-}
+};
 
 export default BaseGridList;
