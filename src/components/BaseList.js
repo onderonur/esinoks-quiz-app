@@ -6,7 +6,7 @@ const BaseList = ({
   data,
   renderItem,
   loading,
-  listEmptyMesage = "Nothing has been found"
+  listEmptyMesage = "Hiç kayıt bulunamadı."
 }) => {
   return !data.length && !loading ? (
     listEmptyMesage

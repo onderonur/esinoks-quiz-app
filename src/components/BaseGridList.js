@@ -24,7 +24,7 @@ const BaseGridList = ({
   spacing = 1,
   minItemWidth = 120,
   keyExtractor = defaultKeyExtractor,
-  listEmptyMessage = "Nothing has been found"
+  listEmptyMessage = "Hiç kayıt bulunamadı."
 }) => {
   const classes = useStyles({ minItemWidth, spacing });
 
