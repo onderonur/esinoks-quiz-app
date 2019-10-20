@@ -6,6 +6,7 @@ import {
   DialogActions,
   Button
 } from "@material-ui/core";
+import BaseButton from "./BaseButton";
 
 const ConfirmationDialog = ({
   isOpen,
@@ -14,19 +15,20 @@ const ConfirmationDialog = ({
   confirmText = "Tamam",
   cancelText = "İptal",
   onConfirm,
-  onCancel
+  onCancel,
+  loading
 }) => {
   return (
     <Dialog open={isOpen} onClose={onCancel} fullWidth>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent dividers>{content}</DialogContent>
       <DialogActions>
-        <Button onClick={onCancel} color="primary">
+        <Button disabled={loading} onClick={onCancel}>
           {cancelText}
         </Button>
-        <Button onClick={onConfirm} color="primary">
+        <BaseButton color="primary" loading={loading} onClick={onConfirm}>
           {confirmText}
-        </Button>
+        </BaseButton>
       </DialogActions>
     </Dialog>
   );

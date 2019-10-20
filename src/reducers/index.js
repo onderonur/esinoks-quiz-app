@@ -7,6 +7,7 @@ import answers, * as fromAnswers from "./answers";
 import authUser, * as fromAuthUser from "./authUser";
 import dialogs, * as fromDialogs from "./dialogs";
 import ownQuizzes, * as fromOwnQuizzes from "./ownQuizzes";
+import isFetching, * as fromIsFetching from "./isFetching";
 
 const rootReducer = combineReducers({
   questions,
@@ -15,7 +16,8 @@ const rootReducer = combineReducers({
   answers,
   authUser,
   dialogs,
-  ownQuizzes
+  ownQuizzes,
+  isFetching
 });
 
 export default rootReducer;
@@ -63,5 +65,6 @@ export const selectors = {
   ...answerSelectors,
   ...bindSelectors(state => state.authUser, fromAuthUser.selectors),
   ...bindSelectors(state => state.dialogs, fromDialogs.selectors),
-  ...bindSelectors(state => state.ownQuizzes, fromOwnQuizzes.selectors)
+  ...bindSelectors(state => state.ownQuizzes, fromOwnQuizzes.selectors),
+  ...bindSelectors(state => state.isFetching, fromIsFetching.selectors)
 };

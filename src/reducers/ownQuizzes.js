@@ -21,6 +21,14 @@ const ownQuizzes = createReducer(initialState, {
     });
 
     state.allIds = newAllIds;
+  },
+  [actionTypes.RECEIVE_QUIZ]: (state, { quiz }) => {
+    state.byId[quiz.id] = quiz;
+
+    const found = state.allIds.includes(quiz.id);
+    if (!found) {
+      state.allIds.push(quiz.id);
+    }
   }
 });
 

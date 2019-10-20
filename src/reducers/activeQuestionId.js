@@ -5,7 +5,7 @@ import createReset from "./higherOrderReducers/createReset";
 const initialState = null;
 
 const activeQuestionId = createReset(
-  actionTypes.RESTART_QUIZ,
+  actionTypes.RESTART_QUIZ_CONFIRMED,
   initialState,
   createReducer(initialState, {
     [actionTypes.SELECT_QUESTION]: (state, { questionId }) => questionId,

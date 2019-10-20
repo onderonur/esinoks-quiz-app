@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Dialog,
   DialogTitle,
@@ -10,8 +10,7 @@ import BaseTextField from "components/BaseTextInput";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import { selectors } from "reducers";
-import { closeQuizFormDialog } from "actions";
-import useFirebase from "hooks/useFirebase";
+import { closeQuizFormDialog, createQuiz } from "actions";
 import useSelectAuthUser from "hooks/useSelectAuthUser";
 import BaseButton from "components/BaseButton";
 
@@ -20,38 +19,23 @@ const QuizFormDialog = () => {
   const isOpen = useSelector(state =>
     selectors.selectIsOpenQuizFormDialog(state)
   );
-  const props = useSelector(state =>
+
+  const authUser = useSelectAuthUser();
+  const isSubmitting = useSelector(state =>
+    selectors.selectIsFetchingCreateQuiz(state)
+  );
+
+  const dialogProps = useSelector(state =>
     selectors.selectQuizFormDialogProps(state)
   );
-  const firebase = useFirebase();
-  const authUser = useSelectAuthUser();
-  const [isSubmitting, setIsSubmitting] = useState();
-
-  const { quizId } = props;
+  const { quizId } = dialogProps;
   const quiz = useSelector(state =>
     quizId ? selectors.selectOwnQuizById(state, quizId) : null
   );
 
-  const handleSubmit = async values => {
+  const handleSubmit = values => {
     const { title } = values;
-    // TODO: Observable şeklinde yap
-    setIsSubmitting(true);
-    if (!quizId) {
-      await firebase.quizzes().add({
-        // TODO: Set authorId automatically, don't pass it as a param
-        authorId: authUser.uid,
-        title
-      });
-    } else {
-      await firebase.quiz(quizId).set({
-        // TODO: Set authorId automatically, don't pass it as a param
-        authorId: authUser.uid,
-        title
-      });
-    }
-
-    setIsSubmitting(false);
-    handleClose();
+    dispatch(createQuiz({ id: quizId, title, authorId: authUser.uid }));
   };
 
   const handleClose = () => {

@@ -1,12 +1,11 @@
 import React from "react";
-import { Paper, Typography, Box, Divider, Button } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
+import { Paper, Box, Divider } from "@material-ui/core";
 import ProfileHeader from "./ProfileHeader";
 import { makeStyles } from "@material-ui/styles";
 import QuizFormDialog from "./QuizFormDialog";
-import { useDispatch } from "react-redux";
-import { openQuizFormDialog } from "actions";
 import QuizList from "./QuizList";
+import { Route } from "react-router-dom";
+import QuizCreator from "./QuizCreator";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -16,7 +15,6 @@ const useStyles = makeStyles(theme => ({
 
 const ProfilePage = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
 
   return (
     <>
@@ -25,22 +23,13 @@ const ProfilePage = () => {
           <ProfileHeader />
         </Box>
         <Divider />
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          marginY={2}
-        >
-          <Typography variant="h5">Quiz'lerim</Typography>
-          <Button
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={() => dispatch(openQuizFormDialog())}
-          >
-            Yeni Quiz
-          </Button>
-        </Box>
-        <QuizList />
+
+        <Route exact path="/profile">
+          <QuizList />
+        </Route>
+        <Route path={`/profile/quiz/:quizId`}>
+          <QuizCreator />
+        </Route>
       </Paper>
       <QuizFormDialog />
     </>
