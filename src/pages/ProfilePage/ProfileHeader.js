@@ -2,7 +2,7 @@ import React from "react";
 import { Avatar, Typography, makeStyles, Box } from "@material-ui/core";
 import useSelectAuthUser from "hooks/useSelectAuthUser";
 
-const AVATAR_SIZE = 120;
+const AVATAR_SIZE = 80;
 
 const useStyles = makeStyles(theme => ({
   avatar: {

@@ -4,6 +4,7 @@ import { IconButton, makeStyles } from "@material-ui/core";
 import { restartQuiz } from "actions";
 import ReplayIcon from "@material-ui/icons/Replay";
 import RestartQuizConfirmationDialog from "./RestartQuizConfirmationDialog";
+import { useRouteMatch } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -15,7 +16,13 @@ const RestartQuizButton = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  return (
+  // Restart button will be shown only while user is playing a quiz.
+  // TODO: path' "/quiz/:quizId" şeklinde değiştir sonra
+  const match = useRouteMatch({
+    path: "/quiz"
+  });
+
+  return match ? (
     <>
       <IconButton
         className={classes.button}
@@ -25,7 +32,7 @@ const RestartQuizButton = () => {
       </IconButton>
       <RestartQuizConfirmationDialog />
     </>
-  );
+  ) : null;
 };
 
 export default RestartQuizButton;

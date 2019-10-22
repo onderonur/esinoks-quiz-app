@@ -70,10 +70,11 @@ export const receiveQuiz = quizDoc => {
   };
 };
 
-export const createQuiz = ({ title, authorId }) => ({
+export const createQuiz = ({ title, authorId, history }) => ({
   type: actionTypes.CREATE_QUIZ,
   title,
-  authorId
+  authorId,
+  history
 });
 
 export const updateQuiz = ({ quizId, title }) => ({

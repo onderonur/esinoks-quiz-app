@@ -9,6 +9,8 @@ import FirebaseProvider from "components/FirebaseProvider";
 import Root from "components/Root";
 import { BrowserRouter } from "react-router-dom";
 
+// TODO: Kullanılmayan dosyaları ve fonksiyonları sil
+
 const store = configureStore();
 
 ReactDOM.render(

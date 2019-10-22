@@ -44,12 +44,7 @@ const QuizList = () => {
 
   return (
     <>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        marginY={2}
-      >
+      <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography variant="h5">Quiz'lerim</Typography>
         <Button
           color="primary"
@@ -62,7 +57,9 @@ const QuizList = () => {
       <BaseList
         loading={isFetching}
         data={ownQuizIds}
-        renderItem={quizId => <QuizListItem key={quizId} quizId={quizId} />}
+        renderItem={(quizId, index) => (
+          <QuizListItem key={quizId} quizId={quizId} index={index} />
+        )}
       />
       <DeleteQuizConfirmationDialog />
     </>

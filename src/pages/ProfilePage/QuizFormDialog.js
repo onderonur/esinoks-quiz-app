@@ -6,7 +6,7 @@ import {
   DialogActions
 } from "@material-ui/core";
 import { Formik, Form } from "formik";
-import BaseTextField from "components/BaseTextInput";
+import BaseTextField from "components/BaseTextField";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import { selectors } from "reducers";

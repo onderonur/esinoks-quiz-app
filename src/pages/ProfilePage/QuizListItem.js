@@ -9,7 +9,7 @@ import { selectors } from "reducers";
 import QuizListItemDeleteButton from "./QuizListItemDeleteButton";
 import { useHistory } from "react-router-dom";
 
-const QuizListItem = ({ quizId }) => {
+const QuizListItem = ({ quizId, index }) => {
   const history = useHistory();
   const quiz = useSelector(state => selectors.selectOwnQuizById(state, quizId));
 
@@ -19,7 +19,7 @@ const QuizListItem = ({ quizId }) => {
       button
       onClick={() => history.push(`/profile/quiz/${quizId}`)}
     >
-      <ListItemText primary={quiz.title} />
+      <ListItemText primary={`${index + 1}. ${quiz.title}`} />
       <ListItemSecondaryAction>
         <QuizListItemDeleteButton quizId={quizId} />
       </ListItemSecondaryAction>

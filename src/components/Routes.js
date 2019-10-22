@@ -4,6 +4,7 @@ import HomePage from "pages/HomePage";
 import QuizPage from "pages/QuizPage";
 import ProfilePage from "pages/ProfilePage";
 import PrivateRoute from "./PrivateRoute";
+import QuizCreatorPage from "pages/QuizCreatorPage";
 
 const Routes = () => {
   return (
@@ -15,8 +16,12 @@ const Routes = () => {
         <QuizPage />
       </Route>
 
-      <PrivateRoute path="/profile">
+      <PrivateRoute exact path="/profile">
         <ProfilePage />
+      </PrivateRoute>
+
+      <PrivateRoute path={`/profile/quiz/:quizId`}>
+        <QuizCreatorPage />
       </PrivateRoute>
 
       <Route path="*">

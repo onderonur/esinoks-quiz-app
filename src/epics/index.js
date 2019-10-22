@@ -1,7 +1,18 @@
 import { data } from "reducers/questions";
 import * as actionTypes from "constants/actionTypes";
 import { ofType, combineEpics } from "redux-observable";
-import { exhaustMap, map, startWith, mapTo, catchError } from "rxjs/operators";
+import {
+  exhaustMap,
+  map,
+  startWith,
+  mapTo,
+  catchError,
+  tap,
+  switchMap,
+  take,
+  takeUntil,
+  ignoreElements
+} from "rxjs/operators";
 import { from, of } from "rxjs";
 import firebase from "app-firebase";
 import { getFetchActionTypes } from "utils";
@@ -18,7 +29,7 @@ const checkAnswer = questionId => {
   });
 };
 
-export const answerQuestionEpic = action$ =>
+const answerQuestionEpic = action$ =>
   action$.pipe(
     ofType(actionTypes.ANSWER_QUESTION),
     exhaustMap(action =>
@@ -41,12 +52,12 @@ const mapWithFetchActionTypes = () =>
     return [action, { requestType, successType, errorType }];
   });
 
-export const createQuizEpic = action$ =>
+const createQuizEpic = action$ =>
   action$.pipe(
     ofType(actionTypes.CREATE_QUIZ),
     mapWithFetchActionTypes(),
     exhaustMap(([action, { requestType, successType, errorType }]) => {
-      const { title, authorId } = action;
+      const { title, authorId, history } = action;
 
       return from(
         firebase.quizzes().add({
@@ -54,14 +65,30 @@ export const createQuizEpic = action$ =>
           authorId
         })
       ).pipe(
-        mapTo({ type: successType }),
+        map(doc => doc.id),
+        map(quizId => ({ type: successType, history, quizId })),
         catchError(() => of({ type: errorType })),
         startWith({ type: requestType })
       );
     })
   );
 
-export const updateQuizEpic = action$ =>
+const redirectAfterCreateQuizSuccessEpic = action$ =>
+  action$.pipe(
+    ofType(actionTypes.CREATE_QUIZ),
+    mapWithFetchActionTypes(),
+    switchMap(([action, { successType, errorType }]) =>
+      action$.pipe(
+        ofType(successType),
+        take(1),
+        tap(action => action.history.replace(`/profile/quiz/${action.quizId}`)),
+        ignoreElements(),
+        takeUntil(action$.pipe(ofType(errorType)))
+      )
+    )
+  );
+
+const updateQuizEpic = action$ =>
   action$.pipe(
     ofType(actionTypes.UPDATE_QUIZ),
     mapWithFetchActionTypes(),
@@ -97,7 +124,8 @@ const rootEpic = combineEpics(
   answerQuestionEpic,
   createQuizEpic,
   updateQuizEpic,
-  deleteQuizConfirmedEpic
+  deleteQuizConfirmedEpic,
+  redirectAfterCreateQuizSuccessEpic
 );
 
 export default rootEpic;
