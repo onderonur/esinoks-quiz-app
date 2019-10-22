@@ -57,7 +57,7 @@ const createQuizEpic = action$ =>
     ofType(actionTypes.CREATE_QUIZ),
     mapWithFetchActionTypes(),
     exhaustMap(([action, { requestType, successType, errorType }]) => {
-      const { title, authorId, history } = action;
+      const { title, authorId } = action;
 
       return from(
         firebase.quizzes().add({
@@ -66,7 +66,7 @@ const createQuizEpic = action$ =>
         })
       ).pipe(
         map(doc => doc.id),
-        map(quizId => ({ type: successType, history, quizId })),
+        map(quizId => ({ type: successType, quizId })),
         catchError(() => of({ type: errorType })),
         startWith({ type: requestType })
       );
@@ -81,7 +81,9 @@ const redirectAfterCreateQuizSuccessEpic = action$ =>
       action$.pipe(
         ofType(successType),
         take(1),
-        tap(action => action.history.replace(`/profile/quiz/${action.quizId}`)),
+        tap(successAction =>
+          action.history.replace(`/profile/quiz/${successAction.quizId}`)
+        ),
         ignoreElements(),
         takeUntil(action$.pipe(ofType(errorType)))
       )

@@ -1,7 +1,4 @@
 import * as actionTypes from "constants/actionTypes";
-export const startQuiz = () => ({
-  type: actionTypes.START_QUIZ
-});
 
 export const toggleFullscreen = isFullscreen => ({
   type: actionTypes.TOGGLE_FULLSCREEN,
