@@ -6,7 +6,6 @@ import { selectors } from "reducers";
 import FullScreen from "react-full-screen";
 import { toggleFullscreen } from "actions";
 import App from "./App";
-import useAuthStateListener from "hooks/useAuthStateListener";
 
 const Root = () => {
   const dispatch = useDispatch();
@@ -14,8 +13,6 @@ const Root = () => {
   const isFullscreen = useSelector(state =>
     selectors.selectIsFullscreen(state)
   );
-
-  useAuthStateListener();
 
   return (
     <FullScreen

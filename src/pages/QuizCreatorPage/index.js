@@ -1,8 +1,17 @@
 import React from "react";
-import { Paper, makeStyles, Divider, Typography, Box } from "@material-ui/core";
+import {
+  Paper,
+  makeStyles,
+  Divider,
+  Typography,
+  Box,
+  Button
+} from "@material-ui/core";
 import QuizForm from "./QuizForm";
 import QuestionGridList from "pages/QuizPage/QuestionGridList";
-import { useParams } from "react-router-dom";
+import { useParams, Route, useHistory } from "react-router-dom";
+import AddIcon from "@material-ui/icons/Add";
+import QuestionFormDialog from "./QuestionFormDialog";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -12,6 +21,7 @@ const useStyles = makeStyles(theme => ({
 
 const QuizCreatorPage = () => {
   const classes = useStyles();
+  const history = useHistory();
   const { quizId } = useParams();
   const isNew = quizId === "new";
 
@@ -26,7 +36,26 @@ const QuizCreatorPage = () => {
           <Box marginY={2}>
             <Divider />
           </Box>
-          <Typography variant="h5">Sorular</Typography>
+
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography variant="h5">Sorular</Typography>
+            <Button
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={() =>
+                history.push(`/profile/quiz/${quizId}/question/new`)
+              }
+            >
+              Yeni Soru
+            </Button>
+          </Box>
+          <Route path="/profile/quiz/:quizId/question/:questionId">
+            <QuestionFormDialog />
+          </Route>
           <QuestionGridList />
         </>
       )}
