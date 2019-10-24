@@ -5,7 +5,7 @@ import BaseList from "components/BaseList";
 import QuizListItem from "./QuizListItem";
 import { useSelector, useDispatch } from "react-redux";
 import { selectors } from "reducers";
-import { receiveOwnQuizzes } from "actions";
+import { receiveQuizzes } from "actions";
 import DeleteQuizConfirmationDialog from "./DeleteQuizConfirmationDialog";
 import { Box, Typography, Button } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
@@ -15,26 +15,26 @@ const QuizList = () => {
   const history = useHistory();
   const firebase = useFirebase();
   const authUser = useSelectAuthUser();
-  const [isFetching, setIsFetching] = useState();
-  const ownQuizIds = useSelector(state => selectors.selectOwnQuizIds(state));
+  const [isFetching, setIsFetching] = useState(true);
+  const authUserQuizIds = useSelector(state =>
+    selectors.selectAuthUserQuizIds(state)
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setIsFetching(true);
-
     const listener = firebase
       .quizzes()
       .where("authorId", "==", authUser.uid)
       .onSnapshot(querySnapshot => {
-        var ownQuizzes = [];
+        var quizzes = [];
         querySnapshot.forEach(doc => {
-          ownQuizzes.push({
+          quizzes.push({
             id: doc.id,
             ...doc.data()
           });
         });
 
-        dispatch(receiveOwnQuizzes(ownQuizzes));
+        dispatch(receiveQuizzes(quizzes));
         setIsFetching(false);
       });
 
@@ -56,7 +56,7 @@ const QuizList = () => {
       </Box>
       <BaseList
         loading={isFetching}
-        data={ownQuizIds}
+        data={authUserQuizIds}
         renderItem={(quizId, index) => (
           <QuizListItem key={quizId} quizId={quizId} index={index} />
         )}

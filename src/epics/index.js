@@ -122,12 +122,68 @@ const deleteQuizConfirmedEpic = action$ =>
     )
   );
 
+const createQuestionEpic = action$ =>
+  action$.pipe(
+    ofType(actionTypes.CREATE_QUESTION),
+    mapWithFetchActionTypes(),
+    exhaustMap(([action, { requestType, successType, errorType }]) => {
+      const { quizId, text, choices } = action;
+
+      return from(
+        firebase.questions(quizId).add({
+          text,
+          choices
+        })
+      ).pipe(
+        mapTo({ type: successType }),
+        catchError(() => of({ type: errorType })),
+        startWith({ type: requestType })
+      );
+    })
+  );
+
+const updateQuestionEpic = action$ =>
+  action$.pipe(
+    ofType(actionTypes.UPDATE_QUESTION),
+    mapWithFetchActionTypes(),
+    exhaustMap(([action, { requestType, successType, errorType }]) => {
+      const { quizId, questionId, text, choices } = action;
+
+      return from(
+        firebase.question(quizId, questionId).update({
+          text,
+          choices
+        })
+      ).pipe(
+        mapTo({ type: successType }),
+        catchError(() => of({ type: errorType })),
+        startWith({ type: requestType })
+      );
+    })
+  );
+
+const deleteQuestionConfirmedEpic = action$ =>
+  action$.pipe(
+    ofType(actionTypes.DELETE_QUESTION_CONFIRMED),
+    mapWithFetchActionTypes(),
+    exhaustMap(([action, { requestType, successType, errorType }]) =>
+      from(firebase.question(action.quizId, action.questionId).delete()).pipe(
+        mapTo({ type: successType }),
+        catchError(() => of({ type: errorType })),
+        startWith({ type: requestType })
+      )
+    )
+  );
+
 const rootEpic = combineEpics(
   answerQuestionEpic,
   createQuizEpic,
   updateQuizEpic,
   deleteQuizConfirmedEpic,
-  redirectAfterCreateQuizSuccessEpic
+  redirectAfterCreateQuizSuccessEpic,
+  createQuestionEpic,
+  updateQuestionEpic,
+  deleteQuestionConfirmedEpic
 );
 
 export default rootEpic;

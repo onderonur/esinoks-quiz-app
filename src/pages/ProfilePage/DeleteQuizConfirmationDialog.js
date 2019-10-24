@@ -17,7 +17,7 @@ const DeleteQuizConfirmationDialog = () => {
   );
 
   const { quizId } = dialogProps;
-  const quiz = useSelector(state => selectors.selectOwnQuizById(state, quizId));
+  const quiz = useSelector(state => selectors.selectQuizById(state, quizId));
 
   return (
     <ConfirmationDialog

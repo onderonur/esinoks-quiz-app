@@ -6,7 +6,8 @@ import quiz, * as fromQuiz from "./quiz";
 import answers, * as fromAnswers from "./answers";
 import authUser, * as fromAuthUser from "./authUser";
 import dialogs, * as fromDialogs from "./dialogs";
-import ownQuizzes, * as fromOwnQuizzes from "./ownQuizzes";
+import quizzes, * as fromQuizzes from "./quizzes";
+import quizQuestions, * as fromQuizQuestions from "./quizQuestions";
 import isFetching, * as fromIsFetching from "./isFetching";
 
 const rootReducer = combineReducers({
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
   answers,
   authUser,
   dialogs,
-  ownQuizzes,
+  quizzes,
+  quizQuestions,
   isFetching
 });
 
@@ -37,6 +39,23 @@ const answerSelectors = bindSelectors(
   fromAnswers.selectors
 );
 
+const authUserSelectors = bindSelectors(
+  state => state.authUser,
+  fromAuthUser.selectors
+);
+
+const quizSelectors = bindSelectors(
+  state => state.quizzes,
+  fromQuizzes.selectors
+);
+
+const selectAuthUserQuizIds = state => {
+  const authUser = authUserSelectors.selectAuthUser(state);
+  const { uid } = authUser;
+  const authUserQuizIds = quizSelectors.selectQuizIdsByAuthorId(state, uid);
+  return authUserQuizIds;
+};
+
 const selectAllAnswerResults = state => {
   const questionIds = questionsSelectors.selectAllQuestionIds(state);
   const answerResults = questionIds.map(questionId =>
@@ -47,6 +66,15 @@ const selectAllAnswerResults = state => {
 };
 
 export const selectors = {
+  ...questionsSelectors,
+  ...answerSelectors,
+  ...authUserSelectors,
+  ...quizSelectors,
+  ...bindSelectors(state => state.quiz, fromQuiz.selectors),
+  ...bindSelectors(state => state.dialogs, fromDialogs.selectors),
+  ...bindSelectors(state => state.isFetching, fromIsFetching.selectors),
+  ...bindSelectors(state => state.quizQuestions, fromQuizQuestions.selectors),
+  selectAuthUserQuizIds,
   selectActiveQuestion: state => {
     const id = activeQuestionIdSelectors.selectActiveQuestionId(state);
     const activeQuestion = questionsSelectors.selectQuestionById(state, id);
@@ -59,12 +87,5 @@ export const selectors = {
     );
 
     return trueAnswerResults.length;
-  },
-  ...bindSelectors(state => state.quiz, fromQuiz.selectors),
-  ...questionsSelectors,
-  ...answerSelectors,
-  ...bindSelectors(state => state.authUser, fromAuthUser.selectors),
-  ...bindSelectors(state => state.dialogs, fromDialogs.selectors),
-  ...bindSelectors(state => state.ownQuizzes, fromOwnQuizzes.selectors),
-  ...bindSelectors(state => state.isFetching, fromIsFetching.selectors)
+  }
 };

@@ -11,6 +11,7 @@ export const ANSWER_RESULTS = {
 };
 
 const initialState = {
+  // TODO: Bunu isFetching'e al
   isFetching: false,
   byQuestionId: {}
 };

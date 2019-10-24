@@ -2,7 +2,6 @@ import React from "react";
 import { Paper } from "@material-ui/core";
 import ProfileHeader from "./ProfileHeader";
 import { makeStyles } from "@material-ui/styles";
-import QuizFormDialog from "./QuizFormDialog";
 import QuizList from "./QuizList";
 import BaseDivider from "components/BaseDivider";
 
@@ -22,7 +21,6 @@ const ProfilePage = () => {
         <BaseDivider />
         <QuizList />
       </Paper>
-      <QuizFormDialog />
     </>
   );
 };

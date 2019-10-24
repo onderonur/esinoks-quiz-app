@@ -1,17 +1,16 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Box, Button, makeStyles } from "@material-ui/core";
 import { Formik, Form } from "formik";
 import BaseTextField from "components/BaseTextField";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import { selectors } from "reducers";
-import { createQuiz, updateQuiz, receiveQuiz } from "actions";
+import { createQuiz, updateQuiz } from "actions";
 import BaseButton from "components/BaseButton";
 import useSelectAuthUser from "hooks/useSelectAuthUser";
 import { useParams, useHistory, Prompt } from "react-router-dom";
 import SaveIcon from "@material-ui/icons/Save";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import useFirebase from "hooks/useFirebase";
 
 const validationSchema = Yup.object().shape({
   // TODO: Bu validation'ı firebase tarafında da yap
@@ -26,7 +25,6 @@ const QuizForm = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
-  const firebase = useFirebase();
 
   const isSubmitting = useSelector(
     state =>
@@ -37,18 +35,8 @@ const QuizForm = () => {
   const { quizId } = useParams();
   const isNew = quizId === "new";
   const quiz = useSelector(state =>
-    isNew ? null : selectors.selectOwnQuizById(state, quizId)
+    isNew ? null : selectors.selectQuizById(state, quizId)
   );
-
-  useEffect(() => {
-    if (!isNew) {
-      const listener = firebase.quiz(quizId).onSnapshot(quizDoc => {
-        dispatch(receiveQuiz(quizDoc));
-      });
-
-      return () => listener();
-    }
-  }, [firebase, dispatch, quizId, isNew]);
 
   const authUser = useSelectAuthUser();
 

@@ -32,6 +32,12 @@ class Firebase {
 
   quiz = uid => this.db.collection("quizzes").doc(uid);
   quizzes = () => this.db.collection("quizzes");
+
+  question = (quizId, questionId) =>
+    this.quiz(quizId)
+      .collection("questions")
+      .doc(questionId);
+  questions = quizId => this.quiz(quizId).collection("questions");
 }
 
 const firebase = new Firebase();

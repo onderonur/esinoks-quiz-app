@@ -1,4 +1,5 @@
 import createReducer from "./higherOrderReducers/createReducer";
+import * as actionTypes from "constants/actionTypes";
 
 export const data = [
   {
@@ -458,7 +459,23 @@ const createInitialState = () => {
 
 const initialState = createInitialState();
 
-const questions = createReducer(initialState, {});
+const questions = createReducer(initialState, {
+  [actionTypes.RECEIVE_QUIZ_QUESTIONS]: (state, { questions }) => {
+    const newAllIds = questions.map(question => question.id);
+
+    state.allIds.forEach(id => {
+      if (!newAllIds.includes(id)) {
+        delete state.byId[id];
+      }
+    });
+
+    questions.forEach(question => {
+      state.byId[question.id] = question;
+    });
+
+    state.allIds = newAllIds;
+  }
+});
 
 export default questions;
 

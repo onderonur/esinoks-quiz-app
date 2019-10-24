@@ -39,20 +39,54 @@ export const authStateChanged = authUser => ({
   authUser
 });
 
-export const openQuizFormDialog = quizId => ({
-  type: actionTypes.OPEN_QUIZ_FORM_DIALOG,
+export const openQuestionFormDialog = (quizId, questionId) => ({
+  type: actionTypes.OPEN_QUESTION_FORM_DIALOG,
   dialogProps: {
-    quizId
+    quizId,
+    questionId
   }
 });
 
-export const closeQuizFormDialog = () => ({
-  type: actionTypes.CLOSE_QUIZ_FORM_DIALOG
+export const closeQuestionFormDialog = () => ({
+  type: actionTypes.CLOSE_QUESTION_FORM_DIALOG
 });
 
-export const receiveOwnQuizzes = ownQuizzes => ({
-  type: actionTypes.RECEIVE_OWN_QUIZZES,
-  ownQuizzes
+export const createQuestion = ({ quizId, text, choices }) => ({
+  type: actionTypes.CREATE_QUESTION,
+  quizId,
+  text,
+  choices
+});
+
+export const updateQuestion = ({ quizId, questionId, text, choices }) => ({
+  type: actionTypes.UPDATE_QUESTION,
+  quizId,
+  questionId,
+  text,
+  choices
+});
+
+export const deleteQuestion = (quizId, questionId) => ({
+  type: actionTypes.DELETE_QUESTION,
+  dialogProps: {
+    quizId,
+    questionId
+  }
+});
+
+export const deleteQuestionConfirmed = (quizId, questionId) => ({
+  type: actionTypes.DELETE_QUESTION_CONFIRMED,
+  quizId,
+  questionId
+});
+
+export const deleteQuestionCancelled = () => ({
+  type: actionTypes.DELETE_QUESTION_CANCELLED
+});
+
+export const receiveQuizzes = quizzes => ({
+  type: actionTypes.RECEIVE_QUIZZES,
+  quizzes
 });
 
 export const receiveQuiz = quizDoc => {
@@ -94,4 +128,10 @@ export const deleteQuizConfirmed = quizId => ({
 
 export const deleteQuizCancelled = () => ({
   type: actionTypes.DELETE_QUIZ_CANCELLED
+});
+
+export const receiveQuizQuestions = (quizId, questions) => ({
+  type: actionTypes.RECEIVE_QUIZ_QUESTIONS,
+  quizId,
+  questions
 });

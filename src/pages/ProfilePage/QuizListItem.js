@@ -11,7 +11,7 @@ import { useHistory } from "react-router-dom";
 
 const QuizListItem = ({ quizId, index }) => {
   const history = useHistory();
-  const quiz = useSelector(state => selectors.selectOwnQuizById(state, quizId));
+  const quiz = useSelector(state => selectors.selectQuizById(state, quizId));
 
   return (
     <ListItem
