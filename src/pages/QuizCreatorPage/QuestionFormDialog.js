@@ -24,11 +24,10 @@ import {
 } from "actions";
 import BaseDivider from "components/BaseDivider";
 import AddIcon from "@material-ui/icons/Add";
-import CloseIcon from "@material-ui/icons/Close";
-import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
 import BaseList from "components/BaseList";
 import produce from "immer";
+import ChoiceEditor from "./ChoiceEditor";
 
 const MIN_CHOICE_COUNT = 2;
 const MAX_CHOICE_COUNT = 6;
@@ -47,9 +46,6 @@ const validationSchema = Yup.object().shape({
   )
 });
 
-const ADD = "ADD";
-const EDIT = "EDIT";
-
 const SELECT_CHOICE_TO_ADD = "SELECT_CHOICE_TO_ADD";
 const SELECT_CHOICE_TO_EDIT = "SELECT_CHOICE_TO_EDIT";
 const CANCEL = "CANCEL";
@@ -58,19 +54,16 @@ const selectChoiceToAdd = choiceId => ({
   type: SELECT_CHOICE_TO_ADD,
   choiceId
 });
-const selectChoiceToEdit = (choiceId, choiceTextBeforeEdit) => ({
+const selectChoiceToEdit = choiceId => ({
   type: SELECT_CHOICE_TO_EDIT,
-  choiceId,
-  choiceTextBeforeEdit
+  choiceId
 });
 const cancel = () => ({
   type: CANCEL
 });
 
 const initialState = {
-  selectedChoiceId: null,
-  mode: null,
-  choiceTextBeforeEdit: ""
+  selectedChoiceId: null
 };
 
 const choiceEditReducer = (state, action) => {
@@ -78,13 +71,9 @@ const choiceEditReducer = (state, action) => {
     switch (action.type) {
       case SELECT_CHOICE_TO_ADD:
         draft.selectedChoiceId = action.choiceId;
-        draft.mode = ADD;
-        draft.choiceTextBeforeEdit = "";
         break;
       case SELECT_CHOICE_TO_EDIT:
         draft.selectedChoiceId = action.choiceId;
-        draft.mode = EDIT;
-        draft.choiceTextBeforeEdit = action.choiceTextBeforeEdit;
         break;
       case CANCEL:
         return initialState;
@@ -125,7 +114,7 @@ const QuestionFormDialog = () => {
     choices: question ? question.choices : {}
   };
 
-  const { selectedChoiceId, choiceTextBeforeEdit, mode } = choiceEditState;
+  const { selectedChoiceId } = choiceEditState;
 
   // TODO: Kapatma tuşu ekle dialog'a
 
@@ -184,48 +173,20 @@ const QuestionFormDialog = () => {
                     data={choiceIds}
                     renderItem={choiceId =>
                       selectedChoiceId === choiceId ? (
-                        <Box key={choiceId} display="flex">
-                          <BaseTextField
-                            name={`choices.${selectedChoiceId}`}
-                            fullWidth
-                            required
-                            autoFocus
-                            multiline
-                            rowsMax={3}
-                          />
-                          <IconButton
-                            size="small"
-                            onClick={() => {
-                              if (mode === EDIT) {
-                                const newChoices = produce(choices, draft => {
-                                  draft[choiceId] = choiceTextBeforeEdit;
-                                });
-                                setFieldValue("choices", newChoices);
-                              } else {
-                                const newChoices = produce(choices, draft => {
-                                  delete draft[choiceId];
-                                });
-                                setFieldValue("choices", newChoices);
-                              }
-
-                              choiceEditDispatch(cancel());
-                            }}
-                          >
-                            <CloseIcon />
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            disabled={!choices[choiceId]}
-                            onClick={() => choiceEditDispatch(cancel())}
-                          >
-                            <CheckIcon />
-                          </IconButton>
-                        </Box>
+                        <ChoiceEditor
+                          key={choiceId}
+                          initialValue={choices[choiceId]}
+                          onConfirm={text => {
+                            setFieldValue(`choices.${choiceId}`, text);
+                            choiceEditDispatch(cancel());
+                          }}
+                          onCancel={() => choiceEditDispatch(cancel())}
+                        />
                       ) : (
                         <ListItem
                           key={choiceId}
-                          dense
                           button
+                          divider
                           disabled={isFetching}
                           onClick={() =>
                             choiceEditDispatch(
@@ -255,25 +216,35 @@ const QuestionFormDialog = () => {
                     }
                     listEmptyMesage="Hiç seçenek bulunamadı."
                   />
-                  {!selectedChoiceId && choiceCount < MAX_CHOICE_COUNT && (
-                    <Box>
-                      <BaseButton
-                        startIcon={<AddIcon />}
-                        disabled={isFetching}
-                        onClick={() => {
-                          const nextChoiceId = `${quizId}_${choiceIds.length +
-                            1}`;
+                  {selectedChoiceId && !choiceIds.includes(selectedChoiceId) ? (
+                    <ChoiceEditor
+                      onConfirm={text => {
+                        const nextChoiceId = `${quizId}_${choiceIds.length +
+                          1}`;
+                        setFieldValue(`choices.${nextChoiceId}`, text);
+                        choiceEditDispatch(cancel());
+                      }}
+                      onCancel={text => {
+                        choiceEditDispatch(cancel());
+                      }}
+                    />
+                  ) : (
+                    choiceCount < MAX_CHOICE_COUNT && (
+                      <Box>
+                        <BaseButton
+                          startIcon={<AddIcon />}
+                          disabled={isFetching}
+                          onClick={() => {
+                            const nextChoiceId = `${quizId}_${choiceIds.length +
+                              1}`;
 
-                          // Setting the initial value of the new choice text field.
-                          // Otherwise, because of the new choice has no initial value,
-                          // the text field component switches between uncontrolled to controlled component.
-                          setFieldValue(`choices.${nextChoiceId}`, "");
-                          choiceEditDispatch(selectChoiceToAdd(nextChoiceId));
-                        }}
-                      >
-                        Seçenek Ekle
-                      </BaseButton>
-                    </Box>
+                            choiceEditDispatch(selectChoiceToAdd(nextChoiceId));
+                          }}
+                        >
+                          Seçenek Ekle
+                        </BaseButton>
+                      </Box>
+                    )
                   )}
                 </DialogContent>
                 <DialogActions>
