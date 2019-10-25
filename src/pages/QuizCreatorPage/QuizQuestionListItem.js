@@ -25,12 +25,17 @@ const QuizQuestionListItem = ({ index, quizId, questionId }) => {
   const question = useSelector(state =>
     selectors.selectQuestionById(state, questionId)
   );
+  const dialogProps = useSelector(state =>
+    selectors.selectQuestionFormDialogProps(state)
+  );
+  const { questionId: selectedQuestionId } = dialogProps;
 
   return (
     <ListItem
       dense
       button
       divider
+      selected={questionId === selectedQuestionId}
       onClick={() => dispatch(openQuestionFormDialog(quizId, question.id))}
     >
       <ListItemText

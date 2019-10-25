@@ -30,16 +30,19 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import BaseList from "components/BaseList";
 import produce from "immer";
 
+const MIN_CHOICE_COUNT = 2;
+const MAX_CHOICE_COUNT = 6;
+
 // TODO: Girilen choice text'inin boş olmamasını validate et
 const validationSchema = Yup.object().shape({
   // TODO: Bu validation'ı firebase tarafında da yap
   text: Yup.string().required("Bu alan zorunludur."),
   choices: Yup.object().test(
     "is-empty",
-    "Lütfen en az 2 adet seçenek giriniz.",
+    `Lütfen en az ${MIN_CHOICE_COUNT}, en çok ${MAX_CHOICE_COUNT} adet seçenek giriniz.`,
     value => {
       const choiceCount = Object.keys(value).length;
-      return choiceCount >= 2;
+      return choiceCount >= MIN_CHOICE_COUNT && choiceCount <= MAX_CHOICE_COUNT;
     }
   )
 });
@@ -154,6 +157,8 @@ const QuestionFormDialog = () => {
         {({ isValid, setFieldValue, values }) => {
           const { choices } = values;
           const choiceIds = Object.keys(choices);
+          const choiceCount = choiceIds.length;
+
           return (
             <>
               <Form autoComplete="off" noValidate={true}>
@@ -250,7 +255,7 @@ const QuestionFormDialog = () => {
                     }
                     listEmptyMesage="Hiç seçenek bulunamadı."
                   />
-                  {!selectedChoiceId && (
+                  {!selectedChoiceId && choiceCount < MAX_CHOICE_COUNT && (
                     <Box>
                       <BaseButton
                         startIcon={<AddIcon />}
