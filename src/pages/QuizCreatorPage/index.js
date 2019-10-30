@@ -12,10 +12,11 @@ import { useParams } from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
 import QuestionFormDialog from "./QuestionFormDialog";
 import QuizQuestionList from "./QuizQuestionList";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import useFirebase from "hooks/useFirebase";
 import { receiveQuiz, openQuestionFormDialog } from "actions";
 import LoadingIndicator from "components/LoadingIndicator";
+import { selectors } from "reducers";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -30,6 +31,10 @@ const QuizCreatorPage = () => {
   const { quizId } = useParams();
 
   const isNew = quizId === "new";
+  const quiz = useSelector(state =>
+    isNew ? null : selectors.selectQuizById(state, quizId)
+  );
+
   const [isFetching, setIsFetching] = useState(!isNew);
 
   useEffect(() => {
@@ -48,7 +53,7 @@ const QuizCreatorPage = () => {
       <Paper className={classes.paper}>
         <LoadingIndicator loading={isFetching}>
           <QuizForm />
-          {!isNew && (
+          {quiz && (
             <>
               <Box marginY={2}>
                 <Divider />
