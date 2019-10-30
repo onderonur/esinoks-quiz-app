@@ -1,6 +1,7 @@
 import app from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/storage";
 
 // TODO: May split configs for prod and dev
 
@@ -22,6 +23,7 @@ class Firebase {
     this.auth = app.auth();
     this.db = app.firestore();
     this.googleProvider = new app.auth.GoogleAuthProvider();
+    this.storage = app.storage();
   }
 
   doSignInWithGoogle = () => this.auth.signInWithPopup(this.googleProvider);

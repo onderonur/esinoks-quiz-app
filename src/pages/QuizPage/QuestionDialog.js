@@ -81,7 +81,7 @@ const QuestionDialog = () => {
         </Box>
       </DialogTitle>
       <DialogContent dividers>
-        <DialogContentText variant="h6">{question.text}</DialogContentText>
+        <DialogContentText variant="h6">{question.body}</DialogContentText>
         <QuestionDialogChoiceList choices={choices} />
       </DialogContent>
       <DialogActions>

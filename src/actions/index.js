@@ -51,19 +51,27 @@ export const closeQuestionFormDialog = () => ({
   type: actionTypes.CLOSE_QUESTION_FORM_DIALOG
 });
 
-export const createQuestion = ({ quizId, text, choices }) => ({
+export const createQuestion = ({ quizId, body, choices, correctAnswer }) => ({
   type: actionTypes.CREATE_QUESTION,
   quizId,
-  text,
-  choices
+  body,
+  choices,
+  correctAnswer
 });
 
-export const updateQuestion = ({ quizId, questionId, text, choices }) => ({
+export const updateQuestion = ({
+  quizId,
+  questionId,
+  body,
+  choices,
+  correctAnswer
+}) => ({
   type: actionTypes.UPDATE_QUESTION,
   quizId,
   questionId,
-  text,
-  choices
+  body,
+  choices,
+  correctAnswer
 });
 
 export const deleteQuestion = (quizId, questionId) => ({

@@ -7,6 +7,10 @@ const { successType: CREATE_QUESTION_SUCCESS } = getFetchActionTypes(
   actionTypes.CREATE_QUESTION
 );
 
+const { successType: UPDATE_QUESTION_SUCCESS } = getFetchActionTypes(
+  actionTypes.UPDATE_QUESTION
+);
+
 const { successType: DELETE_QUIZ_CONFIRMED_SUCCESS } = getFetchActionTypes(
   actionTypes.DELETE_QUIZ_CONFIRMED
 );
@@ -18,7 +22,11 @@ const { successType: DELETE_QUESTION_CONFIRMED_SUCCESS } = getFetchActionTypes(
 const dialogs = combineReducers({
   questionForm: createDialog(
     [actionTypes.OPEN_QUESTION_FORM_DIALOG],
-    [actionTypes.CLOSE_QUESTION_FORM_DIALOG, CREATE_QUESTION_SUCCESS]
+    [
+      actionTypes.CLOSE_QUESTION_FORM_DIALOG,
+      CREATE_QUESTION_SUCCESS,
+      UPDATE_QUESTION_SUCCESS
+    ]
   ),
   deleteQuizConfirmation: createDialog(
     [actionTypes.DELETE_QUIZ],

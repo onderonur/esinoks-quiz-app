@@ -4,7 +4,7 @@ import FullscreenButton from "./FullscreenButton";
 import RestartQuizButton from "./RestartQuizButton";
 import SignInWithGoogleButton from "./SignInWithGoogleButton";
 import Routes from "./Routes";
-import UserButtonMenu from "./UserButtonMenu";
+import UserButton from "./UserButton";
 import useAuthStateListener from "hooks/useAuthStateListener";
 import LoadingIndicator from "./LoadingIndicator";
 
@@ -17,9 +17,9 @@ const App = () => {
         <SignInWithGoogleButton />
         <RestartQuizButton />
         <FullscreenButton />
-        <UserButtonMenu />
+        <UserButton />
       </Box>
-        <Routes />
+      <Routes />
     </LoadingIndicator>
   );
 };

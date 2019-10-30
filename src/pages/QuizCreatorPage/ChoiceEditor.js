@@ -5,13 +5,15 @@ import CloseIcon from "@material-ui/icons/Close";
 
 const ChoiceEditor = ({ initialValue = "", onConfirm, onCancel }) => {
   const [text, setText] = useState(initialValue);
+
   return (
-    <Box display="flex">
+    <Box display="flex" alignItems="center">
       <TextField
         value={text}
         autoFocus
         fullWidth
         multiline
+        margin="normal"
         onChange={e => setText(e.target.value)}
       />
       <IconButton size="small" onClick={onCancel}>

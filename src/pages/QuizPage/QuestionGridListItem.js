@@ -67,10 +67,9 @@ const QuestionGridListItem = ({ questionId }) => {
             paddingY={2}
           >
             <Planet mood={mood} color={color} size={100} />
-            {/* {icon} */}
           </Box>
           <Typography variant="body1" noWrap>
-            {question.text}
+            {question.body}
           </Typography>
         </CardContent>
       </CardActionArea>

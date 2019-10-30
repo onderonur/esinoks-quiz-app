@@ -4,7 +4,7 @@ import * as actionTypes from "constants/actionTypes";
 export const data = [
   {
     id: "0",
-    text: "Which one is true?",
+    body: "Which one is true?",
     choices: [
       { id: "0", text: "This is true." },
       { id: "1", text: "This is also true." },
@@ -14,7 +14,7 @@ export const data = [
   },
   {
     id: "1",
-    text: "Is this question cool?",
+    body: "Is this question cool?",
     choices: [
       { id: "4", text: "OK." },
       { id: "5", text: "No." },
@@ -24,7 +24,7 @@ export const data = [
   },
   {
     id: "2",
-    text: "Is this the last question?",
+    body: "Is this the last question?",
     choices: [
       { id: "8", text: "Who knows" },
       { id: "9", text: "Of course" },
@@ -34,7 +34,7 @@ export const data = [
   },
   {
     id: "3",
-    text: "Which one is true?",
+    body: "Which one is true?",
     choices: [
       { id: "12", text: "This is true." },
       { id: "13", text: "This is also true." },
@@ -44,7 +44,7 @@ export const data = [
   },
   {
     id: "4",
-    text:
+    body:
       "Which one is true? Which one is true? Which one is true? Which one is true? Which one is true? Which one is true?",
     choices: [
       { id: "16", text: "This is true." },
@@ -59,7 +59,7 @@ export const data = [
   },
   {
     id: "5",
-    text: "Which one is true?",
+    body: "Which one is true?",
     choices: [
       { id: "20", text: "This is true." },
       { id: "21", text: "This is also true." },
@@ -69,7 +69,7 @@ export const data = [
   },
   {
     id: "6",
-    text: "Is this question cool?",
+    body: "Is this question cool?",
     choices: [
       { id: "24", text: "OK." },
       { id: "25", text: "No." },
@@ -79,7 +79,7 @@ export const data = [
   },
   {
     id: "7",
-    text: "Is this the last question?",
+    body: "Is this the last question?",
     choices: [
       { id: "28", text: "Who knows" },
       { id: "29", text: "Of course" },
@@ -89,7 +89,7 @@ export const data = [
   },
   {
     id: "8",
-    text: "Which one is true?",
+    body: "Which one is true?",
     choices: [
       { id: "32", text: "This is true." },
       { id: "33", text: "This is also true." },
@@ -99,7 +99,7 @@ export const data = [
   },
   {
     id: "9",
-    text:
+    body:
       "Which one is true? Which one is true? Which one is true? Which one is true? Which one is true? Which one is true?",
     choices: [
       { id: "36", text: "This is true." },
@@ -114,7 +114,7 @@ export const data = [
   },
   {
     id: "10",
-    text: "Which one is true?",
+    body: "Which one is true?",
     choices: [
       { id: "40", text: "This is true." },
       { id: "41", text: "This is also true." },
@@ -124,7 +124,7 @@ export const data = [
   },
   {
     id: "11",
-    text: "Is this question cool?",
+    body: "Is this question cool?",
     choices: [
       { id: "44", text: "OK." },
       { id: "45", text: "No." },
@@ -134,7 +134,7 @@ export const data = [
   },
   {
     id: "12",
-    text: "Is this the last question?",
+    body: "Is this the last question?",
     choices: [
       { id: "48", text: "Who knows" },
       { id: "49", text: "Of course" },
@@ -154,7 +154,7 @@ export const data = [
   },
   {
     id: "14",
-    text:
+    body:
       "Which one is true? Which one is true? Which one is true? Which one is true? Which one is true? Which one is true?",
     choices: [
       { id: "56", text: "This is true." },
@@ -169,7 +169,7 @@ export const data = [
   },
   {
     id: "15",
-    text: "Which one is true?",
+    body: "Which one is true?",
     choices: [
       { id: "60", text: "This is true." },
       { id: "61", text: "This is also true." },
@@ -179,7 +179,7 @@ export const data = [
   },
   {
     id: "16",
-    text: "Is this question cool?",
+    body: "Is this question cool?",
     choices: [
       { id: "64", text: "OK." },
       { id: "65", text: "No." },
@@ -189,7 +189,7 @@ export const data = [
   },
   {
     id: "17",
-    text: "Is this the last question?",
+    body: "Is this the last question?",
     choices: [
       { id: "68", text: "Who knows" },
       { id: "69", text: "Of course" },
@@ -199,7 +199,7 @@ export const data = [
   },
   {
     id: "18",
-    text: "Which one is true?",
+    body: "Which one is true?",
     choices: [
       { id: "72", text: "This is true." },
       { id: "73", text: "This is also true." },
@@ -209,7 +209,7 @@ export const data = [
   },
   {
     id: "19",
-    text:
+    body:
       "Which one is true? Which one is true? Which one is true? Which one is true? Which one is true? Which one is true?",
     choices: [
       { id: "76", text: "This is true." },
@@ -224,7 +224,7 @@ export const data = [
   },
   {
     id: "20",
-    text: "Which one is true?",
+    body: "Which one is true?",
     choices: [
       { id: "80", text: "This is true." },
       { id: "81", text: "This is also true." },
@@ -234,7 +234,7 @@ export const data = [
   },
   {
     id: "21",
-    text: "Is this question cool?",
+    body: "Is this question cool?",
     choices: [
       { id: "84", text: "OK." },
       { id: "85", text: "No." },
@@ -244,7 +244,7 @@ export const data = [
   },
   {
     id: "22",
-    text: "Is this the last question?",
+    body: "Is this the last question?",
     choices: [
       { id: "88", text: "Who knows" },
       { id: "89", text: "Of course" },
@@ -254,7 +254,7 @@ export const data = [
   },
   {
     id: "23",
-    text: "Which one is true?",
+    body: "Which one is true?",
     choices: [
       { id: "92", text: "This is true." },
       { id: "93", text: "This is also true." },
@@ -264,7 +264,7 @@ export const data = [
   },
   {
     id: "24",
-    text:
+    body:
       "Which one is true? Which one is true? Which one is true? Which one is true? Which one is true? Which one is true?",
     choices: [
       { id: "96", text: "This is true." },
@@ -279,7 +279,7 @@ export const data = [
   },
   {
     id: "25",
-    text: "Which one is true?",
+    body: "Which one is true?",
     choices: [
       { id: "100", text: "This is true." },
       { id: "101", text: "This is also true." },
@@ -289,7 +289,7 @@ export const data = [
   },
   {
     id: "26",
-    text: "Is this question cool?",
+    body: "Is this question cool?",
     choices: [
       { id: "104", text: "OK." },
       { id: "105", text: "No." },
@@ -299,7 +299,7 @@ export const data = [
   },
   {
     id: "27",
-    text: "Is this the last question?",
+    body: "Is this the last question?",
     choices: [
       { id: "108", text: "Who knows" },
       { id: "109", text: "Of course" },
@@ -309,7 +309,7 @@ export const data = [
   },
   {
     id: "28",
-    text: "Which one is true?",
+    body: "Which one is true?",
     choices: [
       { id: "112", text: "This is true." },
       { id: "113", text: "This is also true." },
@@ -319,7 +319,7 @@ export const data = [
   },
   {
     id: "29",
-    text:
+    body:
       "Which one is true? Which one is true? Which one is true? Which one is true? Which one is true? Which one is true?",
     choices: [
       { id: "116", text: "This is true." },
@@ -334,7 +334,7 @@ export const data = [
   },
   {
     id: "30",
-    text: "Which one is true?",
+    body: "Which one is true?",
     choices: [
       { id: "120", text: "This is true." },
       { id: "121", text: "This is also true." },
@@ -344,7 +344,7 @@ export const data = [
   },
   {
     id: "31",
-    text: "Is this question cool?",
+    body: "Is this question cool?",
     choices: [
       { id: "124", text: "OK." },
       { id: "125", text: "No." },
@@ -354,7 +354,7 @@ export const data = [
   },
   {
     id: "32",
-    text: "Is this the last question?",
+    body: "Is this the last question?",
     choices: [
       { id: "128", text: "Who knows" },
       { id: "129", text: "Of course" },
@@ -364,7 +364,7 @@ export const data = [
   },
   {
     id: "33",
-    text: "Which one is true?",
+    body: "Which one is true?",
     choices: [
       { id: "132", text: "This is true." },
       { id: "133", text: "This is also true." },
@@ -374,7 +374,7 @@ export const data = [
   },
   {
     id: "34",
-    text:
+    body:
       "Which one is true? Which one is true? Which one is true? Which one is true? Which one is true? Which one is true?",
     choices: [
       { id: "136", text: "This is true." },
@@ -389,7 +389,7 @@ export const data = [
   },
   {
     id: "35",
-    text: "Which one is true?",
+    body: "Which one is true?",
     choices: [
       { id: "140", text: "This is true." },
       { id: "141", text: "This is also true." },
@@ -399,7 +399,7 @@ export const data = [
   },
   {
     id: "36",
-    text: "Is this question cool?",
+    body: "Is this question cool?",
     choices: [
       { id: "144", text: "OK." },
       { id: "145", text: "No." },
@@ -409,7 +409,7 @@ export const data = [
   },
   {
     id: "37",
-    text: "Is this the last question?",
+    body: "Is this the last question?",
     choices: [
       { id: "148", text: "Who knows" },
       { id: "149", text: "Of course" },
@@ -419,7 +419,7 @@ export const data = [
   },
   {
     id: "38",
-    text: "Which one is true?",
+    body: "Which one is true?",
     choices: [
       { id: "152", text: "This is true." },
       { id: "153", text: "This is also true." },
@@ -429,7 +429,7 @@ export const data = [
   },
   {
     id: "39",
-    text:
+    body:
       "Which one is true? Which one is true? Which one is true? Which one is true? Which one is true? Which one is true?",
     choices: [
       { id: "156", text: "This is true." },

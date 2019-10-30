@@ -127,14 +127,12 @@ const createQuestionEpic = action$ =>
     ofType(actionTypes.CREATE_QUESTION),
     mapWithFetchActionTypes(),
     exhaustMap(([action, { requestType, successType, errorType }]) => {
-      const { quizId, text, choices } = action;
+      const { quizId, body, choices, correctAnswer } = action;
 
-      return from(
-        firebase.questions(quizId).add({
-          text,
-          choices
-        })
-      ).pipe(
+      const batch = firebase.db.batch();
+      const quizQuestionsRef = firebase.questions(quizId).doc();
+      batch.set(quizQuestionsRef, { body, choices, correctAnswer });
+      return from(batch.commit()).pipe(
         mapTo({ type: successType }),
         catchError(() => of({ type: errorType })),
         startWith({ type: requestType })
@@ -147,14 +145,12 @@ const updateQuestionEpic = action$ =>
     ofType(actionTypes.UPDATE_QUESTION),
     mapWithFetchActionTypes(),
     exhaustMap(([action, { requestType, successType, errorType }]) => {
-      const { quizId, questionId, text, choices } = action;
+      const { quizId, questionId, body, choices, correctAnswer } = action;
 
-      return from(
-        firebase.question(quizId, questionId).update({
-          text,
-          choices
-        })
-      ).pipe(
+      const batch = firebase.db.batch();
+      const quizQuestionRef = firebase.question(quizId, questionId);
+      batch.update(quizQuestionRef, { body, choices, correctAnswer });
+      return from(batch.commit()).pipe(
         mapTo({ type: successType }),
         catchError(() => of({ type: errorType })),
         startWith({ type: requestType })

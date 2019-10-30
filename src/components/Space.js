@@ -12,7 +12,8 @@ const Space = ({ children }) => {
           left: 0,
           right: 0,
           width: window.innerWidth,
-          height: window.innerHeight
+          height: window.innerHeight,
+          zIndex: -1
         }}
       />
       {children}

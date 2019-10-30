@@ -1,7 +1,6 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectors } from "reducers";
-import { openQuestionFormDialog, deleteQuestion } from "actions";
 import {
   ListItem,
   ListItemText,
@@ -11,17 +10,26 @@ import {
   ListItemSecondaryAction,
   IconButton
 } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import QuizQuestionListItemMenu from "./QuizQuestionListItemMenu";
+import parse from "html-react-parser";
 
 const useStyles = makeStyles(theme => ({
   orderNo: {
+    marginRight: theme.spacing(1),
     fontWeight: theme.typography.fontWeightBold
+  },
+  questionBody: {
+    ...theme.typography.body2,
+    whiteSpace: "pre-wrap",
+    "& p": {
+      margin: 0
+    }
   }
 }));
 
 const QuizQuestionListItem = ({ index, quizId, questionId }) => {
   const classes = useStyles();
-  const dispatch = useDispatch();
   const question = useSelector(state =>
     selectors.selectQuestionById(state, questionId)
   );
@@ -31,36 +39,27 @@ const QuizQuestionListItem = ({ index, quizId, questionId }) => {
   const { questionId: selectedQuestionId } = dialogProps;
 
   return (
-    <ListItem
-      dense
-      button
-      divider
-      selected={questionId === selectedQuestionId}
-      onClick={() => dispatch(openQuestionFormDialog(quizId, question.id))}
-    >
+    <ListItem dense divider selected={questionId === selectedQuestionId}>
       <ListItemText
         primary={
           <Box display="flex">
             <Typography className={classes.orderNo} variant="body2">
-              {index + 1}.{" "}
+              {index + 1}.
             </Typography>
-            <Typography variant="body2">{question.text}</Typography>
+            <div className={classes.questionBody}>{parse(question.body)}</div>
           </Box>
         }
-        primaryTypographyProps={{
-          style: {
-            whiteSpace: "pre-wrap"
-          }
-        }}
       />
       <ListItemSecondaryAction>
-        <IconButton
-          size="small"
-          color="secondary"
-          onClick={() => dispatch(deleteQuestion(quizId, questionId))}
-        >
-          <DeleteIcon />
-        </IconButton>
+        <QuizQuestionListItemMenu
+          quizId={quizId}
+          questionId={questionId}
+          renderTrigger={({ onClick }) => (
+            <IconButton size="small" onClick={onClick}>
+              <MoreVertIcon />
+            </IconButton>
+          )}
+        />
       </ListItemSecondaryAction>
     </ListItem>
   );

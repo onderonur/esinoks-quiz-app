@@ -1,7 +1,7 @@
 const questions = [
   {
     id: "0",
-    text: "Which one is true?",
+    body: "Which one is true?",
     choices: [
       { id: "0", text: "This is true." },
       { id: "1", text: "This is also true." },
@@ -11,7 +11,7 @@ const questions = [
   },
   {
     id: "1",
-    text: "Is this question cool?",
+    body: "Is this question cool?",
     choices: [
       { id: "4", text: "OK." },
       { id: "5", text: "No." },
@@ -21,7 +21,7 @@ const questions = [
   },
   {
     id: "2",
-    text: "Is this the last question?",
+    tebodyxt: "Is this the last question?",
     choices: [
       { id: "8", text: "Who knows" },
       { id: "9", text: "Of course" },
