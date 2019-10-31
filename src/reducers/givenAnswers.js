@@ -18,7 +18,7 @@ const givenAnswers = createReset(
   actionTypes.RESTART_QUIZ_CONFIRMED,
   initialState,
   createReducer(initialState, {
-    [actionTypes.SELECT_CHOICE]: (state, { questionId, choiceIndex }) => {
+    [actionTypes.ANSWER_QUESTION]: (state, { questionId, choiceIndex }) => {
       set(state.byQuestionId, [questionId], choiceIndex);
     }
     // [actionTypes.ANSWER_QUESTION_REQUEST]: state => {

@@ -16,22 +16,6 @@ import { from, of } from "rxjs";
 import firebase from "app-firebase";
 import { getFetchActionTypes } from "utils";
 
-// const answerQuestionEpic = action$ =>
-//   action$.pipe(
-//     ofType(actionTypes.ANSWER_QUESTION),
-//     exhaustMap(action =>
-//       from(checkAnswer(action.questionId)).pipe(
-//         map(result => ({
-//           type: actionTypes.ANSWER_QUESTION_SUCCESS,
-//           questionId: action.questionId,
-//           choiceId: action.choiceId,
-//           answerId: result
-//         })),
-//         startWith({ type: actionTypes.ANSWER_QUESTION_REQUEST })
-//       )
-//     )
-//   );
-
 const mapWithFetchActionTypes = () =>
   map(action => {
     const { type } = action;
@@ -159,7 +143,6 @@ const deleteQuestionConfirmedEpic = action$ =>
   );
 
 const rootEpic = combineEpics(
-  // answerQuestionEpic,
   createQuizEpic,
   updateQuizEpic,
   deleteQuizConfirmedEpic,

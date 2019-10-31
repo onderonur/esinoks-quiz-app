@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { selectors } from "reducers";
-import { selectQuestion, selectChoice } from "actions";
+import { selectQuestion, answerQuestion } from "actions";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/styles";
 import BaseButton from "components/BaseButton";
@@ -92,7 +92,7 @@ const QuestionDialog = () => {
         validateOnMount
         onSubmit={values => {
           const { givenAnswer } = values;
-          dispatch(selectChoice(question.id, givenAnswer));
+          dispatch(answerQuestion(question.id, givenAnswer));
         }}
       >
         {({ isValid }) => {

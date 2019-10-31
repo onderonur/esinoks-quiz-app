@@ -8,9 +8,9 @@ const activeQuestionId = createReset(
   actionTypes.RESTART_QUIZ_CONFIRMED,
   initialState,
   createReducer(initialState, {
-    [actionTypes.SELECT_QUESTION]: (state, { questionId }) => questionId,
-    [actionTypes.ANSWER_QUESTION_SUCCESS]: (state, { choiceId, answerId }) =>
-      choiceId === answerId ? null : state
+    [actionTypes.SELECT_QUESTION]: (state, { questionId }) => questionId
+    // [actionTypes.ANSWER_QUESTION_SUCCESS]: (state, { choiceId, answerId }) =>
+    //   choiceId === answerId ? null : state
   })
 );
 

@@ -12,8 +12,8 @@ const QuestionGridList = () => {
     <BaseGridList
       loading={isFetching}
       items={quizQuestionIds}
-      renderItem={questionId => (
-        <QuestionGridListItem questionId={questionId} />
+      renderItem={(questionId, i) => (
+        <QuestionGridListItem questionId={questionId} index={i} />
       )}
     />
   );

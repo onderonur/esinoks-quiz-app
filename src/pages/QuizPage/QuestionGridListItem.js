@@ -12,7 +12,7 @@ import {
 import { selectQuestion } from "actions";
 import { Planet } from "react-kawaii";
 
-const QuestionGridListItem = ({ questionId }) => {
+const QuestionGridListItem = ({ questionId, index }) => {
   const dispatch = useDispatch();
   const question = useSelector(state =>
     selectors.selectQuestionById(state, questionId)
@@ -50,7 +50,7 @@ const QuestionGridListItem = ({ questionId }) => {
             <Planet mood={mood} color={color} size={100} />
           </Box>
           <Typography variant="body1" noWrap>
-            {question.body}
+            Soru {index + 1}
           </Typography>
         </CardContent>
       </CardActionArea>
