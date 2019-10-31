@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Paper,
   makeStyles,
@@ -12,11 +12,10 @@ import { useParams } from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
 import QuestionFormDialog from "./QuestionFormDialog";
 import QuizQuestionList from "./QuizQuestionList";
-import { useSelector, useDispatch } from "react-redux";
-import useFirebase from "hooks/useFirebase";
-import { receiveQuiz, openQuestionFormDialog } from "actions";
+import { useDispatch } from "react-redux";
+import { openQuestionFormDialog } from "actions";
 import LoadingIndicator from "components/LoadingIndicator";
-import { selectors } from "reducers";
+import useListenQuiz from "hooks/useListenQuiz";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -27,26 +26,8 @@ const useStyles = makeStyles(theme => ({
 const QuizCreatorPage = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const firebase = useFirebase();
   const { quizId } = useParams();
-
-  const isNew = quizId === "new";
-  const quiz = useSelector(state =>
-    isNew ? null : selectors.selectQuizById(state, quizId)
-  );
-
-  const [isFetching, setIsFetching] = useState(!isNew);
-
-  useEffect(() => {
-    if (!isNew) {
-      const listener = firebase.quiz(quizId).onSnapshot(quizDoc => {
-        dispatch(receiveQuiz(quizDoc));
-        setIsFetching(false);
-      });
-
-      return () => listener();
-    }
-  }, [firebase, dispatch, quizId, isNew]);
+  const { isFetching, quiz } = useListenQuiz(quizId);
 
   return (
     <>

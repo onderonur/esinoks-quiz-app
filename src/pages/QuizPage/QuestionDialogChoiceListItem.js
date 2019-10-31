@@ -5,9 +5,8 @@ import {
   ListItemIcon,
   Checkbox
 } from "@material-ui/core";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectors } from "reducers";
-import { selectChoice } from "actions";
 import { makeStyles } from "@material-ui/styles";
 import clsx from "clsx";
 import { green, red } from "@material-ui/core/colors";
@@ -26,38 +25,39 @@ const useStyles = makeStyles(theme => ({
   checked: {}
 }));
 
-const QuestionDialogChoiceListItem = ({ choice }) => {
+const QuestionDialogChoiceListItem = ({
+  choiceIndex,
+  choice,
+  isSelected,
+  onSelected,
+  disabled
+}) => {
   const classes = useStyles();
-  const question = useSelector(state => selectors.selectActiveQuestion(state));
-  const isFetching = useSelector(state =>
-    selectors.selectIsFetchingAnswer(state)
+  const activeQuestion = useSelector(state =>
+    selectors.selectActiveQuestion(state)
   );
-  const dispatch = useDispatch();
-  const answerId = useSelector(state =>
-    question ? selectors.selectAnswerIdByQuestionId(state, question.id) : null
+  const answerIndex = useSelector(state =>
+    activeQuestion
+      ? selectors.selectGivenAnswerByQuestionId(state, activeQuestion.id)
+      : null
   );
-  const selectedChoiceId = useSelector(state =>
-    question ? selectors.selectChoiceIdByQuestionId(state, question.id) : null
+  const correctAnswer = useSelector(state =>
+    activeQuestion
+      ? selectors.selectCorrectAnswerByQuestionId(state, activeQuestion.id)
+      : null
   );
 
-  const handleSelectChoice = choice => {
-    // When we have the true answer, choice can not be changed.
-    if (!answerId) {
-      dispatch(selectChoice(question.id, choice.id));
-    }
-  };
-
-  const isSelected = selectedChoiceId === choice.id;
-  const isTrueAnswer = Boolean(answerId && choice.id === answerId);
-  const isWrongAnswer = Boolean(isSelected && answerId && !isTrueAnswer);
+  const didAnswered = answerIndex !== undefined;
+  const isTrueAnswer = Boolean(didAnswered && choiceIndex === correctAnswer);
+  const isWrongAnswer = Boolean(didAnswered && !isTrueAnswer);
 
   return (
     <ListItem
       button
       // When we are fetching the answer, the selected choice cannot be changed.
-      disabled={isFetching}
       selected={isSelected}
-      onClick={() => handleSelectChoice(choice)}
+      disabled={disabled}
+      onClick={() => onSelected(choiceIndex)}
     >
       <ListItemIcon>
         <Checkbox
@@ -74,7 +74,7 @@ const QuestionDialogChoiceListItem = ({ choice }) => {
           }}
         />
       </ListItemIcon>
-      <ListItemText primary={choice.text} />
+      <ListItemText primary={choice} />
     </ListItem>
   );
 };

@@ -61,7 +61,7 @@ const QuizForm = () => {
       validationSchema={validationSchema}
       validateOnBlur={false}
       onSubmit={handleSubmit}
-      isInitialValid={validationSchema.isValidSync(initialValues)}
+      validateOnMount
     >
       {({ dirty, isValid }) => (
         <>

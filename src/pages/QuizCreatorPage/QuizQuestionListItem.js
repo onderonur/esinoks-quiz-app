@@ -12,19 +12,12 @@ import {
 } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import QuizQuestionListItemMenu from "./QuizQuestionListItemMenu";
-import parse from "html-react-parser";
+import RawHtmlDiv from "components/RawHtmlDiv";
 
 const useStyles = makeStyles(theme => ({
   orderNo: {
     marginRight: theme.spacing(1),
     fontWeight: theme.typography.fontWeightBold
-  },
-  questionBody: {
-    ...theme.typography.body2,
-    whiteSpace: "pre-wrap",
-    "& p": {
-      margin: 0
-    }
   }
 }));
 
@@ -46,7 +39,7 @@ const QuizQuestionListItem = ({ index, quizId, questionId }) => {
             <Typography className={classes.orderNo} variant="body2">
               {index + 1}.
             </Typography>
-            <div className={classes.questionBody}>{parse(question.body)}</div>
+            <RawHtmlDiv html={question.body} />
           </Box>
         }
       />

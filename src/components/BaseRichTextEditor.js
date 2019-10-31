@@ -14,7 +14,7 @@ const uploadCallback = async file => {
   const storageRef = firebase.storage.ref();
   // TODO: Aynı file name denk gelip varolan bir şeyi ezmemesi için yöntem?
   // quizId ve questionId bazlı tutulabilir image'lar.
-  var fileRef = storageRef.child(`question-images/${new Date().getTime()}`);
+  const fileRef = storageRef.child(`question-images/${new Date().getTime()}`);
   const snapshot = await fileRef.put(file);
   const downloadUrl = await snapshot.ref.getDownloadURL();
   return {

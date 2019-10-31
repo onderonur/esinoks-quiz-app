@@ -3,7 +3,6 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   DialogActions,
   Typography,
   IconButton,
@@ -11,11 +10,14 @@ import {
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { selectors } from "reducers";
-import { answerQuestion, selectQuestion } from "actions";
+import { selectQuestion, selectChoice } from "actions";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/styles";
 import BaseButton from "components/BaseButton";
 import QuestionDialogChoiceList from "./QuestionDialogChoiceList";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+import RawHtmlDiv from "components/RawHtmlDiv";
 
 const useStyles = makeStyles(theme => ({
   title: {
@@ -26,28 +28,28 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const validationSchema = Yup.object().shape({
+  givenAnswer: Yup.number().required()
+});
+
 const QuestionDialog = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const isFetching = useSelector(state =>
-    selectors.selectIsFetchingAnswer(state)
-  );
 
   const question = useSelector(state => selectors.selectActiveQuestion(state));
   const [isOpen, setIsOpen] = useState(!!question);
-  const answerId = useSelector(state =>
-    question ? selectors.selectAnswerIdByQuestionId(state, question.id) : null
-  );
-  const selectedChoiceId = useSelector(state =>
-    question ? selectors.selectChoiceIdByQuestionId(state, question.id) : null
-  );
 
   const questionIndex = useSelector(state =>
     question ? selectors.selectQuestionIndexById(state, question.id) : null
   );
 
+  const givenAnswer = useSelector(state =>
+    question
+      ? selectors.selectGivenAnswerByQuestionId(state, question.id)
+      : undefined
+  );
+
   const choices = question ? question.choices : [];
-  const selectedChoice = choices.find(choice => choice.id === selectedChoiceId);
 
   const isQuestionSelected = !!question;
 
@@ -56,11 +58,14 @@ const QuestionDialog = () => {
   }, [isQuestionSelected]);
 
   const handleClose = () => {
-    // When we are fetching the answer, dialog can not be closed.
-    if (!isFetching) {
-      setIsOpen(false);
-    }
+    setIsOpen(false);
   };
+
+  const initialValues = {
+    givenAnswer
+  };
+
+  const didAnswered = givenAnswer !== undefined;
 
   return question ? (
     <Dialog
@@ -80,23 +85,48 @@ const QuestionDialog = () => {
           </IconButton>
         </Box>
       </DialogTitle>
-      <DialogContent dividers>
-        <DialogContentText variant="h6">{question.body}</DialogContentText>
-        <QuestionDialogChoiceList choices={choices} />
-      </DialogContent>
-      <DialogActions>
-        <BaseButton
-          color="primary"
-          variant="contained"
-          loading={isFetching}
-          disabled={!selectedChoice || !!answerId}
-          onClick={() =>
-            dispatch(answerQuestion(question.id, selectedChoice.id))
-          }
-        >
-          Cevapla
-        </BaseButton>
-      </DialogActions>
+      <Formik
+        enableReinitialize
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        validateOnMount
+        onSubmit={values => {
+          const { givenAnswer } = values;
+          dispatch(selectChoice(question.id, givenAnswer));
+        }}
+      >
+        {({ isValid }) => {
+          return (
+            <Form
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                overflow: "hidden",
+                flex: 1
+              }}
+            >
+              <DialogContent dividers>
+                <RawHtmlDiv html={question.body} />
+                <QuestionDialogChoiceList
+                  name="givenAnswer"
+                  choices={choices}
+                  disabled={didAnswered}
+                />
+              </DialogContent>
+              <DialogActions>
+                <BaseButton
+                  color="primary"
+                  variant="contained"
+                  type="submit"
+                  disabled={!isValid || didAnswered}
+                >
+                  Cevapla
+                </BaseButton>
+              </DialogActions>
+            </Form>
+          );
+        }}
+      </Formik>
     </Dialog>
   ) : null;
 };

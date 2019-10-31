@@ -26,7 +26,7 @@ const QuizList = () => {
       .quizzes()
       .where("authorId", "==", authUser.uid)
       .onSnapshot(querySnapshot => {
-        var quizzes = [];
+        const quizzes = [];
         querySnapshot.forEach(doc => {
           quizzes.push({
             id: doc.id,

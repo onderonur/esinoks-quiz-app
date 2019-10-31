@@ -102,7 +102,7 @@ const QuestionFormDialog = () => {
             );
           }
         }}
-        isInitialValid={validationSchema.isValidSync(initialValues)}
+        validateOnMount
       >
         {({ isValid }) => {
           return (

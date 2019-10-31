@@ -3,7 +3,7 @@ import bindSelectors from "./bindSelectors";
 import questions, * as fromQuestions from "./questions";
 import activeQuestionId, * as fromActiveQuestionId from "./activeQuestionId";
 import quiz, * as fromQuiz from "./quiz";
-import answers, * as fromAnswers from "./answers";
+import givenAnswers, * as fromGivenAnswers from "./givenAnswers";
 import authUser, * as fromAuthUser from "./authUser";
 import dialogs, * as fromDialogs from "./dialogs";
 import quizzes, * as fromQuizzes from "./quizzes";
@@ -14,7 +14,7 @@ const rootReducer = combineReducers({
   questions,
   activeQuestionId,
   quiz,
-  answers,
+  givenAnswers,
   authUser,
   dialogs,
   quizzes,
@@ -35,8 +35,8 @@ const questionsSelectors = bindSelectors(
 );
 
 const answerSelectors = bindSelectors(
-  state => state.answers,
-  fromAnswers.selectors
+  state => state.givenAnswers,
+  fromGivenAnswers.selectors
 );
 
 const authUserSelectors = bindSelectors(
@@ -57,12 +57,13 @@ const selectAuthUserQuizIds = state => {
 };
 
 const selectAllAnswerResults = state => {
-  const questionIds = questionsSelectors.selectAllQuestionIds(state);
-  const answerResults = questionIds.map(questionId =>
-    answerSelectors.selectAnswerResultByQuestionId(state, questionId)
-  );
+  return [];
+  // const questionIds = questionsSelectors.selectAllQuestionIds(state);
+  // const answerResults = questionIds.map(questionId =>
+  //   answerSelectors.selectAnswerResultByQuestionId(state, questionId)
+  // );
 
-  return answerResults;
+  // return answerResults;
 };
 
 export const selectors = {
@@ -83,7 +84,7 @@ export const selectors = {
   selectTotalTrueAnswerCount: state => {
     const answerResults = selectAllAnswerResults(state);
     const trueAnswerResults = answerResults.filter(
-      result => result === fromAnswers.ANSWER_RESULTS.true
+      result => result === fromGivenAnswers.ANSWER_RESULTS.true
     );
 
     return trueAnswerResults.length;

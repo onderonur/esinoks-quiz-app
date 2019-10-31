@@ -10,10 +10,10 @@ export const selectQuestion = questionId => ({
   questionId
 });
 
-export const selectChoice = (questionId, choiceId) => ({
+export const selectChoice = (questionId, choiceIndex) => ({
   type: actionTypes.SELECT_CHOICE,
   questionId,
-  choiceId
+  choiceIndex
 });
 
 export const answerQuestion = (questionId, choiceId) => ({
