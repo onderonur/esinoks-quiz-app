@@ -1,25 +1,24 @@
-import React from "react";
-import ConfirmationDialog from "components/ConfirmationDialog";
+import React, { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectors } from "reducers";
 import { deleteQuestionConfirmed, deleteQuestionCancelled } from "actions";
+import BaseDialog from "components/BaseDialog";
 
 const DeleteQuestionConfirmationDialog = () => {
   const dispatch = useDispatch();
-  const isOpen = useSelector(state =>
-    selectors.selectIsOpenDeleteQuiestionConfirmation(state)
-  );
-  const dialogProps = useSelector(state =>
+  const { isOpen, quizId, questionId } = useSelector(state =>
     selectors.selectDeleteQuestionConfirmationDialogProps(state)
   );
   const isFetching = useSelector(state =>
     selectors.selectIsFetchingDeleteQuestion(state)
   );
 
-  const { quizId, questionId } = dialogProps;
+  const handleClose = useCallback(() => {
+    dispatch(deleteQuestionCancelled());
+  }, [dispatch]);
 
   return (
-    <ConfirmationDialog
+    <BaseDialog
       isOpen={isOpen}
       loading={isFetching}
       title="Soruyu Sil?"
@@ -28,7 +27,7 @@ const DeleteQuestionConfirmationDialog = () => {
       onConfirm={() => {
         dispatch(deleteQuestionConfirmed(quizId, questionId));
       }}
-      onCancel={() => dispatch(deleteQuestionCancelled())}
+      onClose={handleClose}
     />
   );
 };

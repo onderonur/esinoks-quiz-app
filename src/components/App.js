@@ -5,14 +5,14 @@ import RestartQuizButton from "./RestartQuizButton";
 import SignInWithGoogleButton from "./SignInWithGoogleButton";
 import Routes from "./Routes";
 import UserButton from "./UserButton";
-import useAuthStateListener from "hooks/useAuthStateListener";
+import useListenAuthState from "hooks/useListenAuthState";
 import LoadingIndicator from "./LoadingIndicator";
 
 const App = () => {
-  const initialized = useAuthStateListener();
+  const isFetching = useListenAuthState();
 
   return (
-    <LoadingIndicator loading={!initialized}>
+    <LoadingIndicator loading={isFetching}>
       <Box display="flex" justifyContent="flex-end" alignItems="center">
         <SignInWithGoogleButton />
         <RestartQuizButton />

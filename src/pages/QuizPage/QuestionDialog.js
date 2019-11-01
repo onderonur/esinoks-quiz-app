@@ -17,7 +17,7 @@ import BaseButton from "components/BaseButton";
 import QuestionDialogChoiceList from "./QuestionDialogChoiceList";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import RawHtmlDiv from "components/RawHtmlDiv";
+import FroalaEditorView from "react-froala-wysiwyg/FroalaEditorView";
 
 const useStyles = makeStyles(theme => ({
   title: {
@@ -89,7 +89,7 @@ const QuestionDialog = () => {
         enableReinitialize
         initialValues={initialValues}
         validationSchema={validationSchema}
-        validateOnMount
+        isInitialValid={validationSchema.isValidSync(initialValues)}
         onSubmit={values => {
           const { givenAnswer } = values;
           dispatch(answerQuestion(question.id, givenAnswer));
@@ -106,7 +106,7 @@ const QuestionDialog = () => {
               }}
             >
               <DialogContent dividers>
-                <RawHtmlDiv html={question.body} />
+                <FroalaEditorView model={question.body} />
                 <QuestionDialogChoiceList
                   name="givenAnswer"
                   choices={choices}

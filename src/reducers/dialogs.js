@@ -45,20 +45,14 @@ const dialogs = combineReducers({
 export default dialogs;
 
 export const selectors = {
-  selectIsOpenQuestionFormDialog: state =>
-    fromCreateDialog.selectors.selectIsOpen(state.questionForm),
   selectQuestionFormDialogProps: state =>
     fromCreateDialog.selectors.selectDialogProps(state.questionForm),
-  selectIsOpenDeleteQuizConfirmation: state =>
-    fromCreateDialog.selectors.selectIsOpen(state.deleteQuizConfirmation),
   selectDeleteQuizConfirmationDialogProps: state =>
     fromCreateDialog.selectors.selectDialogProps(state.deleteQuizConfirmation),
-  selectIsOpenDeleteQuiestionConfirmation: state =>
-    fromCreateDialog.selectors.selectIsOpen(state.deleteQuestionConfirmation),
   selectDeleteQuestionConfirmationDialogProps: state =>
     fromCreateDialog.selectors.selectDialogProps(
       state.deleteQuestionConfirmation
     ),
-  selectIsOpenRestartQuizConfirmation: state =>
-    fromCreateDialog.selectors.selectIsOpen(state.restartQuizConfirmation)
+  selectRestartQuizConfirmationDialogProps: state =>
+    fromCreateDialog.selectors.selectDialogProps(state.restartQuizConfirmation)
 };

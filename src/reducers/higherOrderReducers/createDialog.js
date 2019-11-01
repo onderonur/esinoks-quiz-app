@@ -1,8 +1,7 @@
 import createReducer from "./createReducer";
 
 const initialState = {
-  isOpen: false,
-  dialogProps: {}
+  isOpen: false
 };
 
 const createDialog = (openTypes, closeTypes) => {
@@ -10,7 +9,10 @@ const createDialog = (openTypes, closeTypes) => {
   openTypes.forEach(type => {
     handlers[type] = (state, { dialogProps }) => {
       state.isOpen = true;
-      state.dialogProps = dialogProps;
+      const dialogPropKeys = Object.keys(dialogProps);
+      dialogPropKeys.forEach(key => {
+        state[key] = dialogProps[key]
+      });
     };
   });
 
@@ -24,6 +26,5 @@ const createDialog = (openTypes, closeTypes) => {
 export default createDialog;
 
 export const selectors = {
-  selectIsOpen: state => state.isOpen,
-  selectDialogProps: state => state.dialogProps
+  selectDialogProps: state => state
 };

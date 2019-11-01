@@ -21,9 +21,6 @@ import EditableChoiceList, {
   MAX_CHOICE_COUNT
 } from "./EditableChoiceList";
 import BaseRichTextEditor from "components/BaseRichTextEditor";
-import { EditorState, convertToRaw, ContentState } from "draft-js";
-import draftToHtml from "draftjs-to-html";
-import htmlToDraft from "html-to-draftjs";
 
 const CHOICE_VALIDATION_MESSAGE = `Lütfen en az ${MIN_CHOICE_COUNT}, en çok ${MAX_CHOICE_COUNT} adet seçenek giriniz.`;
 
@@ -39,10 +36,7 @@ const validationSchema = Yup.object().shape({
 
 const QuestionFormDialog = () => {
   const dispatch = useDispatch();
-  const isOpen = useSelector(state =>
-    selectors.selectIsOpenQuestionFormDialog(state)
-  );
-  const dialogProps = useSelector(state =>
+  const { isOpen, quizId, questionId } = useSelector(state =>
     selectors.selectQuestionFormDialogProps(state)
   );
 
@@ -52,20 +46,14 @@ const QuestionFormDialog = () => {
       selectors.selectIsFetchingUpdateQuestion(state)
   );
 
-  const { quizId, questionId } = dialogProps;
   const isNew = questionId === "new";
 
   const question = useSelector(state =>
     isNew ? null : selectors.selectQuestionById(state, questionId)
   );
 
-  const contentBlock = question ? htmlToDraft(question.body) : null;
   const initialValues = {
-    body: contentBlock
-      ? EditorState.createWithContent(
-          ContentState.createFromBlockArray(contentBlock.contentBlocks)
-        )
-      : EditorState.createEmpty(),
+    body: question ? question.body : "",
     choices: question ? question.choices : [],
     correctAnswer: question ? question.correctAnswer : -1
   };
@@ -83,72 +71,67 @@ const QuestionFormDialog = () => {
         onSubmit={values => {
           const { body, choices, correctAnswer } = values;
 
-          const rawContentState = convertToRaw(body.getCurrentContent());
-          const html = draftToHtml(rawContentState);
-
           if (isNew) {
-            dispatch(
-              createQuestion({ quizId, body: html, choices, correctAnswer })
-            );
+            dispatch(createQuestion({ quizId, body, choices, correctAnswer }));
           } else {
             dispatch(
               updateQuestion({
                 quizId,
                 questionId,
-                body: html,
+                body,
                 choices,
                 correctAnswer
               })
             );
           }
         }}
-        validateOnMount
+        // TODO: validateOnMount düzelene kadar bu şekilde devam.
+        isInitialValid={validationSchema.isValidSync(initialValues)}
       >
         {({ isValid }) => {
           return (
-            <>
-              <Form
-                autoComplete="off"
-                noValidate={true}
-                style={{
-                  // Dialog'un scroll'unu düzeltmek için
-                  display: "flex",
-                  flexDirection: "column",
-                  overflow: "hidden",
-                  flex: 1
-                }}
-              >
-                <DialogContent dividers>
-                  <BaseRichTextEditor
-                    name="body"
-                    label="Soru"
-                    required
-                    fullWidth
-                    disabled={isFetching}
-                  />
+            <Form
+              autoComplete="off"
+              noValidate={true}
+              style={{
+                // Dialog'un scroll'unu düzeltmek için
+                display: "flex",
+                flexDirection: "column",
+                overflow: "hidden",
+                flex: 1
+              }}
+            >
+              <DialogContent dividers>
+                <BaseRichTextEditor
+                  name="body"
+                  label="Soru"
+                  required
+                  fullWidth
+                  autoFocus
+                  disabled={isFetching}
+                />
 
-                  <BaseDivider />
+                <BaseDivider />
 
-                  <EditableChoiceList name="choices" />
-                </DialogContent>
-                <DialogActions>
-                  <BaseButton
-                    disabled={isFetching}
-                    onClick={() => dispatch(closeQuestionFormDialog())}
-                  >
-                    İptal
-                  </BaseButton>
-                  <BaseButton
-                    type="submit"
-                    color="primary"
-                    loading={isFetching}
-                    disabled={!isValid}
-                  >
-                    Kaydet
-                  </BaseButton>
-                </DialogActions>
-              </Form>
-            </>
+                <EditableChoiceList name="choices" />
+              </DialogContent>
+              <DialogActions>
+                <BaseButton
+                  disabled={isFetching}
+                  onClick={() => dispatch(closeQuestionFormDialog())}
+                >
+                  İptal
+                </BaseButton>
+                <BaseButton
+                  type="submit"
+                  color="primary"
+                  loading={isFetching}
+                  disabled={!isValid}
+                >
+                  Kaydet
+                </BaseButton>
+              </DialogActions>
+            </Form>
           );
         }}
       </Formik>

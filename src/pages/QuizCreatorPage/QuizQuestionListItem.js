@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import QuizQuestionListItemMenu from "./QuizQuestionListItemMenu";
-import RawHtmlDiv from "components/RawHtmlDiv";
+import FroalaEditorView from "react-froala-wysiwyg/FroalaEditorView";
 
 const useStyles = makeStyles(theme => ({
   orderNo: {
@@ -35,11 +35,11 @@ const QuizQuestionListItem = ({ index, quizId, questionId }) => {
     <ListItem dense divider selected={questionId === selectedQuestionId}>
       <ListItemText
         primary={
-          <Box display="flex">
-            <Typography className={classes.orderNo} variant="body2">
-              {index + 1}.
+          <Box>
+            <Typography className={classes.orderNo} variant="body2" color="textSecondary">
+              Soru {index + 1}.
             </Typography>
-            <RawHtmlDiv html={question.body} />
+            <FroalaEditorView model={question.body} />
           </Box>
         }
       />

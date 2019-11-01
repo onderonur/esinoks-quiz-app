@@ -16,7 +16,7 @@ const ProfileHeader = () => {
   const classes = useStyles();
   const authUser = useSelectAuthUser();
 
-  const { displayName, email, photoURL } = authUser || {};
+  const { displayName, email, photoURL } = authUser;
 
   return (
     <Box display="flex">

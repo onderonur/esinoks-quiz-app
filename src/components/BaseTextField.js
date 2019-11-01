@@ -1,32 +1,19 @@
 import React from "react";
 import { TextField } from "@material-ui/core";
-import { Field } from "formik";
+import { useField } from "formik";
 
-const MuiTextField = ({
-  field, // {name, value, onChange, onBlur}
-  form, // {touched, errors, values, setXXXX, handleXXXX, dirty, isValid, submitCount,status, etc.}
-  ...props
-}) => {
-  const { name } = field;
-  const { touched, errors } = form;
-
-  const error = errors[name];
-  const isTouched = touched[name];
-
-  const hasError = error && isTouched;
+const BaseTextField = ({ ...props }) => {
+  const [field, meta] = useField(props);
+  const { error } = meta;
 
   return (
     <TextField
       {...field}
       {...props}
-      error={hasError}
-      helperText={hasError ? error : ""}
+      error={Boolean(error)}
+      helperText={error}
     />
   );
-};
-
-const BaseTextField = props => {
-  return <Field {...props} component={MuiTextField} />;
 };
 
 export default BaseTextField;
