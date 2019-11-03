@@ -4,16 +4,25 @@ import {
   Toolbar,
   Typography,
   makeStyles,
-  Link
+  Link,
+  useScrollTrigger
 } from "@material-ui/core";
 import SignInWithGoogleButton from "./SignInWithGoogleButton";
 import RestartQuizButton from "./RestartQuizButton";
 import UserButton from "./UserButton";
 import RouterLink from "./RouterLink";
+import { fade } from "@material-ui/core/styles";
+
+const SCROLL_TRIGGER_THRESHOLD = 80;
 
 const useStyles = makeStyles(theme => ({
   appBar: {
-    backgroundColor: "rgba(0, 0, 0, 0.15)"
+    backgroundColor: ({ trigger }) =>
+      fade(theme.palette.primary.main, trigger ? 1 : 0.15),
+    transition: theme.transitions.create("background-color", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.standard
+    })
   },
   title: {
     flexGrow: 1,
@@ -24,7 +33,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const AppHeader = () => {
-  const classes = useStyles();
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: SCROLL_TRIGGER_THRESHOLD
+  });
+  const classes = useStyles({ trigger });
 
   return (
     <AppBar className={classes.appBar} position="fixed">
