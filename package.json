@@ -26,6 +26,9 @@
     "rxjs": "^6.5.3",
     "yup": "^0.27.0"
   },
+  "devDependencies": {
+    "rimraf": "^3.0.0"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -47,8 +50,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "rimraf": "^3.0.0"
   }
 }
