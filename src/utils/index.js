@@ -1,5 +1,4 @@
-// TODO: May switch this name with "app-firebase/firebase"
-import admin from "firebase";
+import app from "firebase/app";
 
 export const getFetchActionTypes = fetchType => {
   const requestType = `${fetchType}_REQUEST`;
@@ -10,4 +9,4 @@ export const getFetchActionTypes = fetchType => {
 };
 
 export const getFirestoreTimeStamp = date =>
-  admin.firestore.Timestamp.fromDate(date);
+  app.firestore.Timestamp.fromDate(date);
