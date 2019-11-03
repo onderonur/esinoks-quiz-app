@@ -15,7 +15,7 @@ const DeleteQuizConfirmationDialog = () => {
 
   const quiz = useSelector(state => selectors.selectQuizById(state, quizId));
 
-  const handleClose = useCallback(() => {
+  const handleExited = useCallback(() => {
     dispatch(deleteQuizCancelled());
   }, [dispatch]);
 
@@ -33,7 +33,7 @@ const DeleteQuizConfirmationDialog = () => {
       onConfirm={() => {
         dispatch(deleteQuizConfirmed(quizId));
       }}
-      onExited={handleClose}
+      onExited={handleExited}
     />
   );
 };

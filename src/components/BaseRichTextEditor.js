@@ -18,11 +18,11 @@ import "froala-editor/js/plugins/draggable.min.js";
 
 import FroalaEditor from "react-froala-wysiwyg";
 
-const uploadImage = async file => {
+const uploadFile = async (file, path) => {
   const storageRef = firebase.storage.ref();
   // TODO: Aynı file name denk gelip varolan bir şeyi ezmemesi için yöntem?
   // quizId ve questionId bazlı tutulabilir image'lar.
-  const fileRef = storageRef.child(`question-images/${new Date().getTime()}`);
+  const fileRef = storageRef.child(path);
   const snapshot = await fileRef.put(file);
   const downloadUrl = await snapshot.ref.getDownloadURL();
   return downloadUrl;
@@ -35,6 +35,7 @@ const BaseRichTextEditor = ({
   fullWidth,
   required,
   autoFocus,
+  fileUploadPath,
   ...props
 }) => {
   const [field, meta] = useField(props);
@@ -88,7 +89,7 @@ const BaseRichTextEditor = ({
               const editor = editorRef.current;
               editor.edit.off();
               editor.image.showProgressBar();
-              uploadImage(file)
+              uploadFile(file, fileUploadPath)
                 .then(url => {
                   editor.image.insert(url);
                   editor.edit.on();

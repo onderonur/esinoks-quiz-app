@@ -14,7 +14,7 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 const validationSchema = Yup.object().shape({
   // TODO: Bu validation'ı firebase tarafında da yap
-  title: Yup.string().required("Bu alan zorunludur.")
+  // title: Yup.string().required("Bu alan zorunludur.")
 });
 
 const useStyles = makeStyles(theme => ({
@@ -99,7 +99,7 @@ const QuizForm = () => {
                   startIcon={<SaveIcon />}
                   color="primary"
                   loading={isSubmitting}
-                  disabled={!isValid}
+                  // disabled={!isValid}
                 >
                   Kaydet
                 </BaseButton>

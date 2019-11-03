@@ -108,6 +108,7 @@ const QuestionFormDialog = () => {
                   fullWidth
                   autoFocus
                   disabled={isFetching}
+                  fileUploadPath={`quiz-images/${quizId}/${new Date().getTime()}`}
                 />
 
                 <BaseDivider />

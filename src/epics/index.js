@@ -84,13 +84,32 @@ const deleteQuizConfirmedEpic = action$ =>
   action$.pipe(
     ofType(actionTypes.DELETE_QUIZ_CONFIRMED),
     mapWithFetchActionTypes(),
-    exhaustMap(([action, { requestType, successType, errorType }]) =>
-      from(firebase.quiz(action.quizId).delete()).pipe(
-        mapTo({ type: successType }),
+    exhaustMap(([action, { requestType, successType, errorType }]) => {
+      const { quizId } = action;
+      return from(firebase.quiz(quizId).delete()).pipe(
+        mapTo({ type: successType, quizId }),
         catchError(() => of({ type: errorType })),
         startWith({ type: requestType })
-      )
-    )
+      );
+    })
+  );
+
+const { successType: DELETE_QUIZ_CONFIRMED_SUCCESS } = getFetchActionTypes(
+  actionTypes.DELETE_QUIZ_CONFIRMED
+);
+// When we delete a quiz successfully, we also delete its files too.
+// TODO: Düzelt bunu
+const deleteQuizImagesEpic = action$ =>
+  action$.pipe(
+    ofType(DELETE_QUIZ_CONFIRMED_SUCCESS),
+    tap(action => {
+      const { quizId } = action;
+      const storageRef = firebase.storage.ref();
+      const filesRef = storageRef.child(`quiz-images/${quizId}`);
+      // TODO: This gives 404. Fix it.
+      from(filesRef.delete());
+    }),
+    ignoreElements()
   );
 
 const createQuestionEpic = action$ =>
@@ -146,6 +165,7 @@ const rootEpic = combineEpics(
   createQuizEpic,
   updateQuizEpic,
   deleteQuizConfirmedEpic,
+  deleteQuizImagesEpic,
   redirectAfterCreateQuizSuccessEpic,
   createQuestionEpic,
   updateQuestionEpic,

@@ -22,9 +22,12 @@ const BaseDialog = ({
   // When user redirects to another route, this clean up function will be executed.
   // So when he comes back to the previous page where this dialog is used, he will not see the
   // previously opened dialog.
+  // TODO: This may need some fix.
   useEffect(() => {
-    return () => onExited();
-  }, [onExited]);
+    if (isOpen) {
+      return () => onExited();
+    }
+  }, [isOpen, onExited]);
 
   const close = useCallback(() => {
     setIsVisible(false);

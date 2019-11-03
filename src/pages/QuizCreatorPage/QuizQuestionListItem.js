@@ -36,7 +36,11 @@ const QuizQuestionListItem = ({ index, quizId, questionId }) => {
       <ListItemText
         primary={
           <Box>
-            <Typography className={classes.orderNo} variant="body2" color="textSecondary">
+            <Typography
+              className={classes.orderNo}
+              variant="body2"
+              color="textSecondary"
+            >
               Soru {index + 1}.
             </Typography>
             <FroalaEditorView model={question.body} />
@@ -48,7 +52,7 @@ const QuizQuestionListItem = ({ index, quizId, questionId }) => {
           quizId={quizId}
           questionId={questionId}
           renderTrigger={({ onClick }) => (
-            <IconButton size="small" onClick={onClick}>
+            <IconButton onClick={onClick}>
               <MoreVertIcon />
             </IconButton>
           )}

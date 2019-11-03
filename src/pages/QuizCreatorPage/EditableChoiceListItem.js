@@ -91,7 +91,7 @@ const EditableChoiceList = ({
       <ListItemSecondaryAction>
         <EditableChoiceListItemMenu
           renderTrigger={({ onClick }) => (
-            <IconButton size="small" disabled={isFetching} onClick={onClick}>
+            <IconButton disabled={isFetching} onClick={onClick}>
               <MoreVertIcon />
             </IconButton>
           )}
