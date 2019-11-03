@@ -7,11 +7,19 @@ import useListenQuiz from "hooks/useListenQuiz";
 import LoadingIndicator from "components/LoadingIndicator";
 import { useDispatch } from "react-redux";
 import { exitedFromQuiz } from "actions";
+import { Typography, makeStyles } from "@material-ui/core";
+
+const useStyles = makeStyles(theme => ({
+  title: {
+    color: theme.palette.common.white
+  }
+}));
 
 const QuizPage = () => {
   const { quizId } = useParams();
   const { isFetching, quiz } = useListenQuiz(quizId);
   const dispatch = useDispatch();
+  const classes = useStyles();
 
   useEffect(() => {
     // When user leaves this page, we clean the quiz state from the store.
@@ -29,6 +37,9 @@ const QuizPage = () => {
         message="Sayfadan çıktığınızda verdiğiniz cevaplar silinecektir. Devam etmek istediğinize emin misiniz?"
       />
       <Journey />
+      <Typography className={classes.title} variant="h5">
+        {quiz.title}
+      </Typography>
       <QuestionGridList />
       <QuestionDialog />
     </LoadingIndicator>

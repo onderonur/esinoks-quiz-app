@@ -6,20 +6,19 @@ import Hearts from "./Hearts";
 
 const Journey = () => {
   return (
-    <>
+    <Box marginY={2}>
       <Box
         display="flex"
         justifyContent="flex-end"
         alignItems="center"
-        height={140}
         position="relative"
-        marginY={2}
+        height={140}
       >
         <Astronaut />
         <Earth />
       </Box>
       <Hearts />
-    </>
+    </Box>
   );
 };
 

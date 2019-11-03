@@ -5,7 +5,8 @@ import {
   Typography,
   makeStyles,
   Link,
-  useScrollTrigger
+  useScrollTrigger,
+  Box
 } from "@material-ui/core";
 import SignInWithGoogleButton from "./SignInWithGoogleButton";
 import RestartQuizButton from "./RestartQuizButton";
@@ -25,7 +26,6 @@ const useStyles = makeStyles(theme => ({
     })
   },
   title: {
-    flexGrow: 1,
     "&:hover": {
       textDecoration: "none"
     }
@@ -50,6 +50,7 @@ const AppHeader = () => {
         >
           <Typography variant="h6">Esinoks</Typography>
         </Link>
+        <Box flex={1} />
         <SignInWithGoogleButton />
         <RestartQuizButton />
         <UserButton />
