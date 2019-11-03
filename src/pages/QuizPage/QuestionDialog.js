@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectors } from "reducers";
-import { selectQuestion, answerQuestion } from "actions";
+import { answerQuestion, unselectQuestion } from "actions";
 import QuestionDialogChoiceList from "./QuestionDialogChoiceList";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -10,6 +10,7 @@ import BaseDialogTitle from "components/BaseDialogTitle";
 import BaseDialog from "components/BaseDialog";
 import BaseDialogActions from "components/BaseDialogActions";
 import BaseDialogContent from "components/BaseDialogContent";
+import { useParams } from "react-router-dom";
 
 const validationSchema = Yup.object().shape({
   givenAnswer: Yup.number().required()
@@ -17,22 +18,25 @@ const validationSchema = Yup.object().shape({
 
 const QuestionDialog = () => {
   const dispatch = useDispatch();
+  const { quizId } = useParams();
 
-  const question = useSelector(state => selectors.selectActiveQuestion(state));
+  const activeQuestion = useSelector(state =>
+    selectors.selectActiveQuestion(state)
+  );
 
   const questionIndex = useSelector(state =>
-    question ? selectors.selectQuestionIndexById(state, question.id) : null
+    activeQuestion
+      ? selectors.selectQuestionIndex(state, quizId, activeQuestion.id)
+      : null
   );
 
   const givenAnswer = useSelector(state =>
-    question
-      ? selectors.selectGivenAnswerByQuestionId(state, question.id)
-      : undefined
+    activeQuestion
+      ? selectors.selectGivenAnswerByQuestionId(state, activeQuestion.id)
+      : null
   );
 
-  const choices = question ? question.choices : [];
-
-  const isQuestionSelected = !!question;
+  const choices = activeQuestion ? activeQuestion.choices : [];
 
   const initialValues = {
     givenAnswer
@@ -41,16 +45,11 @@ const QuestionDialog = () => {
   const didAnswered = givenAnswer !== undefined;
 
   const handleExited = useCallback(() => {
-    dispatch(selectQuestion(null));
+    dispatch(unselectQuestion());
   }, [dispatch]);
 
-  return question ? (
-    <BaseDialog
-      isOpen={isQuestionSelected}
-      // Disabled the portal to show modal when the "fullscreen" mode for the application is activated.
-      disablePortal
-      onExited={handleExited}
-    >
+  return (
+    <BaseDialog isOpen={!!activeQuestion} onExited={handleExited}>
       <BaseDialogTitle title={`Soru ${questionIndex + 1}`} />
       <Formik
         enableReinitialize
@@ -59,7 +58,7 @@ const QuestionDialog = () => {
         isInitialValid={validationSchema.isValidSync(initialValues)}
         onSubmit={values => {
           const { givenAnswer } = values;
-          dispatch(answerQuestion(question.id, givenAnswer));
+          dispatch(answerQuestion(activeQuestion.id, givenAnswer));
         }}
       >
         {({ isValid }) => {
@@ -73,7 +72,7 @@ const QuestionDialog = () => {
               }}
             >
               <BaseDialogContent>
-                <FroalaEditorView model={question.body} />
+                <FroalaEditorView model={activeQuestion.body} />
                 <QuestionDialogChoiceList
                   name="givenAnswer"
                   choices={choices}
@@ -93,7 +92,7 @@ const QuestionDialog = () => {
         }}
       </Formik>
     </BaseDialog>
-  ) : null;
+  );
 };
 
 export default QuestionDialog;

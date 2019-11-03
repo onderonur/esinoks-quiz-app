@@ -6,6 +6,7 @@ import { Box, Typography, Button } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import { useHistory } from "react-router-dom";
 import useListenAuthUserQuizzes from "hooks/useListenAuthUserQuizzes";
+import ShareQuizCodeDialog from "./ShareQuizCodeDialog";
 
 const renderItem = (quizId, index) => (
   <QuizListItem key={quizId} quizId={quizId} index={index} />
@@ -33,6 +34,7 @@ const QuizList = () => {
         data={authUserQuizIds}
         renderItem={renderItem}
       />
+      <ShareQuizCodeDialog />
       <DeleteQuizConfirmationDialog />
     </>
   );

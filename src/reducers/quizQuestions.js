@@ -14,6 +14,17 @@ const quizQuestions = createReducer(initialState, {
 
 export default quizQuestions;
 
+const selectQuestionIdsByQuizId = (state, quizId) =>
+  state.byQuizId[quizId] || [];
+
 export const selectors = {
-  selectQuestionIdsByQuizId: (state, quizId) => state.byQuizId[quizId] || []
+  selectQuestionIdsByQuizId,
+  selectQuestionIndex: (state, quizId, questionId) => {
+    const questionIds = selectQuestionIdsByQuizId(state, quizId);
+    return questionIds.indexOf(questionId);
+  },
+  selectTotalQuestionCountByQuizId: (state, quizId) => {
+    const questionIds = selectQuestionIdsByQuizId(state, quizId);
+    return questionIds.length;
+  }
 };

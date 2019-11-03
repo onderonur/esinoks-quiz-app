@@ -17,12 +17,12 @@ const QuestionGridListItem = ({ questionId, index }) => {
   const question = useSelector(state =>
     selectors.selectQuestionById(state, questionId)
   );
-  const { correctAnswer } = question;
   const answerIndex = useSelector(state =>
     selectors.selectGivenAnswerByQuestionId(state, questionId)
   );
 
   const didAnswered = answerIndex !== undefined;
+  const { correctAnswer } = question || {};
   const isTrueAnswer = didAnswered && correctAnswer === answerIndex;
   const isWrongAnswer = didAnswered && correctAnswer !== answerIndex;
 

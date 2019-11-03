@@ -9,7 +9,10 @@ const BaseDialogActions = ({
   onConfirm,
   loading,
   disabled,
-  confirmButtonProps: { disabled: confirmButtonDisabled, ...confirmButtonRest }
+  confirmButtonProps: {
+    disabled: confirmButtonDisabled,
+    ...confirmButtonRest
+  } = {}
 }) => {
   const close = useBaseDialogContext();
 
@@ -22,7 +25,8 @@ const BaseDialogActions = ({
         color="primary"
         disabled={disabled || confirmButtonDisabled}
         loading={loading}
-        onClick={onConfirm}
+        // If there is no "onConfirm" prop, we close the dialog by default.
+        onClick={onConfirm || close}
         {...confirmButtonRest}
       >
         {confirmText}

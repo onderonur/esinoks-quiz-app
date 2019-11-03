@@ -1,8 +1,18 @@
 import React from "react";
-import { Paper, Box, makeStyles } from "@material-ui/core";
-import SignInWithGoogleButton from "components/SignInWithGoogleButton";
-import { Redirect } from "react-router-dom";
-import useSelectAuthUser from "hooks/useSelectAuthUser";
+import { Paper, Box, makeStyles, Typography } from "@material-ui/core";
+import { Formik, Form } from "formik";
+import BaseTextField from "components/BaseTextField";
+import BaseButton from "components/BaseButton";
+import * as Yup from "yup";
+import { useHistory } from "react-router-dom";
+
+const initialValues = {
+  quizId: ""
+};
+
+const validationSchema = Yup.object().shape({
+  quizId: Yup.string().required("Lütfen bir quiz kodu giriniz.")
+});
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -16,14 +26,45 @@ const useStyles = makeStyles(theme => ({
 
 const HomePage = () => {
   const classes = useStyles();
-  const authUser = useSelectAuthUser();
+  const history = useHistory();
 
-  return authUser ? (
-    <Redirect to="/profile" />
-  ) : (
+  return (
     <Box display="flex" justifyContent="center">
       <Paper className={classes.paper}>
-        <SignInWithGoogleButton />
+        <Typography variant="h5">Esinoks</Typography>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          isInitialValid={validationSchema.isValidSync(initialValues)}
+          onSubmit={values => {
+            const { quizId } = values;
+            history.push(`/quiz/${quizId}`);
+          }}
+        >
+          {({ isValid }) => {
+            return (
+              <Form>
+                <BaseTextField
+                  name="quizId"
+                  label="Quiz Kodu"
+                  required
+                  fullWidth
+                  variant="outlined"
+                  margin="normal"
+                />
+                <BaseButton
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  disabled={!isValid}
+                >
+                  Başla
+                </BaseButton>
+              </Form>
+            );
+          }}
+        </Formik>
       </Paper>
     </Box>
   );

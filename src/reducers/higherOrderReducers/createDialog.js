@@ -4,17 +4,18 @@ const initialState = {
   isOpen: false
 };
 
-const createDialog = (openTypes, closeTypes) => {
+const createDialog = (openType, closeTypes) => {
   const handlers = {};
-  openTypes.forEach(type => {
-    handlers[type] = (state, { dialogProps }) => {
-      state.isOpen = true;
+
+  handlers[openType] = (state, { dialogProps }) => {
+    state.isOpen = true;
+    if (dialogProps) {
       const dialogPropKeys = Object.keys(dialogProps);
       dialogPropKeys.forEach(key => {
-        state[key] = dialogProps[key]
+        state[key] = dialogProps[key];
       });
-    };
-  });
+    }
+  };
 
   closeTypes.forEach(type => {
     handlers[type] = () => initialState;

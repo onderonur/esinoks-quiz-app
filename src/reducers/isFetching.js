@@ -14,7 +14,6 @@ const isFetching = combineReducers({
 export default isFetching;
 
 export const selectors = {
-  selectIsFetchingByKey: (state, key) => state[key],
   selectIsFetchingCreateQuiz: state => state.createQuiz,
   selectIsFetchingUpdateQuiz: state => state.updateQuiz,
   selectIsFetchingDeleteQuiz: state => state.deleteQuiz,

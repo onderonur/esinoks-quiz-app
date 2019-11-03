@@ -1,13 +1,12 @@
 import * as actionTypes from "constants/actionTypes";
 
-export const toggleFullscreen = isFullscreen => ({
-  type: actionTypes.TOGGLE_FULLSCREEN,
-  isFullscreen
-});
-
 export const selectQuestion = questionId => ({
   type: actionTypes.SELECT_QUESTION,
   questionId
+});
+
+export const unselectQuestion = () => ({
+  type: actionTypes.UNSELECT_QUESTION
 });
 
 export const answerQuestion = (questionId, choiceIndex) => ({
@@ -26,6 +25,10 @@ export const restartQuizConfirmed = () => ({
 
 export const restartQuizCancelled = () => ({
   type: actionTypes.RESTART_QUIZ_CANCELLED
+});
+
+export const exitedFromQuiz = () => ({
+  type: actionTypes.EXITED_FROM_QUIZ
 });
 
 export const authStateChanged = authUser => ({
@@ -136,4 +139,15 @@ export const receiveQuizQuestions = (quizId, questions) => ({
   type: actionTypes.RECEIVE_QUIZ_QUESTIONS,
   quizId,
   questions
+});
+
+export const shareQuizCode = quizId => ({
+  type: actionTypes.SHARE_QUIZ_CODE,
+  dialogProps: {
+    quizId
+  }
+});
+
+export const shareQuizCodeCompleted = () => ({
+  type: actionTypes.SHARE_QUIZ_CODE_COMPLETED
 });

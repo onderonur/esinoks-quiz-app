@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import QuestionGridList from "./QuestionGridList";
 import QuestionDialog from "./QuestionDialog";
-// import Journey from "./Journey";
-import { useParams } from "react-router-dom";
+import Journey from "./Journey";
+import { useParams, Prompt } from "react-router-dom";
 import useListenQuiz from "hooks/useListenQuiz";
 import LoadingIndicator from "components/LoadingIndicator";
 import { useDispatch } from "react-redux";
-import { restartQuizConfirmed } from "actions";
+import { exitedFromQuiz } from "actions";
 
 const QuizPage = () => {
   const { quizId } = useParams();
@@ -18,18 +18,21 @@ const QuizPage = () => {
     // Otherwise, when the user leaves the quiz and re-enters this page,
     // the previous answers would still be in the store.
     return () => {
-      dispatch(restartQuizConfirmed());
+      dispatch(exitedFromQuiz());
     };
   }, [dispatch]);
 
   return quiz ? (
     <LoadingIndicator loading={isFetching}>
-      {/* <Journey /> */}
+      <Prompt
+        when={true}
+        message="Sayfadan çıktığınızda verdiğiniz cevaplar silinecektir. Devam etmek istediğinize emin misiniz?"
+      />
+      <Journey />
       <QuestionGridList />
       <QuestionDialog />
     </LoadingIndicator>
-  ) : // TODO: Redirect to 404 not found
-  null;
+  ) : null;
 };
 
 export default QuizPage;

@@ -1,33 +1,32 @@
 import React from "react";
-import { CssBaseline, Box, Container } from "@material-ui/core";
+import { CssBaseline, Box, Container, makeStyles } from "@material-ui/core";
 import Space from "components/Space";
-import { useSelector, useDispatch } from "react-redux";
-import { selectors } from "reducers";
-import FullScreen from "react-full-screen";
-import { toggleFullscreen } from "actions";
 import App from "./App";
+import AppHeader from "./AppHeader";
+
+const useStyles = makeStyles(theme => ({
+  offset: theme.mixins.toolbar,
+  content: {
+    padding: theme.spacing(2)
+  }
+}));
 
 const Root = () => {
-  const dispatch = useDispatch();
-
-  const isFullscreen = useSelector(state =>
-    selectors.selectIsFullscreen(state)
-  );
+  const classes = useStyles();
 
   return (
-    <FullScreen
-      enabled={isFullscreen}
-      onChange={enabled => dispatch(toggleFullscreen(enabled))}
-    >
+    <>
       <CssBaseline />
       <Box minWidth={800}>
         <Space>
-          <Container maxWidth="lg">
+          <AppHeader />
+          <div className={classes.offset} />
+          <Container maxWidth="lg" className={classes.content}>
             <App />
           </Container>
         </Space>
       </Box>
-    </FullScreen>
+    </>
   );
 };
 

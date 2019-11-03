@@ -15,23 +15,12 @@ const initialState = {
 };
 
 const givenAnswers = createReset(
-  actionTypes.RESTART_QUIZ_CONFIRMED,
+  [actionTypes.RESTART_QUIZ_CONFIRMED, actionTypes.EXITED_FROM_QUIZ],
   initialState,
   createReducer(initialState, {
     [actionTypes.ANSWER_QUESTION]: (state, { questionId, choiceIndex }) => {
       set(state.byQuestionId, [questionId], choiceIndex);
     }
-    // [actionTypes.ANSWER_QUESTION_REQUEST]: state => {
-    //   state.isFetching = true;
-    // },
-    // [actionTypes.ANSWER_QUESTION_SUCCESS]: (
-    //   state,
-    //   { questionId, choiceId, answerIndex }
-    // ) => {
-    //   // state.isFetching = false;
-    //   // set(state.byQuestionId, [questionId, "choiceId"], choiceId);
-    //   set(state.byQuestionId, [questionId, "answerIndex"], answerIndex);
-    // }
   })
 );
 

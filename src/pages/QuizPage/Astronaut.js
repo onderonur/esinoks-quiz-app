@@ -4,9 +4,13 @@ import { makeStyles } from "@material-ui/styles";
 import { useSpring, animated } from "react-spring";
 import { useSelector } from "react-redux";
 import { selectors } from "reducers";
+import { useParams } from "react-router-dom";
+import clsx from "clsx";
 
 const DEFAULT_WIDTH = 100;
+const DEFAULT_ASTRONAUT_OFFSET = DEFAULT_WIDTH / 2;
 const DEFAULT_LEFT_PERCENT = 15;
+const DEFAULT_ASTRONAUT_LEFT = `calc(${DEFAULT_LEFT_PERCENT}% - 80px - ${DEFAULT_ASTRONAUT_OFFSET}px)`;
 
 const useStyles = makeStyles(theme => ({
   image: {
@@ -14,6 +18,9 @@ const useStyles = makeStyles(theme => ({
     zIndex: 1,
     width: DEFAULT_WIDTH,
     animation: "$floating 3300ms ease infinite"
+  },
+  gameOver: {
+    animation: "$rotating 200ms linear infinite"
   },
   // When there is a looping animation, react-springs crashes the browser if a state change occurs.
   // So, we just use the keyframes for this particular animation.
@@ -28,27 +35,54 @@ const useStyles = makeStyles(theme => ({
       transform: "translateY(-20px) scaleX(-1)"
     }
   },
+  "@keyframes rotating": {
+    "0%": {
+      transform: "rotate(0deg)"
+    },
+    "100%": {
+      transform: "rotate(360deg)"
+    }
+  }
 }));
 
 const Astronaut = () => {
   const classes = useStyles();
+  const { quizId } = useParams();
 
-  const totalQuestionsCount = useSelector(state =>
-    selectors.selectTotalQuestionsCount(state)
-  );
-  const totalTrueAnswersCount = useSelector(state =>
-    selectors.selectTotalTrueAnswerCount(state)
+  const totalQuestionCount = useSelector(state =>
+    selectors.selectTotalQuestionCountByQuizId(state, quizId)
   );
 
-  const astronautOffset = DEFAULT_WIDTH / 2;
+  const wrongGivenAnswerCount = useSelector(state =>
+    selectors.selectWrongGivenAnswerCountByQuizId(state, quizId)
+  );
+
+  const isGameOver = useSelector(state =>
+    selectors.selectIsGameOver(state, quizId)
+  );
+
+  // We reduce the "steps to finish" by the wrong given answers count.
+  // So that the user can reach the finish point even if there are wrong answers.
+  const totalStepsToFinish = totalQuestionCount
+    ? totalQuestionCount - wrongGivenAnswerCount
+    : null;
+
+  const totalCorrectAnswerCount = useSelector(state =>
+    selectors.selectCorrectGivenAnswerCountByQuizId(state, quizId)
+  );
 
   const props = useSpring({
     from: {
-      left: `calc(${DEFAULT_LEFT_PERCENT}% - 80px - ${astronautOffset}px)`
+      left: DEFAULT_ASTRONAUT_LEFT,
+      width: DEFAULT_WIDTH
     },
-    left: `calc(${DEFAULT_LEFT_PERCENT +
-      ((95 - DEFAULT_LEFT_PERCENT) * totalTrueAnswersCount) /
-        totalQuestionsCount}% - 80px - ${astronautOffset}px)`,
+    left: totalStepsToFinish
+      ? `calc(${DEFAULT_LEFT_PERCENT +
+          ((95 - DEFAULT_LEFT_PERCENT) * totalCorrectAnswerCount) /
+            totalStepsToFinish}% - 80px - ${DEFAULT_ASTRONAUT_OFFSET}px)`
+      : DEFAULT_ASTRONAUT_LEFT,
+    width: isGameOver ? 0 : DEFAULT_WIDTH,
+    // TODO: May separate these 2 animations with different durations etc.
     config: {
       duration: 800
     }
@@ -56,7 +90,7 @@ const Astronaut = () => {
 
   return (
     <animated.img
-      className={classes.image}
+      className={clsx(classes.image, isGameOver && classes.gameOver)}
       style={props}
       src={astronautPng}
       alt="astronaut"

@@ -2,18 +2,14 @@ import React from "react";
 import {
   ListItem,
   ListItemText,
-  ListItemSecondaryAction,
-  IconButton
+  ListItemSecondaryAction
 } from "@material-ui/core";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectors } from "reducers";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import BaseMenu from "components/BaseMenu";
 import RouterLink from "components/RouterLink";
-import { deleteQuiz } from "actions";
+import QuizListItemMenu from "./QuizListItemMenu";
 
 const QuizListItem = ({ quizId, index }) => {
-  const dispatch = useDispatch();
   const quiz = useSelector(state => selectors.selectQuizById(state, quizId));
 
   return (
@@ -25,26 +21,7 @@ const QuizListItem = ({ quizId, index }) => {
     >
       <ListItemText primary={`${index + 1}. ${quiz.title}`} />
       <ListItemSecondaryAction>
-        <BaseMenu
-          renderTrigger={({ onClick }) => (
-            <IconButton onClick={onClick}>
-              <MoreVertIcon />
-            </IconButton>
-          )}
-          menuItems={[
-            {
-              key: "edit",
-              title: "Düzenle",
-              to: `/profile/quiz/${quizId}`,
-              component: RouterLink
-            },
-            {
-              key: "delete",
-              title: "Sil",
-              onClick: () => dispatch(deleteQuiz(quizId))
-            }
-          ]}
-        />
+        <QuizListItemMenu quizId={quizId} />
       </ListItemSecondaryAction>
     </ListItem>
   );
