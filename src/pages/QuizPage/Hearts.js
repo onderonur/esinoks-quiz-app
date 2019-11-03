@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import FavoriteIcon from "@material-ui/icons/Favorite";
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import { Box } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import { selectors } from "reducers";
@@ -17,8 +18,10 @@ const Hearts = () => {
 
   const renderHearts = useCallback(() => {
     const hearts = [];
-    for (let i = 0; i < remainingHearts; i++) {
-      hearts.push(<FavoriteIcon key={i} color="secondary" fontSize="large" />);
+    for (let i = 0; i < TOTAL_HEARTS_COUNT; i++) {
+      const IconComponent =
+        i < remainingHearts ? FavoriteIcon : FavoriteBorderIcon;
+      hearts.push(<IconComponent key={i} color="secondary" fontSize="large" />);
     }
     return hearts.map(heart => heart);
   }, [remainingHearts]);
