@@ -5,6 +5,7 @@ import QuizPage from "pages/QuizPage";
 import ProfilePage from "pages/ProfilePage";
 import PrivateRoute from "./PrivateRoute";
 import QuizCreatorPage from "pages/QuizCreatorPage";
+import NotFound404 from "pages/NotFound404";
 
 const Routes = () => {
   return (
@@ -23,6 +24,10 @@ const Routes = () => {
       <PrivateRoute path={`/profile/quiz/:quizId`}>
         <QuizCreatorPage />
       </PrivateRoute>
+
+      <Route path="/not-found-404">
+        <NotFound404 />
+      </Route>
 
       <Route path="*">
         <Redirect to="/" />

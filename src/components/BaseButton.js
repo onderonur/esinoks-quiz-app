@@ -15,7 +15,7 @@ const BaseButton = ({ loading, disabled, children, ...props }) => {
   const classes = useStyles();
 
   return (
-    <Button {...props} disabled={loading || disabled}>
+    <Button disabled={loading || disabled} {...props}>
       {children}
       {loading && <CircularProgress size={24} className={classes.loading} />}
     </Button>

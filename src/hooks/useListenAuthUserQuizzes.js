@@ -18,6 +18,7 @@ const useListenAuthUserQuizzes = () => {
     const listener = firebase
       .quizzes()
       .where("authorId", "==", authUser.uid)
+      .orderBy("createdAt")
       .onSnapshot(querySnapshot => {
         const quizzes = [];
         querySnapshot.forEach(doc => {

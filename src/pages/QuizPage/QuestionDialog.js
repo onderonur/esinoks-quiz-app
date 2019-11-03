@@ -81,10 +81,11 @@ const QuestionDialog = () => {
                 />
               </BaseDialogContent>
               <BaseDialogActions
+                disabled={didAnswered}
                 confirmText="Cevapla"
                 confirmButtonProps={{
                   type: "submit",
-                  disabled: !isValid || didAnswered
+                  disabled: !isValid
                 }}
               />
             </Form>

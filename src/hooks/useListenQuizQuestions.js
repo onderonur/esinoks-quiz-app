@@ -9,7 +9,7 @@ const useListenQuizQuestions = quizId => {
 
   const query = useCallback(
     firebase => {
-      return firebase.questions(quizId);
+      return firebase.questions(quizId).orderBy("createdAt");
     },
     [quizId]
   );

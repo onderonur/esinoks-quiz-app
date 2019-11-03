@@ -14,7 +14,7 @@ import {
 } from "rxjs/operators";
 import { from, of } from "rxjs";
 import firebase from "app-firebase";
-import { getFetchActionTypes } from "utils";
+import { getFetchActionTypes, getFirestoreTimeStamp } from "utils";
 
 const mapWithFetchActionTypes = () =>
   map(action => {
@@ -33,7 +33,9 @@ const createQuizEpic = action$ =>
       return from(
         firebase.quizzes().add({
           title,
-          authorId
+          authorId,
+          // TODO: May add this "createdAt" field with cloud functions
+          createdAt: getFirestoreTimeStamp(new Date())
         })
       ).pipe(
         map(doc => doc.id),
@@ -121,7 +123,12 @@ const createQuestionEpic = action$ =>
 
       const batch = firebase.db.batch();
       const quizQuestionsRef = firebase.questions(quizId).doc();
-      batch.set(quizQuestionsRef, { body, choices, correctAnswer });
+      batch.set(quizQuestionsRef, {
+        body,
+        choices,
+        correctAnswer,
+        createdAt: getFirestoreTimeStamp(new Date())
+      });
       return from(batch.commit()).pipe(
         mapTo({ type: successType }),
         catchError(() => of({ type: errorType })),

@@ -9,7 +9,7 @@ const BaseDialogActions = ({
   onConfirm,
   loading,
   disabled,
-  confirmButtonProps
+  confirmButtonProps: { disabled: confirmButtonDisabled, ...confirmButtonRest }
 }) => {
   const close = useBaseDialogContext();
 
@@ -20,10 +20,10 @@ const BaseDialogActions = ({
       </BaseButton>
       <BaseButton
         color="primary"
-        disabled={disabled}
+        disabled={disabled || confirmButtonDisabled}
         loading={loading}
         onClick={onConfirm}
-        {...confirmButtonProps}
+        {...confirmButtonRest}
       >
         {confirmText}
       </BaseButton>

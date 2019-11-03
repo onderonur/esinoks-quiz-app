@@ -60,7 +60,7 @@ const QuestionFormDialog = () => {
   }, [dispatch]);
 
   return (
-    <BaseDialog isOpen={isOpen} fullScreen onExited={handleExited}>
+    <BaseDialog isOpen={isOpen} onExited={handleExited}>
       <Formik
         enableReinitialize={true}
         initialValues={initialValues}

@@ -3,8 +3,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { receiveQuiz } from "actions";
 import { selectors } from "reducers";
 import useFirebaseListener from "./useFirebaseListener";
+import { useHistory } from "react-router-dom";
 
 const useListenQuiz = quizId => {
+  const history = useHistory();
   const isNew = quizId === "new";
   const dispatch = useDispatch();
   const quiz = useSelector(state =>
@@ -25,9 +27,13 @@ const useListenQuiz = quizId => {
 
   useEffect(() => {
     if (snapshot) {
-      dispatch(receiveQuiz(snapshot));
+      if (snapshot.exists) {
+        dispatch(receiveQuiz(snapshot));
+      } else {
+        history.push("/not-found-404");
+      }
     }
-  }, [dispatch, snapshot]);
+  }, [dispatch, history, snapshot]);
 
   return { isFetching, quiz };
 };
