@@ -10,6 +10,7 @@ const BaseDialogActions = ({
   loading,
   disabled,
   confirmButtonProps: {
+    type: confirmButtonType,
     disabled: confirmButtonDisabled,
     ...confirmButtonRest
   } = {}
@@ -22,11 +23,12 @@ const BaseDialogActions = ({
         {cancelText}
       </BaseButton>
       <BaseButton
+        type={confirmButtonType}
         color="primary"
         disabled={disabled || confirmButtonDisabled}
         loading={loading}
-        // If there is no "onConfirm" prop, we close the dialog by default.
-        onClick={onConfirm || close}
+        // If there is no "onConfirm" or "type" prop, we close the dialog by default.
+        onClick={onConfirm || confirmButtonType ? undefined : close}
         {...confirmButtonRest}
       >
         {confirmText}
