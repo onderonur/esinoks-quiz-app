@@ -28,7 +28,7 @@ const BaseDialogActions = ({
         disabled={disabled || confirmButtonDisabled}
         loading={loading}
         // If there is no "onConfirm" or "type" prop, we close the dialog by default.
-        onClick={onConfirm || confirmButtonType ? undefined : close}
+        onClick={onConfirm ? onConfirm : confirmButtonType ? undefined : close}
         {...confirmButtonRest}
       >
         {confirmText}
