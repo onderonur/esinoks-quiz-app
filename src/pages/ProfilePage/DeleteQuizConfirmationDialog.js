@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectors } from "reducers";
 import { deleteQuizConfirmed, deleteQuizCancelled } from "actions";
-import BaseDialog from "components/BaseDialog";
+import ConfirmationDialog from "components/ConfirmationDialog";
 
 const DeleteQuizConfirmationDialog = () => {
   const dispatch = useDispatch();
@@ -20,11 +20,11 @@ const DeleteQuizConfirmationDialog = () => {
   }, [dispatch]);
 
   return (
-    <BaseDialog
+    <ConfirmationDialog
       isOpen={isOpen}
       loading={isFetching}
       title="Quiz'i Sil?"
-      content={
+      message={
         quiz
           ? `"${quiz.title}" isimli quiz ve tüm soruları silinecektir.`
           : "Lütfen bekleyin..."
@@ -33,7 +33,7 @@ const DeleteQuizConfirmationDialog = () => {
       onConfirm={() => {
         dispatch(deleteQuizConfirmed(quizId));
       }}
-      onClose={handleClose}
+      onExited={handleClose}
     />
   );
 };

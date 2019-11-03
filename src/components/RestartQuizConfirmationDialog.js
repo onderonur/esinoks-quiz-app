@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { restartQuizCancelled, restartQuizConfirmed } from "actions";
 import { selectors } from "reducers";
-import BaseDialog from "./BaseDialog";
+import ConfirmationDialog from "./ConfirmationDialog";
 
 const RestartQuizConfirmationDialog = () => {
   const dispatch = useDispatch();
@@ -15,13 +15,13 @@ const RestartQuizConfirmationDialog = () => {
   }, [dispatch]);
 
   return (
-    <BaseDialog
+    <ConfirmationDialog
       isOpen={isOpen}
       title="Quiz'i Tekrarla?"
-      content="Quiz en baştan başlatılacaktır."
+      message="Quiz en baştan başlatılacaktır."
       confirmText="Tekrarla"
       onConfirm={() => dispatch(restartQuizConfirmed())}
-      onClose={handleClose}
+      onExited={handleClose}
     />
   );
 };

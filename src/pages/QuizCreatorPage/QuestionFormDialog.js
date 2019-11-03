@@ -1,11 +1,4 @@
-import React from "react";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions
-} from "@material-ui/core";
-import BaseButton from "components/BaseButton";
+import React, { useCallback } from "react";
 import { Formik, Form } from "formik";
 import { useSelector, useDispatch } from "react-redux";
 import { selectors } from "reducers";
@@ -21,6 +14,10 @@ import EditableChoiceList, {
   MAX_CHOICE_COUNT
 } from "./EditableChoiceList";
 import BaseRichTextEditor from "components/BaseRichTextEditor";
+import BaseDialogTitle from "components/BaseDialogTitle";
+import BaseDialogContent from "components/BaseDialogContent";
+import BaseDialog from "components/BaseDialog";
+import BaseDialogActions from "components/BaseDialogActions";
 
 const CHOICE_VALIDATION_MESSAGE = `Lütfen en az ${MIN_CHOICE_COUNT}, en çok ${MAX_CHOICE_COUNT} adet seçenek giriniz.`;
 
@@ -58,11 +55,12 @@ const QuestionFormDialog = () => {
     correctAnswer: question ? question.correctAnswer : -1
   };
 
-  // TODO: Kapatma tuşu ekle dialog'a
+  const handleExited = useCallback(() => {
+    dispatch(closeQuestionFormDialog());
+  }, [dispatch]);
 
   return (
-    <Dialog open={isOpen} fullWidth fullScreen>
-      <DialogTitle>Soru</DialogTitle>
+    <BaseDialog isOpen={isOpen} fullScreen onExited={handleExited}>
       <Formik
         enableReinitialize={true}
         initialValues={initialValues}
@@ -101,7 +99,8 @@ const QuestionFormDialog = () => {
                 flex: 1
               }}
             >
-              <DialogContent dividers>
+              <BaseDialogTitle title="Soru" />
+              <BaseDialogContent>
                 <BaseRichTextEditor
                   name="body"
                   label="Soru"
@@ -114,28 +113,20 @@ const QuestionFormDialog = () => {
                 <BaseDivider />
 
                 <EditableChoiceList name="choices" />
-              </DialogContent>
-              <DialogActions>
-                <BaseButton
-                  disabled={isFetching}
-                  onClick={() => dispatch(closeQuestionFormDialog())}
-                >
-                  İptal
-                </BaseButton>
-                <BaseButton
-                  type="submit"
-                  color="primary"
-                  loading={isFetching}
-                  disabled={!isValid}
-                >
-                  Kaydet
-                </BaseButton>
-              </DialogActions>
+              </BaseDialogContent>
+              <BaseDialogActions
+                loading={isFetching}
+                confirmText="Kaydet"
+                confirmButtonProps={{
+                  type: "submit",
+                  disabled: !isValid
+                }}
+              />
             </Form>
           );
         }}
       </Formik>
-    </Dialog>
+    </BaseDialog>
   );
 };
 
