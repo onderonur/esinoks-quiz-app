@@ -34,7 +34,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "clean": "rimraf build"
+    "clean": "rimraf build",
+    "deploy": "npm run build && firebase deploy && npm run clean"
   },
   "eslintConfig": {
     "extends": "react-app"
