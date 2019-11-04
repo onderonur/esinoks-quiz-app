@@ -29,6 +29,9 @@ const useStyles = makeStyles(theme => ({
     "&:hover": {
       textDecoration: "none"
     }
+  },
+  restartButton: {
+    marginRight: theme.spacing(1)
   }
 }));
 
@@ -51,8 +54,8 @@ const AppHeader = () => {
           <Typography variant="h6">Esinoks</Typography>
         </Link>
         <Box flex={1} />
+        <RestartQuizButton className={classes.restartButton} />
         <SignInWithGoogleButton />
-        <RestartQuizButton />
         <UserButton />
       </Toolbar>
     </AppBar>

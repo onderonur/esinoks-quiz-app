@@ -5,6 +5,7 @@ import { restartQuiz } from "actions";
 import ReplayIcon from "@material-ui/icons/Replay";
 import RestartQuizConfirmationDialog from "./RestartQuizConfirmationDialog";
 import { useRouteMatch } from "react-router-dom";
+import clsx from "clsx";
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -12,7 +13,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const RestartQuizButton = () => {
+const RestartQuizButton = ({ className }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -25,7 +26,7 @@ const RestartQuizButton = () => {
   return match ? (
     <>
       <IconButton
-        className={classes.button}
+        className={clsx(classes.button, className)}
         onClick={() => dispatch(restartQuiz())}
       >
         <ReplayIcon />
