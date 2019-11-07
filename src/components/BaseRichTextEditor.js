@@ -33,8 +33,8 @@ const useStyles = makeStyles(theme => ({
   editor: {
     "& .ql-container": {
       minHeight: 120,
-      maxHeight: 600
-      // TODO: overflow auto vs gerekebilir
+      maxHeight: 600,
+      overflow: "auto"
     }
   }
 }));
