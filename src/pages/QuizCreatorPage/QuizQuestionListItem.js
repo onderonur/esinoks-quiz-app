@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import QuizQuestionListItemMenu from "./QuizQuestionListItemMenu";
-import RawHtml from "components/RawHtml";
+import SanitizedHtml from "components/SanitizedHtml";
 
 const useStyles = makeStyles(theme => ({
   orderNo: {
@@ -43,7 +43,7 @@ const QuizQuestionListItem = ({ index, quizId, questionId }) => {
             >
               Soru {index + 1}.
             </Typography>
-            <RawHtml html={question.body} />
+            <SanitizedHtml html={question.body} />
           </Box>
         }
       />

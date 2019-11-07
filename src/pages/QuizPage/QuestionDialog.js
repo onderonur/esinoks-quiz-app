@@ -10,7 +10,7 @@ import BaseDialog from "components/BaseDialog";
 import BaseDialogActions from "components/BaseDialogActions";
 import BaseDialogContent from "components/BaseDialogContent";
 import { useParams } from "react-router-dom";
-import RawHtml from "components/RawHtml";
+import SanitizedHtml from "components/SanitizedHtml";
 
 const validationSchema = Yup.object().shape({
   givenAnswer: Yup.number().required()
@@ -72,7 +72,7 @@ const QuestionDialog = () => {
               }}
             >
               <BaseDialogContent>
-                <RawHtml html={activeQuestion.body} />
+                <SanitizedHtml html={activeQuestion.body} />
                 <QuestionDialogChoiceList
                   name="givenAnswer"
                   choices={choices}

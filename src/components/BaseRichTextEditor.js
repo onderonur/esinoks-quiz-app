@@ -34,6 +34,7 @@ const useStyles = makeStyles(theme => ({
     "& .ql-container": {
       minHeight: 120,
       maxHeight: 600
+      // TODO: overflow auto vs gerekebilir
     }
   }
 }));
@@ -72,6 +73,7 @@ const BaseRichTextEditor = ({
           [{ color: [] }],
           ["image"],
           ["clean"]
+          // TODO: undo-redo tuşlarını ekle
         ],
         handlers: {
           image: function() {
@@ -125,7 +127,7 @@ const BaseRichTextEditor = ({
           onChange={newHtml => setFieldValue(name, newHtml)}
           modules={modulesRef.current}
           formats={formats}
-          readOnly={disabled}
+          readOnly={disabled || isUploading}
         />
       </LoadingOverlay>
       <FormHelperText>{error}</FormHelperText>

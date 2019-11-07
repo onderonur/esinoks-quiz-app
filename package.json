@@ -25,6 +25,7 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-observable": "^1.2.0",
     "rxjs": "^6.5.3",
+    "sanitize-html": "^1.20.1",
     "yup": "^0.27.0"
   },
   "devDependencies": {
