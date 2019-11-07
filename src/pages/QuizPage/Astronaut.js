@@ -6,17 +6,16 @@ import { useSelector } from "react-redux";
 import { selectors } from "reducers";
 import { useParams } from "react-router-dom";
 import clsx from "clsx";
+import { DEFAULT_EARTH_SIZE } from "./Earth";
 
-const DEFAULT_WIDTH = 100;
-const DEFAULT_ASTRONAUT_OFFSET = DEFAULT_WIDTH / 2;
-const DEFAULT_LEFT_PERCENT = 15;
-const DEFAULT_ASTRONAUT_LEFT = `calc(${DEFAULT_LEFT_PERCENT}% - 80px - ${DEFAULT_ASTRONAUT_OFFSET}px)`;
+const DEFAULT_WIDTH = 12;
+const DEFAULT_FINISH_OFFSET = (DEFAULT_EARTH_SIZE + DEFAULT_WIDTH) / 2;
+const DEFAULT_ASTRONAUT_LEFT = "0%";
 
 const useStyles = makeStyles(theme => ({
   image: {
     position: "absolute",
     zIndex: 1,
-    width: DEFAULT_WIDTH,
     animation: "$floating 3300ms ease infinite"
   },
   gameOver: {
@@ -53,12 +52,16 @@ const Astronaut = () => {
     selectors.selectTotalQuestionCountByQuizId(state, quizId)
   );
 
+  const isGameOver = useSelector(state =>
+    selectors.selectIsGameOver(state, quizId)
+  );
+
   const wrongGivenAnswerCount = useSelector(state =>
     selectors.selectWrongGivenAnswerCountByQuizId(state, quizId)
   );
 
-  const isGameOver = useSelector(state =>
-    selectors.selectIsGameOver(state, quizId)
+  const correctGivenAnswerCount = useSelector(state =>
+    selectors.selectCorrectGivenAnswerCountByQuizId(state, quizId)
   );
 
   // We reduce the "steps to finish" by the wrong given answers count.
@@ -67,21 +70,17 @@ const Astronaut = () => {
     ? totalQuestionCount - wrongGivenAnswerCount
     : null;
 
-  const totalCorrectAnswerCount = useSelector(state =>
-    selectors.selectCorrectGivenAnswerCountByQuizId(state, quizId)
-  );
+  const progressRate = correctGivenAnswerCount / totalStepsToFinish;
 
   const props = useSpring({
     from: {
       left: DEFAULT_ASTRONAUT_LEFT,
-      width: DEFAULT_WIDTH
+      width: `${DEFAULT_WIDTH}%`
     },
     left: totalStepsToFinish
-      ? `calc(${DEFAULT_LEFT_PERCENT +
-          ((95 - DEFAULT_LEFT_PERCENT) * totalCorrectAnswerCount) /
-            totalStepsToFinish}% - 80px - ${DEFAULT_ASTRONAUT_OFFSET}px)`
+      ? `${(100 - DEFAULT_FINISH_OFFSET) * progressRate}%`
       : DEFAULT_ASTRONAUT_LEFT,
-    width: isGameOver ? 0 : DEFAULT_WIDTH,
+    width: isGameOver ? "0%" : `${DEFAULT_WIDTH}%`,
     // TODO: May separate these 2 animations with different durations etc.
     config: {
       duration: 800

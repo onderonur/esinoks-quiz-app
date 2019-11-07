@@ -1,12 +1,11 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useField, useFormikContext } from "formik";
-import { FormControl, FormLabel, FormHelperText, Box } from "@material-ui/core";
+import { FormControl, FormLabel, FormHelperText } from "@material-ui/core";
 import firebase from "app-firebase";
-import LoadingIndicator from "./LoadingIndicator";
-import { fade } from "@material-ui/core/styles";
-import { grey } from "@material-ui/core/colors";
+import { makeStyles } from "@material-ui/core/styles";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import LoadingOverlay from "./LoadingOverlay";
 
 const uploadFile = async (file, path) => {
   const storageRef = firebase.storage.ref();
@@ -30,6 +29,15 @@ const formats = [
   "color"
 ];
 
+const useStyles = makeStyles(theme => ({
+  editor: {
+    "& .ql-container": {
+      minHeight: 120,
+      maxHeight: 600
+    }
+  }
+}));
+
 const BaseRichTextEditor = ({
   // TODO: disabled durumunu ekle editor'e
   disabled,
@@ -40,6 +48,7 @@ const BaseRichTextEditor = ({
   fileUploadPath,
   ...props
 }) => {
+  const classes = useStyles();
   const [field, meta] = useField(props);
   const form = useFormikContext();
   const { name, value } = field;
@@ -107,29 +116,18 @@ const BaseRichTextEditor = ({
       error={Boolean(error)}
     >
       <FormLabel>{label}</FormLabel>
-      <Box position="relative">
+      <LoadingOverlay loading={isUploading}>
         <ReactQuill
           // TODO: Boş string verince ilk value'su "<p><br/><p/>" oluyor ondan validation a takılmıyor.
           // Düzeltilmeli
+          className={classes.editor}
           value={value}
           onChange={newHtml => setFieldValue(name, newHtml)}
           modules={modulesRef.current}
           formats={formats}
           readOnly={disabled}
         />
-        {isUploading && (
-          <Box
-            position="absolute"
-            top={0}
-            left={0}
-            right={0}
-            bottom={0}
-            bgcolor={fade(grey[400], 0.6)}
-          >
-            <LoadingIndicator loading={true} />
-          </Box>
-        )}
-      </Box>
+      </LoadingOverlay>
       <FormHelperText>{error}</FormHelperText>
     </FormControl>
   );

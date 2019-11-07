@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Dialog } from "@material-ui/core";
 import { BaseDialogContext } from "hooks/useBaseDialogContext";
+import useDetectMobile from "hooks/useDetectMobile";
 
 const BaseDialog = ({
   isOpen,
@@ -8,9 +9,10 @@ const BaseDialog = ({
   children,
   fullWidth = true,
   disablePortal,
-  fullScreen
+  responsive = true
 }) => {
   const [isVisible, setIsVisible] = useState(isOpen);
+  const isMobile = useDetectMobile();
 
   // We used this way to wait dialog animation to end before calling "onExited" callback.
   // So rather than relying on the "isOpen" prop, we just use it as a secondary parameter.
@@ -41,7 +43,7 @@ const BaseDialog = ({
       onClose={close}
       // We wait for the closing animation to end, then call the "onExited" callback.
       onExited={onExited}
-      fullScreen={fullScreen}
+      fullScreen={responsive && isMobile}
     >
       <BaseDialogContext.Provider value={close}>
         {children}

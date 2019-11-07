@@ -2,11 +2,13 @@ import React from "react";
 import earthPng from "assets/earth.png";
 import { makeStyles } from "@material-ui/styles";
 
+export const DEFAULT_EARTH_SIZE = 15;
+
 const useStyles = makeStyles(theme => ({
   image: {
-    width: 160,
+    width: DEFAULT_EARTH_SIZE + "%",
     position: "absolute",
-    right: "5%",
+    right: 0,
     animation: "$rotating 60s linear infinite"
   },
   "@keyframes rotating": {

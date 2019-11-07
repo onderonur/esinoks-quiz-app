@@ -16,7 +16,7 @@ const ConfirmationDialog = ({
   onExited
 }) => {
   return (
-    <BaseDialog isOpen={isOpen} onExited={onExited}>
+    <BaseDialog isOpen={isOpen} onExited={onExited} responsive={false}>
       <BaseDialogTitle title={title} hideCloseButton />
       <BaseDialogContent dividers={false}>
         <DialogContentText>{message}</DialogContentText>

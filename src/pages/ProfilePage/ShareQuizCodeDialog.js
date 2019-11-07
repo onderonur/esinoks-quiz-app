@@ -35,7 +35,7 @@ const ShareQuizCodeDialog = () => {
   }, [dispatch]);
 
   return (
-    <BaseDialog isOpen={isOpen} onExited={handleExited}>
+    <BaseDialog isOpen={isOpen} onExited={handleExited} responsive={false}>
       <BaseDialogTitle title="Quiz Paylaşım Kodu" />
       <BaseDialogContent dividers={false}>
         <DialogContentText>

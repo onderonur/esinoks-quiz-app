@@ -17,7 +17,7 @@ const Root = () => {
   return (
     <>
       <CssBaseline />
-      <Box minWidth={800}>
+      <Box>
         <Space>
           <AppHeader />
           <div className={classes.offset} />
