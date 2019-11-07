@@ -5,12 +5,12 @@ import { answerQuestion, unselectQuestion } from "actions";
 import QuestionDialogChoiceList from "./QuestionDialogChoiceList";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import FroalaEditorView from "react-froala-wysiwyg/FroalaEditorView";
 import BaseDialogTitle from "components/BaseDialogTitle";
 import BaseDialog from "components/BaseDialog";
 import BaseDialogActions from "components/BaseDialogActions";
 import BaseDialogContent from "components/BaseDialogContent";
 import { useParams } from "react-router-dom";
+import RawHtml from "components/RawHtml";
 
 const validationSchema = Yup.object().shape({
   givenAnswer: Yup.number().required()
@@ -72,7 +72,7 @@ const QuestionDialog = () => {
               }}
             >
               <BaseDialogContent>
-                <FroalaEditorView model={activeQuestion.body} />
+                <RawHtml html={activeQuestion.body} />
                 <QuestionDialogChoiceList
                   name="givenAnswer"
                   choices={choices}

@@ -9,6 +9,7 @@ const BaseDialogActions = ({
   onConfirm,
   loading,
   disabled,
+  children,
   confirmButtonProps: {
     type: confirmButtonType,
     disabled: confirmButtonDisabled,
@@ -19,20 +20,25 @@ const BaseDialogActions = ({
 
   return (
     <DialogActions>
-      <BaseButton disabled={loading || disabled} onClick={close}>
-        {cancelText}
-      </BaseButton>
-      <BaseButton
-        type={confirmButtonType}
-        color="primary"
-        disabled={disabled || confirmButtonDisabled}
-        loading={loading}
-        // If there is no "onConfirm" or "type" prop, we close the dialog by default.
-        onClick={onConfirm ? onConfirm : confirmButtonType ? undefined : close}
-        {...confirmButtonRest}
-      >
-        {confirmText}
-      </BaseButton>
+      {children ? (
+        children({ close })
+      ) : (
+        <>
+          <BaseButton disabled={loading || disabled} onClick={close}>
+            {cancelText}
+          </BaseButton>
+          <BaseButton
+            type={confirmButtonType}
+            color="primary"
+            disabled={disabled || confirmButtonDisabled}
+            loading={loading}
+            onClick={onConfirm}
+            {...confirmButtonRest}
+          >
+            {confirmText}
+          </BaseButton>
+        </>
+      )}
     </DialogActions>
   );
 };

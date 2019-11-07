@@ -1,32 +1,34 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useField, useFormikContext } from "formik";
-import { FormControl, FormLabel, FormHelperText } from "@material-ui/core";
+import { FormControl, FormLabel, FormHelperText, Box } from "@material-ui/core";
 import firebase from "app-firebase";
-
-import "froala-editor/css/froala_style.min.css";
-import "froala-editor/css/froala_editor.pkgd.min.css";
-
-// Froala Editor Plugins
-import "froala-editor/js/plugins/align.min.js";
-import "froala-editor/css/plugins/image.min.css";
-import "froala-editor/js/plugins/image.min.js";
-import "froala-editor/css/plugins/colors.min.css";
-import "froala-editor/js/plugins/colors.min.js";
-import "froala-editor/js/plugins/lists.min.js";
-import "froala-editor/css/plugins/draggable.min.css";
-import "froala-editor/js/plugins/draggable.min.js";
-
-import FroalaEditor from "react-froala-wysiwyg";
+import LoadingIndicator from "./LoadingIndicator";
+import { fade } from "@material-ui/core/styles";
+import { grey } from "@material-ui/core/colors";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const uploadFile = async (file, path) => {
   const storageRef = firebase.storage.ref();
   // TODO: Aynı file name denk gelip varolan bir şeyi ezmemesi için yöntem?
   // quizId ve questionId bazlı tutulabilir image'lar.
-  const fileRef = storageRef.child(path);
+  const fileRef = storageRef.child(`${path}/${new Date().getTime()}`);
   const snapshot = await fileRef.put(file);
   const downloadUrl = await snapshot.ref.getDownloadURL();
   return downloadUrl;
 };
+
+const formats = [
+  "bold",
+  "italic",
+  "underline",
+  "list",
+  "ordered",
+  "bullet",
+  "indent",
+  "image",
+  "color"
+];
 
 const BaseRichTextEditor = ({
   // TODO: disabled durumunu ekle editor'e
@@ -42,9 +44,61 @@ const BaseRichTextEditor = ({
   const form = useFormikContext();
   const { name, value } = field;
   const { error } = meta;
-  const { setFieldTouched, setFieldValue } = form;
+  const { setFieldValue } = form;
 
-  const editorRef = useRef();
+  const [isUploading, setIsUploading] = useState(false);
+  const modulesRef = useRef();
+
+  useEffect(() => {
+    modulesRef.current = {
+      toolbar: {
+        container: [
+          ["bold", "italic", "underline"],
+          [
+            { list: "ordered" },
+            { list: "bullet" },
+            { indent: "-1" },
+            { indent: "+1" }
+          ],
+          [{ color: [] }],
+          ["image"],
+          ["clean"]
+        ],
+        handlers: {
+          image: function() {
+            const input = document.createElement("input");
+
+            input.setAttribute("type", "file");
+            input.setAttribute("accept", "image/*");
+            input.click();
+
+            input.onchange = async () => {
+              const file = input.files[0];
+              const formData = new FormData();
+
+              formData.append("image", file);
+
+              // Save current cursor state
+              const range = this.quill.getSelection(true);
+
+              // Move cursor to right side of image (easier to continue typing)
+              this.quill.setSelection(range.index + 1);
+
+              setIsUploading(true);
+              const downloadUrl = await uploadFile(file, fileUploadPath);
+              setIsUploading(false);
+
+              // Remove placeholder image
+              this.quill.deleteText(range.index, 1);
+
+              // Insert uploaded image
+              this.quill.insertEmbed(range.index, "image", downloadUrl);
+            };
+          }
+        }
+      }
+    };
+  }, [fileUploadPath]);
 
   return (
     <FormControl
@@ -53,56 +107,29 @@ const BaseRichTextEditor = ({
       error={Boolean(error)}
     >
       <FormLabel>{label}</FormLabel>
-      <FroalaEditor
-        tag="textarea"
-        onManualControllerReady={initControls => {
-          initControls.initialize();
-          const editor = initControls.getEditor();
-          editorRef.current = editor;
-        }}
-        model={value}
-        onModelChange={newModel => {
-          setFieldValue(name, newModel);
-        }}
-        config={{
-          // TODO: May implement uploading pasted images later.
-          imagePaste: false,
-          autofocus: autoFocus,
-          // https://wysiwyg-editor.froala.help/hc/en-us/articles/115000413465-Why-aren-t-popups-visible-
-          // When the editor is used inside a modal etc, it doesn't show some of the popups like image editing popup.
-          // To fix this, we simply set the zIndex to a high value.
-          zIndex: 9999,
-          imageEditButtons: [
-            "imageAlign",
-            "imageCaption",
-            "imageRemove",
-            "imageDisplay"
-          ],
-          events: {
-            focus: () => {
-              setFieldTouched(name, true);
-            },
-            // TODO: Formik için focus ve blur event'lerini koy
-            "image.beforeUpload": images => {
-              // TODO: Loading indicator konulabilir editor'e
-              const file = images[0];
-              const editor = editorRef.current;
-              editor.edit.off();
-              editor.image.showProgressBar();
-              uploadFile(file, fileUploadPath)
-                .then(url => {
-                  editor.image.insert(url);
-                  editor.edit.on();
-                })
-                .catch(() => {
-                  // TODO: Hata mesajı göster
-                  editor.edit.on();
-                });
-              return false;
-            }
-          }
-        }}
-      />
+      <Box position="relative">
+        <ReactQuill
+          // TODO: Boş string verince ilk value'su "<p><br/><p/>" oluyor ondan validation a takılmıyor.
+          // Düzeltilmeli
+          value={value}
+          onChange={newHtml => setFieldValue(name, newHtml)}
+          modules={modulesRef.current}
+          formats={formats}
+          readOnly={disabled}
+        />
+        {isUploading && (
+          <Box
+            position="absolute"
+            top={0}
+            left={0}
+            right={0}
+            bottom={0}
+            bgcolor={fade(grey[400], 0.6)}
+          >
+            <LoadingIndicator loading={true} />
+          </Box>
+        )}
+      </Box>
       <FormHelperText>{error}</FormHelperText>
     </FormControl>
   );

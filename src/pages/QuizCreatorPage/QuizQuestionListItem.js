@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import QuizQuestionListItemMenu from "./QuizQuestionListItemMenu";
-import FroalaEditorView from "react-froala-wysiwyg/FroalaEditorView";
+import RawHtml from "components/RawHtml";
 
 const useStyles = makeStyles(theme => ({
   orderNo: {
@@ -43,7 +43,7 @@ const QuizQuestionListItem = ({ index, quizId, questionId }) => {
             >
               Soru {index + 1}.
             </Typography>
-            <FroalaEditorView model={question.body} />
+            <RawHtml html={question.body} />
           </Box>
         }
       />

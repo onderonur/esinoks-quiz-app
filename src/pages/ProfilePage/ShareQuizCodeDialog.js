@@ -15,6 +15,7 @@ import { shareQuizCodeCompleted } from "actions";
 import CopyToClipboard from "components/CopyToClipboard";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
 import BaseDialogActions from "components/BaseDialogActions";
+import BaseButton from "components/BaseButton";
 
 const useStyles = makeStyles(theme => ({
   copyToClipboardButton: {
@@ -54,7 +55,13 @@ const ShareQuizCodeDialog = () => {
             )}
           </CopyToClipboard>
         </Box>
-        <BaseDialogActions />
+        <BaseDialogActions>
+          {({ close }) => (
+            <BaseButton color="primary" onClick={close}>
+              Tamam
+            </BaseButton>
+          )}
+        </BaseDialogActions>
       </BaseDialogContent>
     </BaseDialog>
   );
