@@ -3,7 +3,12 @@ import starfieldJpg from "assets/starfield.jpg";
 
 const theme = createMuiTheme({
   palette: {
-    type: "light"
+    primary: {
+      main: "#165982"
+    },
+    secondary: {
+      main: "#2dde98"
+    }
   },
   overrides: {
     MuiCssBaseline: {
