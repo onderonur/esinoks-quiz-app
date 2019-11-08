@@ -77,7 +77,7 @@ const QuizForm = () => {
               <BaseTextField
                 name="title"
                 label="Başlık"
-                autoFocus
+                autoFocus={isNew}
                 required
                 fullWidth
                 inputProps={{
