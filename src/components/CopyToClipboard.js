@@ -13,7 +13,7 @@ const CopyToClipboard = ({ children }) => {
   return (
     <Tooltip
       open={isTooltipVisible}
-      title={"Copied to clipboard!"}
+      title="Başarıyla kopyalandı!"
       leaveDelay={800}
       onClose={() => setIsTooltipVisible(false)}
     >
