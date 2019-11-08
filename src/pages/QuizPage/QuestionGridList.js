@@ -12,6 +12,7 @@ const QuestionGridList = () => {
     <BaseGridList
       loading={isFetching}
       items={quizQuestionIds}
+      minItemWidth={100}
       renderItem={(questionId, i) => (
         <QuestionGridListItem questionId={questionId} index={i} />
       )}

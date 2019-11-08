@@ -47,9 +47,9 @@ const QuestionGridListItem = ({ questionId, index }) => {
             alignItems="center"
             paddingY={2}
           >
-            <Planet mood={mood} color={color} size={100} />
+            <Planet mood={mood} color={color} size={80} />
           </Box>
-          <Typography variant="body1" noWrap>
+          <Typography variant="subtitle1" noWrap>
             Soru {index + 1}
           </Typography>
         </CardContent>
