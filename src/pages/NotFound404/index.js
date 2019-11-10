@@ -31,7 +31,7 @@ const NotFound404 = () => {
             size="large"
             component={RouterLink}
           >
-            Profile Dön
+            Ana Sayfaya Dön
           </BaseButton>
         </Box>
       </Paper>
