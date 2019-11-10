@@ -17,10 +17,8 @@ const RestartQuizButton = ({ className }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  // Restart button will be shown only while user is playing a quiz.
-  // TODO: path' "/quiz/:quizId" şeklinde değiştir sonra
   const match = useRouteMatch({
-    path: "/quiz"
+    path: "/quiz/:quizId"
   });
 
   return match ? (

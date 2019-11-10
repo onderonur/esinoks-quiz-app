@@ -13,8 +13,9 @@ import SaveIcon from "@material-ui/icons/Save";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 const validationSchema = Yup.object().shape({
-  // TODO: Bu validation'ı firebase tarafında da yap
-  title: Yup.string().required("Bu alan zorunludur.")
+  title: Yup.string()
+    .required("Lütfen bir başlık giriniz.")
+    .max(60, ({ max }) => `Başlık uzunluğu en fazla ${max} karakter olabilir.`)
 });
 
 const useStyles = makeStyles(theme => ({

@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import bindSelectors from "./bindSelectors";
+import bindSelectors from "./utils/bindSelectors";
 import questions, * as fromQuestions from "./questions";
 import activeQuestionId, * as fromActiveQuestionId from "./activeQuestionId";
 import givenAnswers, * as fromGivenAnswers from "./givenAnswers";
@@ -35,7 +35,7 @@ const questionsSelectors = bindSelectors(
   fromQuestions.selectors
 );
 
-const answerSelectors = bindSelectors(
+const givenAnswersSelectors = bindSelectors(
   state => state.givenAnswers,
   fromGivenAnswers.selectors
 );
@@ -45,18 +45,28 @@ const authUserSelectors = bindSelectors(
   fromAuthUser.selectors
 );
 
-const quizSelectors = bindSelectors(
+const quizzesSelectors = bindSelectors(
   state => state.quizzes,
   fromQuizzes.selectors
 );
 
-const quizQuestionSelectors = bindSelectors(
+const quizQuestionsSelectors = bindSelectors(
   state => state.quizQuestions,
   fromQuizQuestions.selectors
 );
 
+const dialogsSelectors = bindSelectors(
+  state => state.dialogs,
+  fromDialogs.selectors
+);
+
+const isFetchingSelectors = bindSelectors(
+  state => state.isFetching,
+  fromIsFetching.selectors
+);
+
 const selectQuizQuestions = (state, quizId) => {
-  const quizQuestionIds = quizQuestionSelectors.selectQuestionIdsByQuizId(
+  const quizQuestionIds = quizQuestionsSelectors.selectQuestionIdsByQuizId(
     state,
     quizId
   );
@@ -79,7 +89,7 @@ const selectCorrectAnswersByQuizId = (state, quizId) => {
 };
 
 const selectGivenAnswersByQuizId = (state, quizId) => {
-  const quizQuestionIds = quizQuestionSelectors.selectQuestionIdsByQuizId(
+  const quizQuestionIds = quizQuestionsSelectors.selectQuestionIdsByQuizId(
     state,
     quizId
   );
@@ -103,7 +113,7 @@ const selectGivenAnswersByQuizId = (state, quizId) => {
 };
 
 const selectCorrectGivenAnswerCountByQuizId = (state, quizId) => {
-  const quizQuestionIds = quizQuestionSelectors.selectQuestionIdsByQuizId(
+  const quizQuestionIds = quizQuestionsSelectors.selectQuestionIdsByQuizId(
     state,
     quizId
   );
@@ -129,17 +139,20 @@ const selectWrongGivenAnswerCountByQuizId = (state, quizId) => {
 };
 
 export const selectors = {
-  ...bindSelectors(state => state.dialogs, fromDialogs.selectors),
-  ...bindSelectors(state => state.isFetching, fromIsFetching.selectors),
   ...questionsSelectors,
-  ...answerSelectors,
+  ...givenAnswersSelectors,
   ...authUserSelectors,
-  ...quizSelectors,
-  ...quizQuestionSelectors,
+  ...quizzesSelectors,
+  ...quizQuestionsSelectors,
+  ...dialogsSelectors,
+  ...isFetchingSelectors,
   selectAuthUserQuizIds: state => {
     const authUser = authUserSelectors.selectAuthUser(state);
     const { uid } = authUser;
-    const authUserQuizIds = quizSelectors.selectQuizIdsByAuthorId(state, uid);
+    const authUserQuizIds = quizzesSelectors.selectQuizIdsByAuthorId(
+      state,
+      uid
+    );
     return authUserQuizIds;
   },
   selectActiveQuestion: state => {

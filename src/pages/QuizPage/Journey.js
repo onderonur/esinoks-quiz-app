@@ -3,8 +3,11 @@ import { Box } from "@material-ui/core";
 import Astronaut from "./Astronaut";
 import Earth from "./Earth";
 import Hearts from "./Hearts";
+import useDetectMobile from "hooks/useDetectMobile";
 
 const Journey = () => {
+  const isMobile = useDetectMobile();
+
   return (
     <Box marginY={2}>
       <Box
@@ -12,7 +15,7 @@ const Journey = () => {
         justifyContent="flex-end"
         alignItems="center"
         position="relative"
-        height={140}
+        height={isMobile ? 100 : 140}
       >
         <Astronaut />
         <Earth />

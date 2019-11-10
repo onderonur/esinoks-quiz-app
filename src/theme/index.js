@@ -15,6 +15,7 @@ const theme = createMuiTheme({
       "@global": {
         body: {
           minHeight: "100vh",
+          overflowX: "hidden",
           backgroundImage: `url(${starfieldJpg})`,
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover"
