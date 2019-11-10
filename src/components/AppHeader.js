@@ -8,7 +8,7 @@ import {
   useScrollTrigger,
   Box
 } from "@material-ui/core";
-import SignInWithGoogleButton from "./SignInWithGoogleButton";
+import GoogleSignInButton from "./GoogleSignInButton";
 import RestartQuizButton from "./RestartQuizButton";
 import UserButton from "./UserButton";
 import RouterLink from "./RouterLink";
@@ -55,7 +55,7 @@ const AppHeader = () => {
         </Link>
         <Box flex={1} />
         <RestartQuizButton className={classes.restartButton} />
-        <SignInWithGoogleButton />
+        <GoogleSignInButton />
         <UserButton />
       </Toolbar>
     </AppBar>
