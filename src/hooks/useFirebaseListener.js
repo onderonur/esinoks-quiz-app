@@ -3,12 +3,11 @@ import useFirebase from "./useFirebase";
 
 const useFirebaseListener = ({ query, skip }) => {
   const firebase = useFirebase();
-  const [isFetching, setIsFetching] = useState();
+  const [isFetching, setIsFetching] = useState(!skip);
   const [snapshot, setSnapshot] = useState();
 
   useEffect(() => {
     if (!skip) {
-      setIsFetching(true);
       const listener = query(firebase).onSnapshot(snapshot => {
         setIsFetching(false);
         setSnapshot(snapshot);

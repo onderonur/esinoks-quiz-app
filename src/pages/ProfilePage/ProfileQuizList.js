@@ -1,18 +1,13 @@
 import React from "react";
-import BaseList from "components/BaseList";
-import QuizListItem from "./QuizListItem";
 import DeleteQuizConfirmationDialog from "./DeleteQuizConfirmationDialog";
 import { Box, Typography, Button } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import { useHistory } from "react-router-dom";
 import useListenAuthUserQuizzes from "hooks/useListenAuthUserQuizzes";
 import ShareQuizCodeDialog from "./ShareQuizCodeDialog";
+import QuizList from "components/QuizList";
 
-const renderItem = (quizId, index) => (
-  <QuizListItem key={quizId} quizId={quizId} index={index} />
-);
-
-const QuizList = () => {
+const ProfileQuizList = () => {
   const history = useHistory();
 
   const { isFetching, authUserQuizIds } = useListenAuthUserQuizzes();
@@ -29,15 +24,11 @@ const QuizList = () => {
           Yeni Quiz
         </Button>
       </Box>
-      <BaseList
-        loading={isFetching}
-        data={authUserQuizIds}
-        renderItem={renderItem}
-      />
+      <QuizList quizIds={authUserQuizIds} isFetching={isFetching} hasActions />
       <ShareQuizCodeDialog />
       <DeleteQuizConfirmationDialog />
     </>
   );
 };
 
-export default QuizList;
+export default ProfileQuizList;

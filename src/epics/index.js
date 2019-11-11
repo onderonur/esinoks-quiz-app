@@ -16,6 +16,7 @@ import {
 import { from, of, fromEventPattern } from "rxjs";
 import firebase from "app-firebase";
 import { getFetchActionTypes, getFirestoreTimeStamp } from "utils";
+import { selectors } from "reducers";
 
 const mapWithFetchActionTypes = () =>
   map(action => {
@@ -197,6 +198,48 @@ const listenAuthStateEpic = action$ =>
     )
   );
 
+const fetchQuizzesEpic = action$ =>
+  action$.pipe(
+    ofType(actionTypes.FETCH_QUIZZES),
+    mapWithFetchActionTypes(),
+    switchMap(([action, { requestType, successType, errorType }]) => {
+      const paginatedQuery = firebase
+        .quizzes()
+        .orderBy("createdAt")
+        .limit(2);
+      return from(paginatedQuery.get()).pipe(
+        map(snapshot => snapshot.docs),
+        map(docs => docs.map(doc => ({ id: doc.id, ...doc.data() }))),
+        map(quizzes => ({ type: successType, quizzes })),
+        catchError(() => of({ type: errorType })),
+        startWith({ type: requestType })
+      );
+    })
+  );
+
+const fetchMoreQuizzesEpic = (action$, state$) =>
+  action$.pipe(
+    ofType(actionTypes.FETCH_MORE_QUIZZES),
+    mapWithFetchActionTypes(),
+    switchMap(([action, { requestType, successType, errorType }]) => {
+      const quizzes = selectors.selectQuizzes(state$.value);
+      // TODO: Düzelt bu sonuncu createdAt'i almayı.
+      const maxCreatedAt = quizzes[quizzes.length - 1].createdAt;
+      const paginatedQuery = firebase
+        .quizzes()
+        .orderBy("createdAt")
+        .startAfter(maxCreatedAt)
+        .limit(2);
+      return from(paginatedQuery.get()).pipe(
+        map(snapshot => snapshot.docs),
+        map(docs => docs.map(doc => ({ id: doc.id, ...doc.data() }))),
+        map(quizzes => ({ type: successType, quizzes })),
+        catchError(() => of({ type: errorType })),
+        startWith({ type: requestType })
+      );
+    })
+  );
+
 const rootEpic = combineEpics(
   createQuizEpic,
   updateQuizEpic,
@@ -206,7 +249,9 @@ const rootEpic = combineEpics(
   createQuestionEpic,
   updateQuestionEpic,
   deleteQuestionConfirmedEpic,
-  listenAuthStateEpic
+  listenAuthStateEpic,
+  fetchQuizzesEpic,
+  fetchMoreQuizzesEpic
 );
 
 export default rootEpic;

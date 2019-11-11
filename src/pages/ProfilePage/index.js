@@ -2,7 +2,7 @@ import React from "react";
 import { Paper } from "@material-ui/core";
 import ProfileHeader from "./ProfileHeader";
 import { makeStyles } from "@material-ui/styles";
-import QuizList from "./QuizList";
+import ProfileQuizList from "./ProfileQuizList";
 import BaseDivider from "components/BaseDivider";
 
 const useStyles = makeStyles(theme => ({
@@ -19,7 +19,7 @@ const ProfilePage = () => {
       <Paper className={classes.paper}>
         <ProfileHeader />
         <BaseDivider />
-        <QuizList />
+        <ProfileQuizList />
       </Paper>
     </>
   );

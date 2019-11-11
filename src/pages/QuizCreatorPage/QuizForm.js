@@ -69,41 +69,35 @@ const QuizForm = () => {
             when={!isNew && dirty}
             message="Kaydedilmemiş değişiklikleriniz var. Sayfadan çıkmak istediğinize emin misiniz?"
           />
-          <Form autoComplete="off" noValidate={true}>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="flex-end"
-            >
-              <BaseTextField
-                name="title"
-                label="Başlık"
-                autoFocus={isNew}
-                required
-                fullWidth
-                inputProps={{
-                  className: classes.titleTextField
-                }}
-                // TODO: Bu isSubmitting'leri daha reusable bi şekilde yap
-                disabled={isSubmitting}
-              />
-              <Box flexShrink={0}>
-                <Button
-                  startIcon={<ArrowBackIcon />}
-                  onClick={() => history.push("/profile")}
-                >
-                  Geri
-                </Button>
-                <BaseButton
-                  type="submit"
-                  startIcon={<SaveIcon />}
-                  color="primary"
-                  loading={isSubmitting}
-                  disabled={!isValid}
-                >
-                  Kaydet
-                </BaseButton>
-              </Box>
+          <Form autoComplete="off" noValidate>
+            <BaseTextField
+              name="title"
+              label="Başlık"
+              autoFocus={isNew}
+              required
+              fullWidth
+              inputProps={{
+                className: classes.titleTextField
+              }}
+              // TODO: Bu isSubmitting'leri daha reusable bi şekilde yap
+              disabled={isSubmitting}
+            />
+            <Box display="flex" justifyContent="flex-end">
+              <Button
+                startIcon={<ArrowBackIcon />}
+                onClick={() => history.push("/profile")}
+              >
+                Geri
+              </Button>
+              <BaseButton
+                type="submit"
+                startIcon={<SaveIcon />}
+                color="primary"
+                loading={isSubmitting}
+                disabled={!isValid}
+              >
+                Kaydet
+              </BaseButton>
             </Box>
           </Form>
         </>

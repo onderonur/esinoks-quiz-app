@@ -94,17 +94,10 @@ export const receiveQuizzes = quizzes => ({
   quizzes
 });
 
-export const receiveQuiz = quizDoc => {
-  const quiz = {
-    id: quizDoc.id,
-    ...quizDoc.data()
-  };
-
-  return {
-    type: actionTypes.RECEIVE_QUIZ,
-    quiz
-  };
-};
+export const receiveQuiz = quiz => ({
+  type: actionTypes.RECEIVE_QUIZ,
+  quiz
+});
 
 export const createQuiz = ({ title, authorId, history }) => ({
   type: actionTypes.CREATE_QUIZ,
@@ -154,4 +147,16 @@ export const shareQuizCodeCompleted = () => ({
 
 export const listenAuthState = () => ({
   type: actionTypes.LISTEN_AUTH_STATE
+});
+const { cancelType: LISTEN_AUTH_STATE_CANCEL } = actionTypes.LISTEN_AUTH_STATE;
+export const listenAuthStateCancel = () => ({
+  type: LISTEN_AUTH_STATE_CANCEL
+});
+
+export const fetchQuizzes = () => ({
+  type: actionTypes.FETCH_QUIZZES
+});
+
+export const fetchMoreQuizzes = () => ({
+  type: actionTypes.FETCH_MORE_QUIZZES
 });

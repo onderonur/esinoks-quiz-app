@@ -30,8 +30,10 @@ const QuizPage = () => {
     };
   }, [dispatch]);
 
-  return quiz ? (
-    <LoadingIndicator loading={isFetching}>
+  return isFetching || !quiz ? (
+    <LoadingIndicator loading />
+  ) : (
+    <>
       <Prompt
         when={true}
         message="Sayfadan çıktığınızda verdiğiniz cevaplar silinecektir. Devam etmek istediğinize emin misiniz?"
@@ -42,8 +44,8 @@ const QuizPage = () => {
       </Typography>
       <QuestionGridList />
       <QuestionDialog />
-    </LoadingIndicator>
-  ) : null;
+    </>
+  );
 };
 
 export default QuizPage;

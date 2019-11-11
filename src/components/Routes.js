@@ -5,7 +5,8 @@ import QuizPage from "pages/QuizPage";
 import ProfilePage from "pages/ProfilePage";
 import PrivateRoute from "./PrivateRoute";
 import QuizCreatorPage from "pages/QuizCreatorPage";
-import NotFound404 from "pages/NotFound404";
+import NotFound404Page from "pages/NotFound404Page";
+import QuizzesPage from "pages/QuizzesPage";
 
 const Routes = () => {
   return (
@@ -13,22 +14,21 @@ const Routes = () => {
       <Route exact path="/">
         <HomePage />
       </Route>
+      <Route exact path="/quiz">
+        <QuizzesPage />
+      </Route>
       <Route path="/quiz/:quizId">
         <QuizPage />
       </Route>
-
       <PrivateRoute exact path="/profile">
         <ProfilePage />
       </PrivateRoute>
-
       <PrivateRoute path={`/profile/quiz/:quizId`}>
         <QuizCreatorPage />
       </PrivateRoute>
-
       <Route path="/not-found-404">
-        <NotFound404 />
+        <NotFound404Page />
       </Route>
-
       <Route path="*">
         <Redirect to="/" />
       </Route>

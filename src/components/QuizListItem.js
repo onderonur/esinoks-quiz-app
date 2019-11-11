@@ -9,7 +9,7 @@ import { selectors } from "reducers";
 import RouterLink from "components/RouterLink";
 import QuizListItemMenu from "./QuizListItemMenu";
 
-const QuizListItem = ({ quizId, index }) => {
+const QuizListItem = ({ quizId, index, hasActions }) => {
   const quiz = useSelector(state => selectors.selectQuizById(state, quizId));
 
   return (
@@ -20,9 +20,11 @@ const QuizListItem = ({ quizId, index }) => {
       component={RouterLink}
     >
       <ListItemText primary={`${index + 1}. ${quiz.title}`} />
-      <ListItemSecondaryAction>
-        <QuizListItemMenu quizId={quizId} />
-      </ListItemSecondaryAction>
+      {hasActions && (
+        <ListItemSecondaryAction>
+          <QuizListItemMenu quizId={quizId} />
+        </ListItemSecondaryAction>
+      )}
     </ListItem>
   );
 };

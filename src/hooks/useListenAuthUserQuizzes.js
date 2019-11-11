@@ -1,39 +1,42 @@
-import { useEffect, useState } from "react";
-import useFirebase from "hooks/useFirebase";
+import { useEffect, useCallback } from "react";
 import useSelectAuthUser from "hooks/useSelectAuthUser";
 import { useSelector, useDispatch } from "react-redux";
 import { selectors } from "reducers";
 import { receiveQuizzes } from "actions";
+import useFirebaseListener from "./useFirebaseListener";
 
 const useListenAuthUserQuizzes = () => {
   const dispatch = useDispatch();
-  const firebase = useFirebase();
   const { authUser } = useSelectAuthUser();
-  const [isFetching, setIsFetching] = useState(true);
   const authUserQuizIds = useSelector(state =>
     selectors.selectAuthUserQuizIds(state)
   );
 
-  useEffect(() => {
-    const listener = firebase
-      .quizzes()
-      .where("authorId", "==", authUser.uid)
-      .orderBy("createdAt")
-      .onSnapshot(querySnapshot => {
-        const quizzes = [];
-        querySnapshot.forEach(doc => {
-          quizzes.push({
-            id: doc.id,
-            ...doc.data()
-          });
-        });
+  const query = useCallback(
+    firebase => {
+      return firebase
+        .quizzes()
+        .where("authorId", "==", authUser.uid)
+        .orderBy("createdAt");
+    },
+    [authUser.uid]
+  );
 
-        dispatch(receiveQuizzes(quizzes));
-        setIsFetching(false);
+  const { isFetching, snapshot } = useFirebaseListener({ query });
+
+  useEffect(() => {
+    if (snapshot) {
+      const quizzes = [];
+      snapshot.forEach(doc => {
+        quizzes.push({
+          id: doc.id,
+          ...doc.data()
+        });
       });
 
-    return () => listener();
-  }, [firebase, dispatch, authUser]);
+      dispatch(receiveQuizzes(quizzes));
+    }
+  }, [dispatch, snapshot]);
 
   return { isFetching, authUserQuizIds };
 };

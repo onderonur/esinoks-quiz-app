@@ -28,7 +28,11 @@ const useListenQuiz = quizId => {
   useEffect(() => {
     if (snapshot) {
       if (snapshot.exists) {
-        dispatch(receiveQuiz(snapshot));
+        const quiz = {
+          id: snapshot.id,
+          ...snapshot.data()
+        };
+        dispatch(receiveQuiz(quiz));
       } else {
         history.push("/not-found-404");
       }
