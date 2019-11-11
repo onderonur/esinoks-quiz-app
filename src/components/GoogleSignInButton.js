@@ -49,7 +49,7 @@ const useStyles = makeStyles(theme => ({
 const GoogleSignInButton = () => {
   const classes = useStyles();
   const firebase = useFirebase();
-  const { authUser, isFetching } = useSelectAuthUser();
+  const { isLoggedIn } = useSelectAuthUser();
 
   const handleClick = async () => {
     try {
@@ -67,14 +67,14 @@ const GoogleSignInButton = () => {
     }
   };
 
-  return isFetching || authUser ? null : (
+  return isLoggedIn === false ? (
     <button className={classes.button} onClick={handleClick}>
       <span className={classes.icon}>
         <GoogleIcon />
       </span>
       <span className={classes.text}>Google ile Giriş Yap</span>
     </button>
-  );
+  ) : null;
 };
 
 export default GoogleSignInButton;
