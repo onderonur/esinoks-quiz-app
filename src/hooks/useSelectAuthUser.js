@@ -5,8 +5,10 @@ const useSelectAuthUser = () => {
   const isFetching = useSelector(state =>
     selectors.selectIsFetchingAuthState(state)
   );
+  const isLoggedIn = useSelector(state => selectors.selectIsLoggedIn(state));
   const authUser = useSelector(state => selectors.selectAuthUser(state));
-  return { authUser, isFetching };
+
+  return { isFetching, isLoggedIn, authUser };
 };
 
 export default useSelectAuthUser;
