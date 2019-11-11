@@ -29,6 +29,12 @@ const { successType: FETCH_QUIZZES_SUCCESS } = getFetchActionTypes(
 const { successType: FETCH_MORE_QUIZZES_SUCCESS } = getFetchActionTypes(
   actionTypes.FETCH_MORE_QUIZZES
 );
+const { successType: FETCH_AUTH_USER_QUIZZES_SUCCESS } = getFetchActionTypes(
+  actionTypes.FETCH_AUTH_USER_QUIZZES
+);
+const { successType: DELETE_QUIZ_CONFIRMED_SUCCESS } = getFetchActionTypes(
+  actionTypes.DELETE_QUIZ_CONFIRMED
+);
 
 const quizzes = createReducer(initialState, {
   [actionTypes.RECEIVE_QUIZZES]: storeQuizzes,
@@ -41,6 +47,23 @@ const quizzes = createReducer(initialState, {
     const newQuizIds = quizzes.map(quiz => quiz.id);
     state.allIds = [...state.allIds, ...newQuizIds];
   },
+  [FETCH_AUTH_USER_QUIZZES_SUCCESS]: (state, { quizzes, authUserId }) => {
+    const currentQuizzes = selectQuizzes(state);
+    const nonAuthUserQuizzes = currentQuizzes.filter(
+      quiz => quiz.authorId !== authUserId
+    );
+    const nextQuizzes = [...nonAuthUserQuizzes, ...quizzes];
+
+    const byId = {};
+    nextQuizzes.forEach(quiz => {
+      byId[quiz.id] = quiz;
+    });
+
+    state.byId = byId;
+
+    const nextQuizIds = nextQuizzes.map(quiz => quiz.id);
+    state.allIds = nextQuizIds;
+  },
   [actionTypes.RECEIVE_QUIZ]: (state, { quiz }) => {
     state.byId[quiz.id] = quiz;
 
@@ -48,6 +71,10 @@ const quizzes = createReducer(initialState, {
     if (!found) {
       state.allIds.push(quiz.id);
     }
+  },
+  [DELETE_QUIZ_CONFIRMED_SUCCESS]: (state, { quizId }) => {
+    delete state.byId[quizId];
+    state.allIds = state.allIds.filter(id => id !== quizId);
   }
 });
 

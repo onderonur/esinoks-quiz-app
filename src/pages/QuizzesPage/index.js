@@ -15,7 +15,6 @@ const useStyles = makeStyles(theme => ({
 
 const QuizzesPage = () => {
   const classes = useStyles();
-  // const { isFetching, quizIds, fetchMore } = useListenQuizzes();
   const dispatch = useDispatch();
   const quizIds = useSelector(state => selectors.selectQuizIds(state));
 

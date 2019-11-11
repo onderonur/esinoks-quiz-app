@@ -11,6 +11,9 @@ import QuizListItemMenu from "./QuizListItemMenu";
 
 const QuizListItem = ({ quizId, index, hasActions }) => {
   const quiz = useSelector(state => selectors.selectQuizById(state, quizId));
+  // const questionCount = useSelector(state =>
+  //   selectors.selectTotalQuestionCountByQuizId(state, quizId)
+  // );
 
   return (
     <ListItem
@@ -19,7 +22,11 @@ const QuizListItem = ({ quizId, index, hasActions }) => {
       to={`/quiz/${quizId}`}
       component={RouterLink}
     >
-      <ListItemText primary={`${index + 1}. ${quiz.title}`} />
+      <ListItemText
+        primary={`${index + 1}. ${quiz.title}`}
+        // TODO: Bunun çalışması için quiz içerisinde toplam soru sayısını tutan bir alan tanımlanmalı firestore'da
+        // secondary={`Toplam ${questionCount} Soru`}
+      />
       {hasActions && (
         <ListItemSecondaryAction>
           <QuizListItemMenu quizId={quizId} />

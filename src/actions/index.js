@@ -160,3 +160,7 @@ export const fetchQuizzes = () => ({
 export const fetchMoreQuizzes = () => ({
   type: actionTypes.FETCH_MORE_QUIZZES
 });
+
+export const fetchAuthUserQuizzes = () => ({
+  type: actionTypes.FETCH_AUTH_USER_QUIZZES
+});

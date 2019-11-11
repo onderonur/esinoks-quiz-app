@@ -4,6 +4,7 @@ import * as actionTypes from "constants/actionTypes";
 
 const isFetching = combineReducers({
   authState: createIsFetching(actionTypes.LISTEN_AUTH_STATE),
+  authUserQuizzes: createIsFetching(actionTypes.FETCH_AUTH_USER_QUIZZES),
   createQuiz: createIsFetching(actionTypes.CREATE_QUIZ),
   updateQuiz: createIsFetching(actionTypes.UPDATE_QUIZ),
   deleteQuiz: createIsFetching(actionTypes.DELETE_QUIZ_CONFIRMED),
@@ -16,6 +17,7 @@ export default isFetching;
 
 export const selectors = {
   selectIsFetchingAuthState: state => state.authState,
+  selectIsFetchingAuthUserQuizzes: state => state.authUserQuizzes,
   selectIsFetchingCreateQuiz: state => state.createQuiz,
   selectIsFetchingUpdateQuiz: state => state.updateQuiz,
   selectIsFetchingDeleteQuiz: state => state.deleteQuiz,

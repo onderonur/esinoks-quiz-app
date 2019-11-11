@@ -203,11 +203,11 @@ const fetchQuizzesEpic = action$ =>
     ofType(actionTypes.FETCH_QUIZZES),
     mapWithFetchActionTypes(),
     switchMap(([action, { requestType, successType, errorType }]) => {
-      const paginatedQuery = firebase
+      const query = firebase
         .quizzes()
         .orderBy("createdAt")
         .limit(2);
-      return from(paginatedQuery.get()).pipe(
+      return from(query.get()).pipe(
         map(snapshot => snapshot.docs),
         map(docs => docs.map(doc => ({ id: doc.id, ...doc.data() }))),
         map(quizzes => ({ type: successType, quizzes })),
@@ -225,15 +225,33 @@ const fetchMoreQuizzesEpic = (action$, state$) =>
       const quizzes = selectors.selectQuizzes(state$.value);
       // TODO: Düzelt bu sonuncu createdAt'i almayı.
       const maxCreatedAt = quizzes[quizzes.length - 1].createdAt;
-      const paginatedQuery = firebase
+      const query = firebase
         .quizzes()
         .orderBy("createdAt")
         .startAfter(maxCreatedAt)
         .limit(2);
-      return from(paginatedQuery.get()).pipe(
+      return from(query.get()).pipe(
         map(snapshot => snapshot.docs),
         map(docs => docs.map(doc => ({ id: doc.id, ...doc.data() }))),
         map(quizzes => ({ type: successType, quizzes })),
+        catchError(() => of({ type: errorType })),
+        startWith({ type: requestType })
+      );
+    })
+  );
+
+const fetchAuthUserQuizzesEpic = (action$, state$) =>
+  action$.pipe(
+    ofType(actionTypes.FETCH_AUTH_USER_QUIZZES),
+    mapWithFetchActionTypes(),
+    switchMap(([action, { requestType, successType, errorType }]) => {
+      const query = firebase.quizzes().orderBy("createdAt");
+      const authUser = selectors.selectAuthUser(state$.value);
+      const authUserId = authUser.uid;
+      return from(query.get()).pipe(
+        map(snapshot => snapshot.docs),
+        map(docs => docs.map(doc => ({ id: doc.id, ...doc.data() }))),
+        map(quizzes => ({ type: successType, quizzes, authUserId })),
         catchError(() => of({ type: errorType })),
         startWith({ type: requestType })
       );
@@ -251,7 +269,8 @@ const rootEpic = combineEpics(
   deleteQuestionConfirmedEpic,
   listenAuthStateEpic,
   fetchQuizzesEpic,
-  fetchMoreQuizzesEpic
+  fetchMoreQuizzesEpic,
+  fetchAuthUserQuizzesEpic
 );
 
 export default rootEpic;

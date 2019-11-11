@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 const Earth = () => {
   const classes = useStyles();
 
-  return <img className={classes.image} src={earthPng} alt="astronaut" />;
+  return <img className={classes.image} src={earthPng} alt="earth" />;
 };
 
 export default Earth;
