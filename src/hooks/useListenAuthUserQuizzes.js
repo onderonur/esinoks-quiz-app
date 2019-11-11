@@ -8,7 +8,7 @@ import { receiveQuizzes } from "actions";
 const useListenAuthUserQuizzes = () => {
   const dispatch = useDispatch();
   const firebase = useFirebase();
-  const authUser = useSelectAuthUser();
+  const { authUser } = useSelectAuthUser();
   const [isFetching, setIsFetching] = useState(true);
   const authUserQuizIds = useSelector(state =>
     selectors.selectAuthUserQuizIds(state)

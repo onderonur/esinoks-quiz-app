@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
 
 const ProfileHeader = () => {
   const classes = useStyles();
-  const authUser = useSelectAuthUser();
+  const { authUser } = useSelectAuthUser();
 
   const { displayName, email, photoURL } = authUser;
 

@@ -39,7 +39,7 @@ const QuizForm = () => {
     isNew ? null : selectors.selectQuizById(state, quizId)
   );
 
-  const authUser = useSelectAuthUser();
+  const { authUser } = useSelectAuthUser();
 
   const handleSubmit = values => {
     const { title } = values;

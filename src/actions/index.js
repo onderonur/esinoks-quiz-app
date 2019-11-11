@@ -151,3 +151,7 @@ export const shareQuizCode = quizId => ({
 export const shareQuizCodeCompleted = () => ({
   type: actionTypes.SHARE_QUIZ_CODE_COMPLETED
 });
+
+export const listenAuthState = () => ({
+  type: actionTypes.LISTEN_AUTH_STATE
+});

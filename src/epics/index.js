@@ -10,17 +10,23 @@ import {
   switchMap,
   take,
   takeUntil,
-  ignoreElements
+  ignoreElements,
+  mergeMap
 } from "rxjs/operators";
-import { from, of } from "rxjs";
+import { from, of, fromEventPattern } from "rxjs";
 import firebase from "app-firebase";
 import { getFetchActionTypes, getFirestoreTimeStamp } from "utils";
 
 const mapWithFetchActionTypes = () =>
   map(action => {
     const { type } = action;
-    const { requestType, successType, errorType } = getFetchActionTypes(type);
-    return [action, { requestType, successType, errorType }];
+    const {
+      requestType,
+      successType,
+      errorType,
+      cancelType
+    } = getFetchActionTypes(type);
+    return [action, { requestType, successType, errorType, cancelType }];
   });
 
 const createQuizEpic = action$ =>
@@ -168,6 +174,29 @@ const deleteQuestionConfirmedEpic = action$ =>
     )
   );
 
+const listenAuthStateEpic = action$ =>
+  action$.pipe(
+    ofType(actionTypes.LISTEN_AUTH_STATE),
+    mapWithFetchActionTypes(),
+    mergeMap(
+      ([action, { requestType, successType, errorType, cancelType }]) => {
+        // Inspired from: https://stackoverflow.com/questions/50655236/how-to-use-firestore-realtime-updates-onsnapshot-with-redux-observable-rxjs/56503403#56503403
+        return fromEventPattern(
+          handler => firebase.auth.onAuthStateChanged(handler),
+          (handler, unsubscribe) => unsubscribe()
+        ).pipe(
+          map(authUser => ({
+            type: successType,
+            authUser
+          })),
+          catchError(error => of({ type: errorType, error })),
+          takeUntil(action$.pipe(ofType(cancelType))),
+          startWith({ type: requestType })
+        );
+      }
+    )
+  );
+
 const rootEpic = combineEpics(
   createQuizEpic,
   updateQuizEpic,
@@ -176,7 +205,8 @@ const rootEpic = combineEpics(
   redirectAfterCreateQuizSuccessEpic,
   createQuestionEpic,
   updateQuestionEpic,
-  deleteQuestionConfirmedEpic
+  deleteQuestionConfirmedEpic,
+  listenAuthStateEpic
 );
 
 export default rootEpic;

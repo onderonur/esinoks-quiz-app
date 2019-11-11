@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
 
 const UserButton = () => {
   const classes = useStyles();
-  const authUser = useSelectAuthUser();
+  const { authUser } = useSelectAuthUser();
 
   return authUser ? (
     <UserMenu
