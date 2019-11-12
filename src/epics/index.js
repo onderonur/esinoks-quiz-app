@@ -239,6 +239,7 @@ const fetchQuizEpic = action$ =>
     })
   );
 
+// It redirects user to "404" page when a quiz is not found.
 const quizNotFoundEpic = action$ =>
   action$.pipe(
     ofType(getFetchActionTypes(actionTypes.FETCH_QUIZ).errorType),

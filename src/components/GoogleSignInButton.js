@@ -6,6 +6,7 @@ import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   button: {
+    cursor: "pointer",
     height: 40,
     borderWidth: 0,
     backgroundColor: "white",

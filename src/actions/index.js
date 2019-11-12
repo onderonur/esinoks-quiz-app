@@ -1,4 +1,5 @@
 import * as actionTypes from "constants/actionTypes";
+import { getFetchActionTypes } from "utils";
 
 export const selectQuestion = questionId => ({
   type: actionTypes.SELECT_QUESTION,
@@ -143,9 +144,9 @@ export const shareQuizCodeCompleted = () => ({
 export const listenAuthState = () => ({
   type: actionTypes.LISTEN_AUTH_STATE
 });
-const { cancelType: LISTEN_AUTH_STATE_CANCEL } = actionTypes.LISTEN_AUTH_STATE;
+
 export const listenAuthStateCancel = () => ({
-  type: LISTEN_AUTH_STATE_CANCEL
+  type: getFetchActionTypes(actionTypes.LISTEN_AUTH_STATE).cancelType
 });
 
 export const fetchAuthUserQuizzes = () => ({
