@@ -7,17 +7,15 @@ const initialState = {
   authUser: null
 };
 
-const {
-  successType: LISTEN_AUTH_STATE_SUCCESS,
-  errorType: LISTEN_AUTH_STATE_ERROR
-} = getFetchActionTypes(actionTypes.LISTEN_AUTH_STATE);
-
 const authUser = createReducer(initialState, {
-  [LISTEN_AUTH_STATE_SUCCESS]: (state, { authUser }) => {
+  [getFetchActionTypes(actionTypes.LISTEN_AUTH_STATE).successType]: (
+    state,
+    { authUser }
+  ) => {
     state.isLoggedIn = !!authUser;
     state.authUser = authUser;
   },
-  [LISTEN_AUTH_STATE_ERROR]: state => {
+  [getFetchActionTypes(actionTypes.LISTEN_AUTH_STATE).errorType]: state => {
     state.isLoggedIn = false;
     state.authUser = null;
   }

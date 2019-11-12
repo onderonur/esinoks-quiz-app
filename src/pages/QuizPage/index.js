@@ -3,11 +3,12 @@ import QuestionGridList from "./QuestionGridList";
 import QuestionDialog from "./QuestionDialog";
 import Journey from "./Journey";
 import { useParams, Prompt } from "react-router-dom";
-import useListenQuiz from "hooks/useListenQuiz";
 import LoadingIndicator from "components/LoadingIndicator";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { exitedFromQuiz } from "actions";
 import { Typography, makeStyles } from "@material-ui/core";
+import { selectors } from "reducers";
+import useFetchQuiz from "hooks/useFetchQuiz";
 
 const useStyles = makeStyles(theme => ({
   title: {
@@ -16,10 +17,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const QuizPage = () => {
-  const { quizId } = useParams();
-  const { isFetching, quiz } = useListenQuiz(quizId);
-  const dispatch = useDispatch();
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const { quizId } = useParams();
+  const quiz = useSelector(state => selectors.selectQuizById(state, quizId));
+  const isFetching = useSelector(state =>
+    selectors.selectIsFetchingQuiz(state, quizId)
+  );
+
+  useFetchQuiz(quizId);
 
   useEffect(() => {
     // When user leaves this page, we clean the quiz state from the store.

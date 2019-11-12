@@ -7,47 +7,11 @@ const initialState = {
   allIds: []
 };
 
-const storeQuizzes = (state, { quizzes }) => {
-  const newAllIds = quizzes.map(quiz => quiz.id);
-
-  state.allIds.forEach(id => {
-    if (!newAllIds.includes(id)) {
-      delete state.byId[id];
-    }
-  });
-
-  quizzes.forEach(quiz => {
-    state.byId[quiz.id] = quiz;
-  });
-
-  state.allIds = newAllIds;
-};
-
-const { successType: FETCH_QUIZZES_SUCCESS } = getFetchActionTypes(
-  actionTypes.FETCH_QUIZZES
-);
-const { successType: FETCH_MORE_QUIZZES_SUCCESS } = getFetchActionTypes(
-  actionTypes.FETCH_MORE_QUIZZES
-);
-const { successType: FETCH_AUTH_USER_QUIZZES_SUCCESS } = getFetchActionTypes(
-  actionTypes.FETCH_AUTH_USER_QUIZZES
-);
-const { successType: DELETE_QUIZ_CONFIRMED_SUCCESS } = getFetchActionTypes(
-  actionTypes.DELETE_QUIZ_CONFIRMED
-);
-
 const quizzes = createReducer(initialState, {
-  [actionTypes.RECEIVE_QUIZZES]: storeQuizzes,
-  [FETCH_QUIZZES_SUCCESS]: storeQuizzes,
-  [FETCH_MORE_QUIZZES_SUCCESS]: (state, { quizzes }) => {
-    quizzes.forEach(quiz => {
-      state.byId[quiz.id] = quiz;
-    });
-
-    const newQuizIds = quizzes.map(quiz => quiz.id);
-    state.allIds = [...state.allIds, ...newQuizIds];
-  },
-  [FETCH_AUTH_USER_QUIZZES_SUCCESS]: (state, { quizzes, authUserId }) => {
+  [getFetchActionTypes(actionTypes.FETCH_AUTH_USER_QUIZZES).successType]: (
+    state,
+    { quizzes, authUserId }
+  ) => {
     const currentQuizzes = selectQuizzes(state);
     const nonAuthUserQuizzes = currentQuizzes.filter(
       quiz => quiz.authorId !== authUserId
@@ -64,7 +28,10 @@ const quizzes = createReducer(initialState, {
     const nextQuizIds = nextQuizzes.map(quiz => quiz.id);
     state.allIds = nextQuizIds;
   },
-  [actionTypes.RECEIVE_QUIZ]: (state, { quiz }) => {
+  [getFetchActionTypes(actionTypes.FETCH_QUIZ).successType]: (
+    state,
+    { quiz }
+  ) => {
     state.byId[quiz.id] = quiz;
 
     const found = state.allIds.includes(quiz.id);
@@ -72,7 +39,10 @@ const quizzes = createReducer(initialState, {
       state.allIds.push(quiz.id);
     }
   },
-  [DELETE_QUIZ_CONFIRMED_SUCCESS]: (state, { quizId }) => {
+  [getFetchActionTypes(actionTypes.DELETE_QUIZ_CONFIRMED).successType]: (
+    state,
+    { quizId }
+  ) => {
     delete state.byId[quizId];
     state.allIds = state.allIds.filter(id => id !== quizId);
   }

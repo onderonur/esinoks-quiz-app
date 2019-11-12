@@ -89,11 +89,6 @@ export const deleteQuestionCancelled = () => ({
   type: actionTypes.DELETE_QUESTION_CANCELLED
 });
 
-export const receiveQuizzes = quizzes => ({
-  type: actionTypes.RECEIVE_QUIZZES,
-  quizzes
-});
-
 export const receiveQuiz = quiz => ({
   type: actionTypes.RECEIVE_QUIZ,
   quiz
@@ -153,14 +148,12 @@ export const listenAuthStateCancel = () => ({
   type: LISTEN_AUTH_STATE_CANCEL
 });
 
-export const fetchQuizzes = () => ({
-  type: actionTypes.FETCH_QUIZZES
-});
-
-export const fetchMoreQuizzes = () => ({
-  type: actionTypes.FETCH_MORE_QUIZZES
-});
-
 export const fetchAuthUserQuizzes = () => ({
   type: actionTypes.FETCH_AUTH_USER_QUIZZES
+});
+
+export const fetchQuiz = (quizId, history) => ({
+  type: actionTypes.FETCH_QUIZ,
+  quizId,
+  history
 });

@@ -6,16 +6,15 @@ const initialState = {
   byQuizId: {}
 };
 
-const { successType: DELETE_QUIZ_CONFIRMED_SUCCESS } = getFetchActionTypes(
-  actionTypes.DELETE_QUIZ_CONFIRMED
-);
-
 const quizQuestions = createReducer(initialState, {
   [actionTypes.RECEIVE_QUIZ_QUESTIONS]: (state, { quizId, questions }) => {
     const questionIds = questions ? questions.map(question => question.id) : [];
     state.byQuizId[quizId] = questionIds;
   },
-  [DELETE_QUIZ_CONFIRMED_SUCCESS]: (state, { quizId }) => {
+  [getFetchActionTypes(actionTypes.DELETE_QUIZ_CONFIRMED).successType]: (
+    state,
+    { quizId }
+  ) => {
     // Removing the question references of the deleted quiz.
     delete state.byQuizId[quizId];
   }

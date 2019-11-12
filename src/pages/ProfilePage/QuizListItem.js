@@ -9,7 +9,7 @@ import { selectors } from "reducers";
 import RouterLink from "components/RouterLink";
 import QuizListItemMenu from "./QuizListItemMenu";
 
-const QuizListItem = ({ quizId, index, hasActions }) => {
+const QuizListItem = ({ quizId, index }) => {
   const quiz = useSelector(state => selectors.selectQuizById(state, quizId));
   // const questionCount = useSelector(state =>
   //   selectors.selectTotalQuestionCountByQuizId(state, quizId)
@@ -27,11 +27,9 @@ const QuizListItem = ({ quizId, index, hasActions }) => {
         // TODO: Bunun çalışması için quiz içerisinde toplam soru sayısını tutan bir alan tanımlanmalı firestore'da
         // secondary={`Toplam ${questionCount} Soru`}
       />
-      {hasActions && (
-        <ListItemSecondaryAction>
-          <QuizListItemMenu quizId={quizId} />
-        </ListItemSecondaryAction>
-      )}
+      <ListItemSecondaryAction>
+        <QuizListItemMenu quizId={quizId} />
+      </ListItemSecondaryAction>
     </ListItem>
   );
 };

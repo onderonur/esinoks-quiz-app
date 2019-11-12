@@ -11,9 +11,10 @@ import {
   take,
   takeUntil,
   ignoreElements,
-  mergeMap
+  mergeMap,
+  filter
 } from "rxjs/operators";
-import { from, of, fromEventPattern } from "rxjs";
+import { from, of, fromEventPattern, iif } from "rxjs";
 import firebase from "app-firebase";
 import { getFetchActionTypes, getFirestoreTimeStamp } from "utils";
 import { selectors } from "reducers";
@@ -103,14 +104,11 @@ const deleteQuizConfirmedEpic = action$ =>
     })
   );
 
-const { successType: DELETE_QUIZ_CONFIRMED_SUCCESS } = getFetchActionTypes(
-  actionTypes.DELETE_QUIZ_CONFIRMED
-);
 // When we delete a quiz successfully, we also delete its files too.
 // TODO: Düzelt bunu
 const deleteQuizImagesEpic = action$ =>
   action$.pipe(
-    ofType(DELETE_QUIZ_CONFIRMED_SUCCESS),
+    ofType(getFetchActionTypes(actionTypes.DELETE_QUIZ_CONFIRMED).successType),
     tap(action => {
       const { quizId } = action;
       const storageRef = firebase.storage.ref();
@@ -198,48 +196,6 @@ const listenAuthStateEpic = action$ =>
     )
   );
 
-const fetchQuizzesEpic = action$ =>
-  action$.pipe(
-    ofType(actionTypes.FETCH_QUIZZES),
-    mapWithFetchActionTypes(),
-    switchMap(([action, { requestType, successType, errorType }]) => {
-      const query = firebase
-        .quizzes()
-        .orderBy("createdAt")
-        .limit(2);
-      return from(query.get()).pipe(
-        map(snapshot => snapshot.docs),
-        map(docs => docs.map(doc => ({ id: doc.id, ...doc.data() }))),
-        map(quizzes => ({ type: successType, quizzes })),
-        catchError(() => of({ type: errorType })),
-        startWith({ type: requestType })
-      );
-    })
-  );
-
-const fetchMoreQuizzesEpic = (action$, state$) =>
-  action$.pipe(
-    ofType(actionTypes.FETCH_MORE_QUIZZES),
-    mapWithFetchActionTypes(),
-    switchMap(([action, { requestType, successType, errorType }]) => {
-      const quizzes = selectors.selectQuizzes(state$.value);
-      // TODO: Düzelt bu sonuncu createdAt'i almayı.
-      const maxCreatedAt = quizzes[quizzes.length - 1].createdAt;
-      const query = firebase
-        .quizzes()
-        .orderBy("createdAt")
-        .startAfter(maxCreatedAt)
-        .limit(2);
-      return from(query.get()).pipe(
-        map(snapshot => snapshot.docs),
-        map(docs => docs.map(doc => ({ id: doc.id, ...doc.data() }))),
-        map(quizzes => ({ type: successType, quizzes })),
-        catchError(() => of({ type: errorType })),
-        startWith({ type: requestType })
-      );
-    })
-  );
-
 const fetchAuthUserQuizzesEpic = (action$, state$) =>
   action$.pipe(
     ofType(actionTypes.FETCH_AUTH_USER_QUIZZES),
@@ -258,6 +214,39 @@ const fetchAuthUserQuizzesEpic = (action$, state$) =>
     })
   );
 
+const fetchQuizEpic = action$ =>
+  action$.pipe(
+    ofType(actionTypes.FETCH_QUIZ),
+    mapWithFetchActionTypes(),
+    switchMap(([action, { requestType, successType, errorType }]) => {
+      const { quizId, history } = action;
+      const query = firebase.quiz(quizId);
+      return from(query.get()).pipe(
+        mergeMap(snapshot =>
+          iif(
+            () => snapshot.exists,
+            of({
+              type: successType,
+              quizId,
+              quiz: { id: snapshot.id, ...snapshot.data() }
+            }),
+            of({ type: errorType, quizId, status: 404, history })
+          )
+        ),
+        catchError(() => of({ type: errorType, quizId })),
+        startWith({ type: requestType, quizId })
+      );
+    })
+  );
+
+const quizNotFoundEpic = action$ =>
+  action$.pipe(
+    ofType(getFetchActionTypes(actionTypes.FETCH_QUIZ).errorType),
+    filter(action => action.status === 404),
+    tap(action => action.history.push("/not-found-404")),
+    ignoreElements()
+  );
+
 const rootEpic = combineEpics(
   createQuizEpic,
   updateQuizEpic,
@@ -268,9 +257,9 @@ const rootEpic = combineEpics(
   updateQuestionEpic,
   deleteQuestionConfirmedEpic,
   listenAuthStateEpic,
-  fetchQuizzesEpic,
-  fetchMoreQuizzesEpic,
-  fetchAuthUserQuizzesEpic
+  fetchAuthUserQuizzesEpic,
+  fetchQuizEpic,
+  quizNotFoundEpic
 );
 
 export default rootEpic;

@@ -6,16 +6,12 @@ import ProfilePage from "pages/ProfilePage";
 import PrivateRoute from "./PrivateRoute";
 import QuizCreatorPage from "pages/QuizCreatorPage";
 import NotFound404Page from "pages/NotFound404Page";
-import QuizzesPage from "pages/QuizzesPage";
 
 const Routes = () => {
   return (
     <Switch>
       <Route exact path="/">
         <HomePage />
-      </Route>
-      <Route exact path="/quiz">
-        <QuizzesPage />
       </Route>
       <Route path="/quiz/:quizId">
         <QuizPage />

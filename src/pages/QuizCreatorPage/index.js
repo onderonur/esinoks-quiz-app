@@ -12,10 +12,11 @@ import { useParams } from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
 import QuestionFormDialog from "./QuestionFormDialog";
 import QuizQuestionList from "./QuizQuestionList";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { openQuestionFormDialog } from "actions";
 import LoadingIndicator from "components/LoadingIndicator";
-import useListenQuiz from "hooks/useListenQuiz";
+import { selectors } from "reducers";
+import useFetchQuiz from "hooks/useFetchQuiz";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -27,7 +28,12 @@ const QuizCreatorPage = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { quizId } = useParams();
-  const { isFetching, quiz } = useListenQuiz(quizId);
+  const quiz = useSelector(state => selectors.selectQuizById(state, quizId));
+  const isFetching = useSelector(state =>
+    selectors.selectIsFetchingQuiz(state, quizId)
+  );
+
+  useFetchQuiz(quizId);
 
   return (
     <>

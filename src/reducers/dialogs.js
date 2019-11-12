@@ -3,35 +3,19 @@ import { getFetchActionTypes } from "utils";
 import createDialog, * as fromCreateDialog from "./higherOrderReducers/createDialog";
 import { combineReducers } from "redux";
 
-const { successType: CREATE_QUESTION_SUCCESS } = getFetchActionTypes(
-  actionTypes.CREATE_QUESTION
-);
-
-const { successType: UPDATE_QUESTION_SUCCESS } = getFetchActionTypes(
-  actionTypes.UPDATE_QUESTION
-);
-
-const { successType: DELETE_QUIZ_CONFIRMED_SUCCESS } = getFetchActionTypes(
-  actionTypes.DELETE_QUIZ_CONFIRMED
-);
-
-const { successType: DELETE_QUESTION_CONFIRMED_SUCCESS } = getFetchActionTypes(
-  actionTypes.DELETE_QUESTION_CONFIRMED
-);
-
 const dialogs = combineReducers({
   questionForm: createDialog(actionTypes.OPEN_QUESTION_FORM_DIALOG, [
     actionTypes.CLOSE_QUESTION_FORM_DIALOG,
-    CREATE_QUESTION_SUCCESS,
-    UPDATE_QUESTION_SUCCESS
+    getFetchActionTypes(actionTypes.CREATE_QUESTION).successType,
+    getFetchActionTypes(actionTypes.UPDATE_QUESTION).successType
   ]),
   deleteQuizConfirmation: createDialog(actionTypes.DELETE_QUIZ, [
     actionTypes.DELETE_QUIZ_CANCELLED,
-    DELETE_QUIZ_CONFIRMED_SUCCESS
+    getFetchActionTypes(actionTypes.DELETE_QUIZ_CONFIRMED).successType
   ]),
   deleteQuestionConfirmation: createDialog(actionTypes.DELETE_QUESTION, [
     actionTypes.DELETE_QUESTION_CANCELLED,
-    DELETE_QUESTION_CONFIRMED_SUCCESS
+    getFetchActionTypes(actionTypes.DELETE_QUESTION_CONFIRMED).successType
   ]),
   restartQuizConfirmation: createDialog(actionTypes.RESTART_QUIZ, [
     actionTypes.RESTART_QUIZ_CANCELLED,

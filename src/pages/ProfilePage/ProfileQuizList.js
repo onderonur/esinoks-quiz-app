@@ -4,7 +4,7 @@ import { Box, Typography, Button } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import { useHistory } from "react-router-dom";
 import ShareQuizCodeDialog from "./ShareQuizCodeDialog";
-import QuizList from "components/QuizList";
+import QuizList from "./QuizList";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAuthUserQuizzes } from "actions";
 import { selectors } from "reducers";
@@ -35,7 +35,7 @@ const ProfileQuizList = () => {
           Yeni Quiz
         </Button>
       </Box>
-      <QuizList quizIds={authUserQuizIds} isFetching={isFetching} hasActions />
+      <QuizList quizIds={authUserQuizIds} isFetching={isFetching} />
       <ShareQuizCodeDialog />
       <DeleteQuizConfirmationDialog />
     </>

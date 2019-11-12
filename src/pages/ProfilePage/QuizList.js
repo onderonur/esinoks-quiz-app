@@ -2,13 +2,12 @@ import React from "react";
 import BaseList from "components/BaseList";
 import QuizListItem from "./QuizListItem";
 
-const QuizList = ({ quizIds, isFetching, hasActions }) => {
+const QuizList = ({ quizIds, isFetching }) => {
   const renderItem = (quizId, index) => (
     <QuizListItem
       key={quizId}
       quizId={quizId}
       index={index}
-      hasActions={hasActions}
     />
   );
 
