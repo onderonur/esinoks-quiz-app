@@ -1,12 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import BaseGridList from "components/BaseGridList";
 import QuestionGridListItem from "./QuestionGridListItem";
-import useListenQuizQuestions from "hooks/useListenQuizQuestions";
 import { useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { selectors } from "reducers";
+import { fetchQuizQuestions } from "actions";
 
 const QuestionGridList = () => {
   const { quizId } = useParams();
-  const { isFetching, quizQuestionIds } = useListenQuizQuestions(quizId);
+  const dispatch = useDispatch();
+  const isFetching = useSelector(state =>
+    selectors.selectIsFetchingQuizQuestions(state, quizId)
+  );
+  const quizQuestionIds = useSelector(state =>
+    selectors.selectQuestionIdsByQuizId(state, quizId)
+  );
+
+  useEffect(() => {
+    dispatch(fetchQuizQuestions(quizId));
+  }, [dispatch, quizId]);
 
   return (
     <BaseGridList

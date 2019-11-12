@@ -15,6 +15,10 @@ const isFetching = combineReducers({
   quiz: createByKey(
     action => action.quizId,
     createIsFetching(actionTypes.FETCH_QUIZ)
+  ),
+  quizQuestions: createByKey(
+    action => action.quizId,
+    createIsFetching(actionTypes.FETCH_QUIZ_QUESTIONS)
   )
 });
 
@@ -29,5 +33,6 @@ export const selectors = {
   selectIsFetchingCreateQuestion: state => state.createQuestion,
   selectIsFetchingUpdateQuestion: state => state.updateQuestion,
   selectIsFetchingDeleteQuestion: state => state.deleteQuestion,
-  selectIsFetchingQuiz: (state, quizId) => state.quiz[quizId]
+  selectIsFetchingQuiz: (state, quizId) => state.quiz[quizId],
+  selectIsFetchingQuizQuestions: (state, quizId) => state.quizQuestions[quizId]
 };

@@ -7,7 +7,10 @@ const initialState = {
 };
 
 const quizQuestions = createReducer(initialState, {
-  [actionTypes.RECEIVE_QUIZ_QUESTIONS]: (state, { quizId, questions }) => {
+  [getFetchActionTypes(actionTypes.FETCH_QUIZ_QUESTIONS).successType]: (
+    state,
+    { quizId, questions }
+  ) => {
     const questionIds = questions ? questions.map(question => question.id) : [];
     state.byQuizId[quizId] = questionIds;
   },

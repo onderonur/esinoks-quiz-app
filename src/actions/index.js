@@ -90,11 +90,6 @@ export const deleteQuestionCancelled = () => ({
   type: actionTypes.DELETE_QUESTION_CANCELLED
 });
 
-export const receiveQuiz = quiz => ({
-  type: actionTypes.RECEIVE_QUIZ,
-  quiz
-});
-
 export const createQuiz = ({ title, authorId, history }) => ({
   type: actionTypes.CREATE_QUIZ,
   title,
@@ -124,12 +119,6 @@ export const deleteQuizCancelled = () => ({
   type: actionTypes.DELETE_QUIZ_CANCELLED
 });
 
-export const receiveQuizQuestions = (quizId, questions) => ({
-  type: actionTypes.RECEIVE_QUIZ_QUESTIONS,
-  quizId,
-  questions
-});
-
 export const shareQuizCode = quizId => ({
   type: actionTypes.SHARE_QUIZ_CODE,
   dialogProps: {
@@ -157,4 +146,9 @@ export const fetchQuiz = (quizId, history) => ({
   type: actionTypes.FETCH_QUIZ,
   quizId,
   history
+});
+
+export const fetchQuizQuestions = quizId => ({
+  type: actionTypes.FETCH_QUIZ_QUESTIONS,
+  quizId
 });

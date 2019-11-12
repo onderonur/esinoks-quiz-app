@@ -1,13 +1,17 @@
 import createReducer from "./higherOrderReducers/createReducer";
 import * as actionTypes from "constants/actionTypes";
 import get from "lodash.get";
+import { getFetchActionTypes } from "utils";
 
 const initialState = {
   byId: {}
 };
 
 const questions = createReducer(initialState, {
-  [actionTypes.RECEIVE_QUIZ_QUESTIONS]: (state, { questions }) => {
+  [getFetchActionTypes(actionTypes.FETCH_QUIZ_QUESTIONS).successType]: (
+    state,
+    { questions }
+  ) => {
     questions.forEach(question => {
       state.byId[question.id] = question;
     });

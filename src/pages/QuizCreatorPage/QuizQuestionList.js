@@ -1,11 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import BaseList from "components/BaseList";
 import QuizQuestionListItem from "./QuizQuestionListItem";
 import DeleteQuestionConfirmationDialog from "./DeleteQuestionConfirmationDialog";
-import useListenQuizQuestions from "hooks/useListenQuizQuestions";
+import { useSelector, useDispatch } from "react-redux";
+import { selectors } from "reducers";
+import { fetchQuizQuestions } from "actions";
 
 const QuizQuestionList = ({ quizId }) => {
-  const { isFetching, quizQuestionIds } = useListenQuizQuestions(quizId);
+  const dispatch = useDispatch();
+  const isFetching = useSelector(state =>
+    selectors.selectIsFetchingQuizQuestions(state, quizId)
+  );
+  const quizQuestionIds = useSelector(state =>
+    selectors.selectQuestionIdsByQuizId(state, quizId)
+  );
+
+  useEffect(() => {
+    dispatch(fetchQuizQuestions(quizId));
+  }, [dispatch, quizId]);
 
   return (
     <>

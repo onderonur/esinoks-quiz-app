@@ -214,6 +214,23 @@ const fetchAuthUserQuizzesEpic = (action$, state$) =>
     })
   );
 
+const fetchQuizQuestionsEpic = action$ =>
+  action$.pipe(
+    ofType(actionTypes.FETCH_QUIZ_QUESTIONS),
+    mapWithFetchActionTypes(),
+    switchMap(([action, { requestType, successType, errorType }]) => {
+      const { quizId } = action;
+      const query = firebase.questions(quizId).orderBy("createdAt");
+      return from(query.get()).pipe(
+        map(snapshot => snapshot.docs),
+        map(docs => docs.map(doc => ({ id: doc.id, ...doc.data() }))),
+        map(questions => ({ type: successType, quizId, questions })),
+        catchError(() => of({ type: errorType, quizId })),
+        startWith({ type: requestType, quizId })
+      );
+    })
+  );
+
 const fetchQuizEpic = action$ =>
   action$.pipe(
     ofType(actionTypes.FETCH_QUIZ),
@@ -260,7 +277,8 @@ const rootEpic = combineEpics(
   listenAuthStateEpic,
   fetchAuthUserQuizzesEpic,
   fetchQuizEpic,
-  quizNotFoundEpic
+  quizNotFoundEpic,
+  fetchQuizQuestionsEpic
 );
 
 export default rootEpic;
