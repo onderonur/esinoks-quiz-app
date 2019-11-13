@@ -12,8 +12,7 @@ import {
   takeUntil,
   ignoreElements,
   mergeMap,
-  filter,
-  withLatestFrom
+  filter
 } from "rxjs/operators";
 import { from, of, fromEventPattern, iif } from "rxjs";
 import firebase from "app-firebase";
@@ -32,28 +31,60 @@ const mapWithFetchActionTypes = () =>
     return [action, { requestType, successType, errorType, cancelType }];
   });
 
-const createQuizEpic = action$ =>
+// TODO: Bu isim değişebilir.
+const createPostEpic = ({
+  type,
+  mapOperator,
+  post,
+  processDoc,
+  extraData = () => {}
+}) => (action$, state$) =>
   action$.pipe(
-    ofType(actionTypes.CREATE_QUIZ),
+    ofType(type),
     mapWithFetchActionTypes(),
-    exhaustMap(([action, { requestType, successType, errorType }]) => {
-      const { title, authorId } = action;
-
-      return from(
-        firebase.quizzes().add({
-          title,
-          authorId,
-          // TODO: May add this "createdAt" field with cloud functions
-          createdAt: getFirestoreTimeStamp(new Date())
+    mapOperator(([action, { requestType, successType, errorType }]) =>
+      from(post(action)).pipe(
+        map(doc => {
+          console.log(doc);
+          return processDoc ? processDoc(doc) : doc;
+        }),
+        map(response => ({
+          ...action,
+          type: successType,
+          response,
+          ...extraData(action, state$.value)
+        })),
+        catchError(error =>
+          of({
+            ...action,
+            type: errorType,
+            error,
+            ...extraData(action, state$.value)
+          })
+        ),
+        startWith({
+          ...action,
+          type: requestType,
+          ...extraData(action, state$.value)
         })
-      ).pipe(
-        map(doc => doc.id),
-        map(quizId => ({ type: successType, quizId })),
-        catchError(() => of({ type: errorType })),
-        startWith({ type: requestType })
-      );
-    })
+      )
+    )
   );
+
+const createQuizEpic = createPostEpic({
+  type: actionTypes.CREATE_QUIZ,
+  mapOperator: exhaustMap,
+  post: action => {
+    const { title, authorId } = action;
+    return firebase.quizzes().add({
+      title,
+      authorId,
+      // TODO: May add this "createdAt" field with cloud functions
+      createdAt: getFirestoreTimeStamp(new Date())
+    });
+  },
+  processDoc: doc => ({ quizId: doc.id })
+});
 
 const redirectAfterCreateQuizSuccessEpic = action$ =>
   action$.pipe(
@@ -64,7 +95,9 @@ const redirectAfterCreateQuizSuccessEpic = action$ =>
         ofType(successType),
         take(1),
         tap(successAction =>
-          action.history.replace(`/profile/quiz/${successAction.quizId}`)
+          action.history.replace(
+            `/profile/quiz/${successAction.response.quizId}`
+          )
         ),
         ignoreElements(),
         takeUntil(action$.pipe(ofType(errorType)))
@@ -72,38 +105,28 @@ const redirectAfterCreateQuizSuccessEpic = action$ =>
     )
   );
 
-const updateQuizEpic = action$ =>
-  action$.pipe(
-    ofType(actionTypes.UPDATE_QUIZ),
-    mapWithFetchActionTypes(),
-    exhaustMap(([action, { requestType, successType, errorType }]) => {
-      const { quizId, title } = action;
+// const updateQuizEpic = createPostEpic({
+//   type: actionTypes.UPDATE_QUIZ,
+//   mapOperator: exhaustMap,
+//   post: action => {
+//     const { quizId, title } = action;
 
-      return from(
-        firebase.quiz(quizId).update({
-          title
-        })
-      ).pipe(
-        mapTo({ type: successType }),
-        catchError(() => of({ type: errorType })),
-        startWith({ type: requestType })
-      );
-    })
-  );
+//     return firebase.quiz(quizId).update({
+//       title
+//     });
+//   },
+//   processDoc: () => ({ id: quizId, ...doc.data() })
+// });
 
-const deleteQuizConfirmedEpic = action$ =>
-  action$.pipe(
-    ofType(actionTypes.DELETE_QUIZ_CONFIRMED),
-    mapWithFetchActionTypes(),
-    exhaustMap(([action, { requestType, successType, errorType }]) => {
-      const { quizId } = action;
-      return from(firebase.quiz(quizId).delete()).pipe(
-        mapTo({ type: successType, quizId }),
-        catchError(() => of({ type: errorType })),
-        startWith({ type: requestType })
-      );
-    })
-  );
+const deleteQuizConfirmedEpic = createPostEpic({
+  type: actionTypes.DELETE_QUIZ_CONFIRMED,
+  mapOperator: exhaustMap,
+  post: action => {
+    const { quizId } = action;
+    return firebase.quiz(quizId).delete();
+  },
+  extraData: action => ({ quizId: action.quizId })
+});
 
 // When we delete a quiz successfully, we also delete its files too.
 // TODO: Düzelt bunu
@@ -197,39 +220,70 @@ const listenAuthStateEpic = action$ =>
     )
   );
 
-// A higher-order epic to fetch a collection
-const fetchCollectionEpic = ({ type, query, extraData = () => {} }) => (
-  action$,
-  state$
-) =>
+// A higher-order epic to fetch some query results
+const createFetchEpic = ({
+  type,
+  mapOperator,
+  query,
+  processSnapshot,
+  extraData = () => {}
+}) => (action$, state$) =>
   action$.pipe(
     ofType(type),
     mapWithFetchActionTypes(),
-    switchMap(([action, { requestType, successType, errorType, cancelType }]) =>
-      from(query(action).get()).pipe(
-        map(snapshot => snapshot.docs),
-        map(docs => docs.map(doc => ({ id: doc.id, ...doc.data() }))),
-        withLatestFrom(state$),
-        map(([collection, state]) => ({
-          ...action,
-          type: successType,
-          collection,
-          ...extraData(state)
-        })),
-        takeUntil(action$.pipe(ofType(cancelType))),
-        catchError(error => of({ ...action, type: errorType, error })),
-        startWith({ ...action, type: requestType })
-      )
+    mapOperator(
+      ([action, { requestType, successType, errorType, cancelType }]) =>
+        from(query(action).get()).pipe(
+          map(snapshot =>
+            processSnapshot ? processSnapshot(snapshot) : snapshot
+          ),
+          map(response => ({
+            ...action,
+            type: successType,
+            response,
+            ...extraData(action, state$.value)
+          })),
+          takeUntil(action$.pipe(ofType(cancelType))),
+          catchError(error =>
+            of({
+              ...action,
+              type: errorType,
+              error,
+              ...extraData(action, state$.value)
+            })
+          ),
+          startWith({
+            ...action,
+            type: requestType,
+            ...extraData(action, state$.value)
+          })
+        )
     )
   );
 
-const fetchAuthUserQuizzesEpic = fetchCollectionEpic({
+// A higher-order epic to fetch a collection
+const createFetchCollectionEpic = ({ type, query, extraData }) =>
+  createFetchEpic({
+    type,
+    mapOperator: switchMap,
+    query,
+    extraData,
+    processSnapshot: snapshot => {
+      const { docs } = snapshot;
+      const response = docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      return response;
+    }
+  });
+
+const fetchAuthUserQuizzesEpic = createFetchCollectionEpic({
   type: actionTypes.FETCH_AUTH_USER_QUIZZES,
   query: () => firebase.quizzes().orderBy("createdAt"),
-  extraData: state => ({ authUserId: selectors.selectAuthUser(state).uid })
+  extraData: (action, state) => ({
+    authUserId: selectors.selectAuthUser(state).uid
+  })
 });
 
-const fetchQuizQuestionsEpic = fetchCollectionEpic({
+const fetchQuizQuestionsEpic = createFetchCollectionEpic({
   type: actionTypes.FETCH_QUIZ_QUESTIONS,
   query: action => firebase.questions(action.quizId).orderBy("createdAt")
 });

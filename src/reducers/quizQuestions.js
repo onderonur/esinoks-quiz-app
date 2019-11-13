@@ -9,9 +9,9 @@ const initialState = {
 const quizQuestions = createReducer(initialState, {
   [getFetchActionTypes(actionTypes.FETCH_QUIZ_QUESTIONS).successType]: (
     state,
-    { quizId, collection }
+    { quizId, response }
   ) => {
-    const questionIds = collection.map(question => question.id);
+    const questionIds = response.map(question => question.id);
     state.byQuizId[quizId] = questionIds;
   },
   [getFetchActionTypes(actionTypes.DELETE_QUIZ_CONFIRMED).successType]: (

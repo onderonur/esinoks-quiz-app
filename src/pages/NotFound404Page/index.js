@@ -25,7 +25,7 @@ const NotFound404 = () => {
         </Box>
         <Box display="flex" justifyContent="center">
           <BaseButton
-            to="/profile"
+            to="/"
             variant="contained"
             color="primary"
             size="large"
