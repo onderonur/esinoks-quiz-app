@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
-import QuestionGridList from "./QuestionGridList";
-import QuestionDialog from "./QuestionDialog";
+import QuizQuestionGridList from "./QuizQuestionGridList";
+import ActiveQuestionDialog from "./ActiveQuestionDialog";
 import Journey from "./Journey";
 import { useParams, Prompt } from "react-router-dom";
 import LoadingIndicator from "components/LoadingIndicator";
 import { useSelector, useDispatch } from "react-redux";
-import { exitedFromQuiz } from "actions";
+import { exitedFromQuiz, fetchQuiz } from "actions";
 import { Typography, makeStyles } from "@material-ui/core";
 import { selectors } from "reducers";
-import useFetchQuiz from "hooks/useFetchQuiz";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   title: {
@@ -19,13 +19,16 @@ const useStyles = makeStyles(theme => ({
 const QuizPage = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
   const { quizId } = useParams();
   const quiz = useSelector(state => selectors.selectQuizById(state, quizId));
   const isFetching = useSelector(state =>
     selectors.selectIsFetchingQuiz(state, quizId)
   );
 
-  useFetchQuiz(quizId);
+  useEffect(() => {
+    dispatch(fetchQuiz(quizId, history));
+  }, [dispatch, history, quizId]);
 
   useEffect(() => {
     // When user leaves this page, we clean the quiz state from the store.
@@ -48,8 +51,8 @@ const QuizPage = () => {
       <Typography className={classes.title} variant="h5">
         {quiz.title}
       </Typography>
-      <QuestionGridList />
-      <QuestionDialog />
+      <QuizQuestionGridList />
+      <ActiveQuestionDialog />
     </>
   );
 };

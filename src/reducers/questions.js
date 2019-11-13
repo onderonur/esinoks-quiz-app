@@ -10,9 +10,9 @@ const initialState = {
 const questions = createReducer(initialState, {
   [getFetchActionTypes(actionTypes.FETCH_QUIZ_QUESTIONS).successType]: (
     state,
-    { questions }
+    { collection }
   ) => {
-    questions.forEach(question => {
+    collection.forEach(question => {
       state.byId[question.id] = question;
     });
   }

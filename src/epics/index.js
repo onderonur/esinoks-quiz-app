@@ -12,7 +12,8 @@ import {
   takeUntil,
   ignoreElements,
   mergeMap,
-  filter
+  filter,
+  withLatestFrom
 } from "rxjs/operators";
 import { from, of, fromEventPattern, iif } from "rxjs";
 import firebase from "app-firebase";
@@ -196,44 +197,47 @@ const listenAuthStateEpic = action$ =>
     )
   );
 
-const fetchAuthUserQuizzesEpic = (action$, state$) =>
+// A higher-order epic to fetch a collection
+const fetchCollectionEpic = ({ type, query, extraData = () => {} }) => (
+  action$,
+  state$
+) =>
   action$.pipe(
-    ofType(actionTypes.FETCH_AUTH_USER_QUIZZES),
+    ofType(type),
     mapWithFetchActionTypes(),
-    switchMap(([action, { requestType, successType, errorType }]) => {
-      const query = firebase.quizzes().orderBy("createdAt");
-      const authUser = selectors.selectAuthUser(state$.value);
-      const authUserId = authUser.uid;
-      return from(query.get()).pipe(
+    switchMap(([action, { requestType, successType, errorType, cancelType }]) =>
+      from(query(action).get()).pipe(
         map(snapshot => snapshot.docs),
         map(docs => docs.map(doc => ({ id: doc.id, ...doc.data() }))),
-        map(quizzes => ({ type: successType, quizzes, authUserId })),
-        catchError(() => of({ type: errorType })),
-        startWith({ type: requestType })
-      );
-    })
+        withLatestFrom(state$),
+        map(([collection, state]) => ({
+          ...action,
+          type: successType,
+          collection,
+          ...extraData(state)
+        })),
+        takeUntil(action$.pipe(ofType(cancelType))),
+        catchError(error => of({ ...action, type: errorType, error })),
+        startWith({ ...action, type: requestType })
+      )
+    )
   );
 
-const fetchQuizQuestionsEpic = action$ =>
-  action$.pipe(
-    ofType(actionTypes.FETCH_QUIZ_QUESTIONS),
-    mapWithFetchActionTypes(),
-    switchMap(([action, { requestType, successType, errorType }]) => {
-      const { quizId } = action;
-      const query = firebase.questions(quizId).orderBy("createdAt");
-      return from(query.get()).pipe(
-        map(snapshot => snapshot.docs),
-        map(docs => docs.map(doc => ({ id: doc.id, ...doc.data() }))),
-        map(questions => ({ type: successType, quizId, questions })),
-        catchError(() => of({ type: errorType, quizId })),
-        startWith({ type: requestType, quizId })
-      );
-    })
-  );
+const fetchAuthUserQuizzesEpic = fetchCollectionEpic({
+  type: actionTypes.FETCH_AUTH_USER_QUIZZES,
+  query: () => firebase.quizzes().orderBy("createdAt"),
+  extraData: state => ({ authUserId: selectors.selectAuthUser(state).uid })
+});
+
+const fetchQuizQuestionsEpic = fetchCollectionEpic({
+  type: actionTypes.FETCH_QUIZ_QUESTIONS,
+  query: action => firebase.questions(action.quizId).orderBy("createdAt")
+});
 
 const fetchQuizEpic = action$ =>
   action$.pipe(
     ofType(actionTypes.FETCH_QUIZ),
+    filter(action => action.quizId !== "new"),
     mapWithFetchActionTypes(),
     switchMap(([action, { requestType, successType, errorType }]) => {
       const { quizId, history } = action;
@@ -247,7 +251,10 @@ const fetchQuizEpic = action$ =>
               quizId,
               quiz: { id: snapshot.id, ...snapshot.data() }
             }),
-            of({ type: errorType, quizId, status: 404, history })
+            of(
+              { type: actionTypes.NOT_FOUND, history },
+              { type: errorType, quizId }
+            )
           )
         ),
         catchError(() => of({ type: errorType, quizId })),
@@ -256,11 +263,9 @@ const fetchQuizEpic = action$ =>
     })
   );
 
-// It redirects user to "404" page when a quiz is not found.
-const quizNotFoundEpic = action$ =>
+const notFoundContentEpic = action$ =>
   action$.pipe(
-    ofType(getFetchActionTypes(actionTypes.FETCH_QUIZ).errorType),
-    filter(action => action.status === 404),
+    ofType(actionTypes.NOT_FOUND),
     tap(action => action.history.push("/not-found-404")),
     ignoreElements()
   );
@@ -277,8 +282,8 @@ const rootEpic = combineEpics(
   listenAuthStateEpic,
   fetchAuthUserQuizzesEpic,
   fetchQuizEpic,
-  quizNotFoundEpic,
-  fetchQuizQuestionsEpic
+  fetchQuizQuestionsEpic,
+  notFoundContentEpic
 );
 
 export default rootEpic;

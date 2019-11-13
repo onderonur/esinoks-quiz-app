@@ -10,13 +10,13 @@ const initialState = {
 const quizzes = createReducer(initialState, {
   [getFetchActionTypes(actionTypes.FETCH_AUTH_USER_QUIZZES).successType]: (
     state,
-    { quizzes, authUserId }
+    { collection, authUserId }
   ) => {
     const currentQuizzes = selectQuizzes(state);
     const nonAuthUserQuizzes = currentQuizzes.filter(
       quiz => quiz.authorId !== authUserId
     );
-    const nextQuizzes = [...nonAuthUserQuizzes, ...quizzes];
+    const nextQuizzes = [...nonAuthUserQuizzes, ...collection];
 
     const byId = {};
     nextQuizzes.forEach(quiz => {

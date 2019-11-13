@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectors } from "reducers";
 import { answerQuestion, unselectQuestion } from "actions";
-import QuestionDialogChoiceList from "./QuestionDialogChoiceList";
+import ActiveQuestionDialogChoiceList from "./ActiveQuestionDialogChoiceList";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import BaseDialogTitle from "components/BaseDialogTitle";
@@ -16,7 +16,7 @@ const validationSchema = Yup.object().shape({
   givenAnswer: Yup.number().required()
 });
 
-const QuestionDialog = () => {
+const ActiveQuestionDialog = () => {
   const dispatch = useDispatch();
   const { quizId } = useParams();
 
@@ -73,7 +73,7 @@ const QuestionDialog = () => {
             >
               <BaseDialogContent>
                 <SanitizedHtml html={activeQuestion.body} />
-                <QuestionDialogChoiceList
+                <ActiveQuestionDialogChoiceList
                   name="givenAnswer"
                   choices={choices}
                   disabled={didAnswered}
@@ -95,4 +95,4 @@ const QuestionDialog = () => {
   );
 };
 
-export default QuestionDialog;
+export default ActiveQuestionDialog;

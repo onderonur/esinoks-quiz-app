@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
 import BaseGridList from "components/BaseGridList";
-import QuestionGridListItem from "./QuestionGridListItem";
+import QuizQuestionGridListItem from "./QuizQuestionGridListItem";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { selectors } from "reducers";
 import { fetchQuizQuestions } from "actions";
+import LoadingIndicator from "components/LoadingIndicator";
 
-const QuestionGridList = () => {
+const QuizQuestionGridList = () => {
   const { quizId } = useParams();
   const dispatch = useDispatch();
   const isFetching = useSelector(state =>
@@ -21,15 +22,16 @@ const QuestionGridList = () => {
   }, [dispatch, quizId]);
 
   return (
-    <BaseGridList
-      loading={isFetching}
-      items={quizQuestionIds}
-      minItemWidth={110}
-      renderItem={(questionId, i) => (
-        <QuestionGridListItem questionId={questionId} index={i} />
-      )}
-    />
+    <LoadingIndicator loading={isFetching}>
+      <BaseGridList
+        items={quizQuestionIds}
+        minItemWidth={110}
+        renderItem={(questionId, i) => (
+          <QuizQuestionGridListItem questionId={questionId} index={i} />
+        )}
+      />
+    </LoadingIndicator>
   );
 };
 
-export default QuestionGridList;
+export default QuizQuestionGridList;

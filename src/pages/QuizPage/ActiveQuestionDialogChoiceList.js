@@ -1,9 +1,9 @@
 import React from "react";
 import { List } from "@material-ui/core";
-import QuestionDialogChoiceListItem from "./QuestionDialogChoiceListItem";
+import ActiveQuestionDialogChoiceListItem from "./ActiveQuestionDialogChoiceListItem";
 import { useField, useFormikContext } from "formik";
 
-const QuestionDialogChoiceList = ({ choices, disabled, ...props }) => {
+const ActiveQuestionDialogChoiceList = ({ choices, disabled, ...props }) => {
   const [field] = useField(props);
   const { setFieldValue } = useFormikContext();
 
@@ -12,7 +12,7 @@ const QuestionDialogChoiceList = ({ choices, disabled, ...props }) => {
   return (
     <List>
       {choices.map((choice, i) => (
-        <QuestionDialogChoiceListItem
+        <ActiveQuestionDialogChoiceListItem
           key={i}
           choiceIndex={i}
           choice={choice}
@@ -25,4 +25,4 @@ const QuestionDialogChoiceList = ({ choices, disabled, ...props }) => {
   );
 };
 
-export default QuestionDialogChoiceList;
+export default ActiveQuestionDialogChoiceList;

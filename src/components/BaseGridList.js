@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/styles";
 import { Typography } from "@material-ui/core";
+import LoadingIndicator from "./LoadingIndicator";
 
 const DEFAULT_ITEMS = [];
 
@@ -41,11 +42,14 @@ const BaseGridList = ({
       listEmptyMessage
     )
   ) : (
-    <ul className={classes.flexList}>
-      {items.map((item, index) => (
-        <li key={extractItemKey(item, index)}>{renderItem(item, index)}</li>
-      ))}
-    </ul>
+    <>
+      <ul className={classes.flexList}>
+        {items.map((item, index) => (
+          <li key={extractItemKey(item, index)}>{renderItem(item, index)}</li>
+        ))}
+      </ul>
+      {loading && <LoadingIndicator loading />}
+    </>
   );
 };
 

@@ -12,10 +12,10 @@ const useStyles = makeStyles(theme => ({
     animation: "$rotating 60s linear infinite"
   },
   "@keyframes rotating": {
-    "0%": {
+    from: {
       transform: "rotate(0deg)"
     },
-    "100%": {
+    to: {
       transform: "rotate(360deg)"
     }
   }

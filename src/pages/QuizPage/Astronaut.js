@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
     animation: "$rotating 200ms linear infinite"
   },
   // When there is a looping animation, react-springs crashes the browser if a state change occurs.
-  // So, we just use the keyframes for this particular animation.
+  // So, we just use the keyframes for this particular animations.
   "@keyframes floating": {
     "0%": {
       transform: "translateY(-20px) scaleX(-1)"
@@ -35,10 +35,10 @@ const useStyles = makeStyles(theme => ({
     }
   },
   "@keyframes rotating": {
-    "0%": {
+    from: {
       transform: "rotate(0deg)"
     },
-    "100%": {
+    to: {
       transform: "rotate(360deg)"
     }
   }
@@ -81,7 +81,6 @@ const Astronaut = () => {
       ? `${(100 - DEFAULT_FINISH_OFFSET) * progressRate}%`
       : DEFAULT_ASTRONAUT_LEFT,
     width: isGameOver ? "0%" : `${DEFAULT_WIDTH}%`,
-    // TODO: May separate these 2 animations with different durations etc.
     config: {
       duration: 800
     }

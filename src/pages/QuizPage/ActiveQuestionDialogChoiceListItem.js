@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
   checked: {}
 }));
 
-const QuestionDialogChoiceListItem = ({
+const ActiveQuestionDialogChoiceListItem = ({
   choiceIndex,
   choice,
   isSelected,
@@ -79,4 +79,4 @@ const QuestionDialogChoiceListItem = ({
   );
 };
 
-export default QuestionDialogChoiceListItem;
+export default ActiveQuestionDialogChoiceListItem;

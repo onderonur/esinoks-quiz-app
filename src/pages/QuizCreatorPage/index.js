@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Paper,
   makeStyles,
@@ -13,10 +13,10 @@ import AddIcon from "@material-ui/icons/Add";
 import QuestionFormDialog from "./QuestionFormDialog";
 import QuizQuestionList from "./QuizQuestionList";
 import { useSelector, useDispatch } from "react-redux";
-import { openQuestionFormDialog } from "actions";
+import { openQuestionFormDialog, fetchQuiz } from "actions";
 import LoadingIndicator from "components/LoadingIndicator";
 import { selectors } from "reducers";
-import useFetchQuiz from "hooks/useFetchQuiz";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -27,13 +27,16 @@ const useStyles = makeStyles(theme => ({
 const QuizCreatorPage = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
   const { quizId } = useParams();
   const quiz = useSelector(state => selectors.selectQuizById(state, quizId));
   const isFetching = useSelector(state =>
     selectors.selectIsFetchingQuiz(state, quizId)
   );
 
-  useFetchQuiz(quizId);
+  useEffect(() => {
+    dispatch(fetchQuiz(quizId, history));
+  }, [dispatch, history, quizId]);
 
   return (
     <>
