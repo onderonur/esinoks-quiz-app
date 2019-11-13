@@ -7,6 +7,16 @@ const initialState = {
   allIds: []
 };
 
+const storeQuiz = (state, action) => {
+  const { quiz } = action;
+  state.byId[quiz.id] = quiz;
+
+  const found = state.allIds.includes(quiz.id);
+  if (!found) {
+    state.allIds.push(quiz.id);
+  }
+};
+
 const quizzes = createReducer(initialState, {
   [getFetchActionTypes(actionTypes.FETCH_AUTH_USER_QUIZZES).successType]: (
     state,
@@ -28,17 +38,8 @@ const quizzes = createReducer(initialState, {
     const nextQuizIds = nextQuizzes.map(quiz => quiz.id);
     state.allIds = nextQuizIds;
   },
-  [getFetchActionTypes(actionTypes.FETCH_QUIZ).successType]: (
-    state,
-    { quiz }
-  ) => {
-    state.byId[quiz.id] = quiz;
-
-    const found = state.allIds.includes(quiz.id);
-    if (!found) {
-      state.allIds.push(quiz.id);
-    }
-  },
+  [getFetchActionTypes(actionTypes.FETCH_QUIZ).successType]: storeQuiz,
+  [getFetchActionTypes(actionTypes.UPDATE_QUIZ).successType]: storeQuiz,
   [getFetchActionTypes(actionTypes.DELETE_QUIZ_CONFIRMED).successType]: (
     state,
     { quizId }

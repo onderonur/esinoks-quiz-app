@@ -18,6 +18,7 @@ import { from, of, fromEventPattern, iif } from "rxjs";
 import firebase from "app-firebase";
 import { getFetchActionTypes, getFirestoreTimeStamp } from "utils";
 import { selectors } from "reducers";
+import produce from "immer";
 
 const mapWithFetchActionTypes = () =>
   map(action => {
@@ -44,10 +45,7 @@ const createPostEpic = ({
     mapWithFetchActionTypes(),
     mapOperator(([action, { requestType, successType, errorType }]) =>
       from(post(action)).pipe(
-        map(doc => {
-          console.log(doc);
-          return processDoc ? processDoc(doc) : doc;
-        }),
+        map(doc => (processDoc ? processDoc(doc) : doc)),
         map(response => ({
           ...action,
           type: successType,
@@ -76,12 +74,15 @@ const createQuizEpic = createPostEpic({
   mapOperator: exhaustMap,
   post: action => {
     const { title, authorId } = action;
-    return firebase.quizzes().add({
-      title,
-      authorId,
-      // TODO: May add this "createdAt" field with cloud functions
-      createdAt: getFirestoreTimeStamp(new Date())
-    });
+    return firebase
+      .quizzes()
+      .add({
+        title,
+        authorId,
+        // TODO: May add this "createdAt" field with cloud functions
+        createdAt: getFirestoreTimeStamp(new Date())
+      })
+      .then(doc => console.log(doc));
   },
   processDoc: doc => ({ quizId: doc.id })
 });
@@ -105,18 +106,25 @@ const redirectAfterCreateQuizSuccessEpic = action$ =>
     )
   );
 
-// const updateQuizEpic = createPostEpic({
-//   type: actionTypes.UPDATE_QUIZ,
-//   mapOperator: exhaustMap,
-//   post: action => {
-//     const { quizId, title } = action;
+const updateQuizEpic = createPostEpic({
+  type: actionTypes.UPDATE_QUIZ,
+  mapOperator: exhaustMap,
+  post: action => {
+    const { quizId, title } = action;
 
-//     return firebase.quiz(quizId).update({
-//       title
-//     });
-//   },
-//   processDoc: () => ({ id: quizId, ...doc.data() })
-// });
+    return firebase.quiz(quizId).update({
+      title
+    });
+  },
+  extraData: (action, state) => {
+    const { quizId, title } = action;
+    const quiz = selectors.selectQuizById(state, quizId);
+    const updatedQuiz = produce(quiz, draft => {
+      draft.title = title;
+    });
+    return { quiz: updatedQuiz };
+  }
+});
 
 const deleteQuizConfirmedEpic = createPostEpic({
   type: actionTypes.DELETE_QUIZ_CONFIRMED,
@@ -143,28 +151,21 @@ const deleteQuizImagesEpic = action$ =>
     ignoreElements()
   );
 
-const createQuestionEpic = action$ =>
-  action$.pipe(
-    ofType(actionTypes.CREATE_QUESTION),
-    mapWithFetchActionTypes(),
-    exhaustMap(([action, { requestType, successType, errorType }]) => {
-      const { quizId, body, choices, correctAnswer } = action;
+const createQuestionEpic = createPostEpic({
+  type: actionTypes.CREATE_QUESTION,
+  mapOperator: exhaustMap,
+  post: action => {
+    const { quizId, body, choices, correctAnswer } = action;
 
-      const batch = firebase.db.batch();
-      const quizQuestionsRef = firebase.questions(quizId).doc();
-      batch.set(quizQuestionsRef, {
-        body,
-        choices,
-        correctAnswer,
-        createdAt: getFirestoreTimeStamp(new Date())
-      });
-      return from(batch.commit()).pipe(
-        mapTo({ type: successType }),
-        catchError(() => of({ type: errorType })),
-        startWith({ type: requestType })
-      );
-    })
-  );
+    return firebase.questions(quizId).add({
+      body,
+      choices,
+      correctAnswer,
+      createdAt: getFirestoreTimeStamp(new Date())
+    });
+  },
+  processDoc: doc => ({ id: doc.id, ...doc.data() })
+});
 
 const updateQuestionEpic = action$ =>
   action$.pipe(
