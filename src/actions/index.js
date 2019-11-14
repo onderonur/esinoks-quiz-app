@@ -1,5 +1,5 @@
 import * as actionTypes from "constants/actionTypes";
-import { getFetchActionTypes } from "utils";
+import { getFetchActionTypes, getFirestoreTimeStamp } from "utils";
 
 export const selectQuestion = questionId => ({
   type: actionTypes.SELECT_QUESTION,
@@ -54,7 +54,8 @@ export const createQuestion = ({ quizId, body, choices, correctAnswer }) => ({
   quizId,
   body,
   choices,
-  correctAnswer
+  correctAnswer,
+  createdAt: getFirestoreTimeStamp(new Date())
 });
 
 export const updateQuestion = ({
@@ -94,6 +95,8 @@ export const createQuiz = ({ title, authorId, history }) => ({
   type: actionTypes.CREATE_QUIZ,
   title,
   authorId,
+  // TODO: May add this "createdAt" field with cloud functions
+  createdAt: getFirestoreTimeStamp(new Date()),
   history
 });
 

@@ -10,8 +10,9 @@ const initialState = {
 const authUser = createReducer(initialState, {
   [getFetchActionTypes(actionTypes.LISTEN_AUTH_STATE).successType]: (
     state,
-    { authUser }
+    action
   ) => {
+    const { authUser } = action;
     state.isLoggedIn = !!authUser;
     state.authUser = authUser;
   },

@@ -7,14 +7,29 @@ const initialState = {
   byId: {}
 };
 
+const storeQuestion = (state, action) => {
+  const { question } = action;
+  state.byId[question.id] = question;
+};
+
 const questions = createReducer(initialState, {
   [getFetchActionTypes(actionTypes.FETCH_QUIZ_QUESTIONS).successType]: (
     state,
-    { response }
+    action
   ) => {
+    const { response } = action;
     response.forEach(question => {
       state.byId[question.id] = question;
     });
+  },
+  [getFetchActionTypes(actionTypes.CREATE_QUESTION).successType]: storeQuestion,
+  [getFetchActionTypes(actionTypes.UPDATE_QUESTION).successType]: storeQuestion,
+  [getFetchActionTypes(actionTypes.DELETE_QUESTION_CONFIRMED).successType]: (
+    state,
+    action
+  ) => {
+    const { questionId } = action;
+    delete state.byId[questionId];
   }
 });
 

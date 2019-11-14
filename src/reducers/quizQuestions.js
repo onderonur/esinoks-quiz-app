@@ -9,17 +9,35 @@ const initialState = {
 const quizQuestions = createReducer(initialState, {
   [getFetchActionTypes(actionTypes.FETCH_QUIZ_QUESTIONS).successType]: (
     state,
-    { quizId, response }
+    action
   ) => {
+    const { quizId, response } = action;
     const questionIds = response.map(question => question.id);
     state.byQuizId[quizId] = questionIds;
   },
+  [getFetchActionTypes(actionTypes.CREATE_QUESTION).successType]: (
+    state,
+    action
+  ) => {
+    const { quizId, question } = action;
+    state.byQuizId[quizId].push(question.id);
+  },
   [getFetchActionTypes(actionTypes.DELETE_QUIZ_CONFIRMED).successType]: (
     state,
-    { quizId }
+    action
   ) => {
+    const { quizId } = action;
     // Removing the question references of the deleted quiz.
     delete state.byQuizId[quizId];
+  },
+  [getFetchActionTypes(actionTypes.DELETE_QUESTION_CONFIRMED).successType]: (
+    state,
+    action
+  ) => {
+    const { quizId, questionId } = action;
+    state.byQuizId[quizId] = state.byQuizId[quizId].filter(
+      id => id !== questionId
+    );
   }
 });
 

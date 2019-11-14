@@ -4,12 +4,6 @@ import set from "lodash.set";
 import get from "lodash.get";
 import createReset from "./higherOrderReducers/createReset";
 
-export const ANSWER_RESULTS = {
-  true: "true",
-  false: "false",
-  none: "none"
-};
-
 const initialState = {
   byQuestionId: {}
 };
@@ -18,7 +12,8 @@ const givenAnswers = createReset(
   [actionTypes.RESTART_QUIZ_CONFIRMED, actionTypes.EXITED_FROM_QUIZ],
   initialState,
   createReducer(initialState, {
-    [actionTypes.ANSWER_QUESTION]: (state, { questionId, choiceIndex }) => {
+    [actionTypes.ANSWER_QUESTION]: (state, action) => {
+      const { questionId, choiceIndex } = action;
       set(state.byQuestionId, [questionId], choiceIndex);
     }
   })

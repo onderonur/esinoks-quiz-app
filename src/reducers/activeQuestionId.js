@@ -12,7 +12,7 @@ const activeQuestionId = createReset(
   ],
   initialState,
   createReducer(initialState, {
-    [actionTypes.SELECT_QUESTION]: (state, { questionId }) => questionId
+    [actionTypes.SELECT_QUESTION]: (state, action) => action.questionId
   })
 );
 

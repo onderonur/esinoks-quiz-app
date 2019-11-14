@@ -16,9 +16,8 @@ import {
 } from "rxjs/operators";
 import { from, of, fromEventPattern, iif } from "rxjs";
 import firebase from "app-firebase";
-import { getFetchActionTypes, getFirestoreTimeStamp } from "utils";
+import { getFetchActionTypes } from "utils";
 import { selectors } from "reducers";
-import produce from "immer";
 
 const mapWithFetchActionTypes = () =>
   map(action => {
@@ -32,60 +31,26 @@ const mapWithFetchActionTypes = () =>
     return [action, { requestType, successType, errorType, cancelType }];
   });
 
-// TODO: Bu isim değişebilir.
-const createPostEpic = ({
-  type,
-  mapOperator,
-  post,
-  processDoc,
-  extraData = () => {}
-}) => (action$, state$) =>
+const createQuizEpic = action$ =>
   action$.pipe(
-    ofType(type),
+    ofType(actionTypes.CREATE_QUIZ),
     mapWithFetchActionTypes(),
-    mapOperator(([action, { requestType, successType, errorType }]) =>
-      from(post(action)).pipe(
-        map(doc => (processDoc ? processDoc(doc) : doc)),
-        map(response => ({
-          ...action,
-          type: successType,
-          response,
-          ...extraData(action, state$.value)
-        })),
-        catchError(error =>
-          of({
-            ...action,
-            type: errorType,
-            error,
-            ...extraData(action, state$.value)
-          })
-        ),
-        startWith({
-          ...action,
-          type: requestType,
-          ...extraData(action, state$.value)
+    exhaustMap(([action, { requestType, successType, errorType }]) => {
+      const { title, authorId, createdAt } = action;
+      return from(
+        firebase.quizzes().add({
+          title,
+          authorId,
+          createdAt
         })
-      )
-    )
+      ).pipe(
+        map(doc => doc.id),
+        map(quizId => ({ type: successType, quizId })),
+        catchError(error => ({ type: errorType, error })),
+        startWith({ type: requestType })
+      );
+    })
   );
-
-const createQuizEpic = createPostEpic({
-  type: actionTypes.CREATE_QUIZ,
-  mapOperator: exhaustMap,
-  post: action => {
-    const { title, authorId } = action;
-    return firebase
-      .quizzes()
-      .add({
-        title,
-        authorId,
-        // TODO: May add this "createdAt" field with cloud functions
-        createdAt: getFirestoreTimeStamp(new Date())
-      })
-      .then(doc => console.log(doc));
-  },
-  processDoc: doc => ({ quizId: doc.id })
-});
 
 const redirectAfterCreateQuizSuccessEpic = action$ =>
   action$.pipe(
@@ -96,9 +61,7 @@ const redirectAfterCreateQuizSuccessEpic = action$ =>
         ofType(successType),
         take(1),
         tap(successAction =>
-          action.history.replace(
-            `/profile/quiz/${successAction.response.quizId}`
-          )
+          action.history.replace(`/profile/quiz/${successAction.quizId}`)
         ),
         ignoreElements(),
         takeUntil(action$.pipe(ofType(errorType)))
@@ -106,35 +69,44 @@ const redirectAfterCreateQuizSuccessEpic = action$ =>
     )
   );
 
-const updateQuizEpic = createPostEpic({
-  type: actionTypes.UPDATE_QUIZ,
-  mapOperator: exhaustMap,
-  post: action => {
-    const { quizId, title } = action;
+const updateQuizEpic = (action$, state$) =>
+  action$.pipe(
+    ofType(actionTypes.UPDATE_QUIZ),
+    mapWithFetchActionTypes(),
+    exhaustMap(([action, { requestType, successType, errorType }]) => {
+      const state = state$.value;
+      const { quizId, title } = action;
+      const updatedValues = {
+        title
+      };
+      return from(firebase.quiz(quizId).update(updatedValues)).pipe(
+        map(() => {
+          let quiz = selectors.selectQuizById(state, quizId);
+          quiz = {
+            ...quiz,
+            ...updatedValues
+          };
+          return { type: successType, quiz };
+        }),
+        catchError(error => ({ type: errorType, error })),
+        startWith({ type: requestType })
+      );
+    })
+  );
 
-    return firebase.quiz(quizId).update({
-      title
-    });
-  },
-  extraData: (action, state) => {
-    const { quizId, title } = action;
-    const quiz = selectors.selectQuizById(state, quizId);
-    const updatedQuiz = produce(quiz, draft => {
-      draft.title = title;
-    });
-    return { quiz: updatedQuiz };
-  }
-});
-
-const deleteQuizConfirmedEpic = createPostEpic({
-  type: actionTypes.DELETE_QUIZ_CONFIRMED,
-  mapOperator: exhaustMap,
-  post: action => {
-    const { quizId } = action;
-    return firebase.quiz(quizId).delete();
-  },
-  extraData: action => ({ quizId: action.quizId })
-});
+const deleteQuizConfirmedEpic = action$ =>
+  action$.pipe(
+    ofType(actionTypes.DELETE_QUIZ_CONFIRMED),
+    mapWithFetchActionTypes(),
+    exhaustMap(([action, { requestType, successType, errorType }]) => {
+      const { quizId } = action;
+      return from(firebase.quiz(quizId).delete()).pipe(
+        map(() => ({ type: successType, quizId })),
+        catchError(error => ({ type: errorType, error })),
+        startWith({ type: requestType })
+      );
+    })
+  );
 
 // When we delete a quiz successfully, we also delete its files too.
 // TODO: Düzelt bunu
@@ -151,34 +123,63 @@ const deleteQuizImagesEpic = action$ =>
     ignoreElements()
   );
 
-const createQuestionEpic = createPostEpic({
-  type: actionTypes.CREATE_QUESTION,
-  mapOperator: exhaustMap,
-  post: action => {
-    const { quizId, body, choices, correctAnswer } = action;
+const createQuestionEpic = action$ =>
+  action$.pipe(
+    ofType(actionTypes.CREATE_QUESTION),
+    mapWithFetchActionTypes(),
+    exhaustMap(([action, { requestType, successType, errorType }]) => {
+      const { quizId, body, choices, correctAnswer, createdAt } = action;
+      const question = {
+        body,
+        choices,
+        correctAnswer,
+        createdAt
+      };
+      return from(
+        firebase.questions(quizId).add({
+          ...question
+        })
+      ).pipe(
+        map(doc => doc.id),
+        map(questionId => ({
+          type: successType,
+          quizId,
+          question: { id: questionId, ...question }
+        })),
+        catchError(error => ({ type: errorType, error })),
+        startWith({ type: requestType })
+      );
+    })
+  );
 
-    return firebase.questions(quizId).add({
-      body,
-      choices,
-      correctAnswer,
-      createdAt: getFirestoreTimeStamp(new Date())
-    });
-  },
-  processDoc: doc => ({ id: doc.id, ...doc.data() })
-});
-
-const updateQuestionEpic = action$ =>
+const updateQuestionEpic = (action$, state$) =>
   action$.pipe(
     ofType(actionTypes.UPDATE_QUESTION),
     mapWithFetchActionTypes(),
     exhaustMap(([action, { requestType, successType, errorType }]) => {
       const { quizId, questionId, body, choices, correctAnswer } = action;
-
+      const updatedValues = {
+        body,
+        choices,
+        correctAnswer
+      };
       const batch = firebase.db.batch();
       const quizQuestionRef = firebase.question(quizId, questionId);
-      batch.update(quizQuestionRef, { body, choices, correctAnswer });
+      batch.update(quizQuestionRef, updatedValues);
       return from(batch.commit()).pipe(
-        mapTo({ type: successType }),
+        map(() => {
+          const state = state$.value;
+          let question = selectors.selectQuestionById(state, questionId);
+          question = {
+            ...question,
+            ...updatedValues
+          };
+          return {
+            type: successType,
+            quizId,
+            question
+          };
+        }),
         catchError(() => of({ type: errorType })),
         startWith({ type: requestType })
       );
@@ -189,13 +190,14 @@ const deleteQuestionConfirmedEpic = action$ =>
   action$.pipe(
     ofType(actionTypes.DELETE_QUESTION_CONFIRMED),
     mapWithFetchActionTypes(),
-    exhaustMap(([action, { requestType, successType, errorType }]) =>
-      from(firebase.question(action.quizId, action.questionId).delete()).pipe(
-        mapTo({ type: successType }),
+    exhaustMap(([action, { requestType, successType, errorType }]) => {
+      const { quizId, questionId } = action;
+      return from(firebase.question(quizId, questionId).delete()).pipe(
+        mapTo({ type: successType, quizId, questionId }),
         catchError(() => of({ type: errorType })),
         startWith({ type: requestType })
-      )
-    )
+      );
+    })
   );
 
 const listenAuthStateEpic = action$ =>
