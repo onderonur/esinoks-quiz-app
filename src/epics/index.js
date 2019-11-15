@@ -15,6 +15,8 @@ import { from, of, fromEventPattern } from "rxjs";
 import firebase from "app-firebase";
 import { getFetchTypes } from "utils";
 import { selectors } from "reducers";
+import { normalize } from "normalizr";
+import schemas from "schemas";
 
 const mapWithFetchActionTypes = () =>
   map(action => {
@@ -52,7 +54,7 @@ const deleteQuizImagesEpic = action$ =>
     ignoreElements()
   );
 
-const createQuestionEpic = action$ =>
+const createQuestionEpic = (action$, state$) =>
   action$.pipe(
     ofType(actionTypes.CREATE_QUESTION),
     mapWithFetchActionTypes(),
@@ -70,11 +72,21 @@ const createQuestionEpic = action$ =>
         })
       ).pipe(
         map(doc => doc.id),
-        map(questionId => ({
-          type: succeeded,
-          quizId,
-          question: { id: questionId, ...question }
-        })),
+        map(questionId => {
+          const state = state$.value;
+          const quizQuestions = selectors.selectQuizQuestions(state, quizId);
+          return {
+            type: succeeded,
+            quizId,
+            response: normalize(
+              {
+                quizId: quizId,
+                questions: [...quizQuestions, { id: questionId, ...question }]
+              },
+              schemas.quizQuestion
+            )
+          };
+        }),
         catchError(error => ({ type: failed, error })),
         startWith({ type: requested })
       );
@@ -106,7 +118,7 @@ const updateQuestionEpic = (action$, state$) =>
           return {
             type: succeeded,
             quizId,
-            question
+            response: normalize(question, schemas.question)
           };
         }),
         catchError(() => of({ type: failed })),

@@ -1,6 +1,6 @@
 import createReducer from "./higherOrderReducers/createReducer";
 import * as actionTypes from "constants/actionTypes";
-import { getFetchTypes } from "utils";
+import { getFetchTypes, removeItemFromArrayMutation } from "utils";
 
 const initialState = {
   byQuizId: {}
@@ -12,11 +12,7 @@ const quizQuestions = createReducer(initialState, {
     action
   ) => {
     const { quizId, response } = action;
-    state.byQuizId[quizId] = response.result;
-  },
-  [getFetchTypes(actionTypes.CREATE_QUESTION).succeeded]: (state, action) => {
-    const { quizId, question } = action;
-    state.byQuizId[quizId].push(question.id);
+    state.byQuizId[quizId] = response.entities.quizQuestions[quizId].questions;
   },
   [getFetchTypes(actionTypes.DELETE_QUIZ_CONFIRMED).succeeded]: (
     state,
@@ -31,25 +27,22 @@ const quizQuestions = createReducer(initialState, {
     action
   ) => {
     const { quizId, questionId } = action;
-    state.byQuizId[quizId] = state.byQuizId[quizId].filter(
-      id => id !== questionId
-    );
+    removeItemFromArrayMutation(state.byQuizId[quizId], questionId);
   }
 });
 
 export default quizQuestions;
 
-const selectQuestionIdsByQuizId = (state, quizId) =>
-  state.byQuizId[quizId] || [];
+const selectQuizQuestionIds = (state, quizId) => state.byQuizId[quizId] || [];
 
 export const selectors = {
-  selectQuestionIdsByQuizId,
+  selectQuizQuestionIds,
   selectQuestionIndex: (state, quizId, questionId) => {
-    const questionIds = selectQuestionIdsByQuizId(state, quizId);
+    const questionIds = selectQuizQuestionIds(state, quizId);
     return questionIds.indexOf(questionId);
   },
   selectTotalQuestionCountByQuizId: (state, quizId) => {
-    const questionIds = selectQuestionIdsByQuizId(state, quizId);
+    const questionIds = selectQuizQuestionIds(state, quizId);
     return questionIds.length;
   }
 };

@@ -23,5 +23,5 @@ export default givenAnswers;
 
 export const selectors = {
   selectGivenAnswerByQuestionId: (state, questionId) =>
-    get(state.byQuestionId, [questionId])
+    get(state, ["byQuestionId", questionId])
 };

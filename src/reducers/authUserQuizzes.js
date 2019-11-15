@@ -1,6 +1,6 @@
 import createReducer from "./higherOrderReducers/createReducer";
 import * as actionTypes from "constants/actionTypes";
-import { getFetchTypes } from "utils";
+import { getFetchTypes, removeItemFromArrayMutation } from "utils";
 
 const initialState = [];
 
@@ -17,7 +17,7 @@ const authUserQuizzes = createReducer(initialState, {
     action
   ) => {
     const { quizId } = action;
-    return state.filter(id => id !== quizId);
+    removeItemFromArrayMutation(state, quizId);
   }
 });
 

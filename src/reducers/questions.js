@@ -12,14 +12,11 @@ const storeQuestion = (state, action) => {
   state.byId[question.id] = question;
 };
 
-const questions = createReducer(initialState, {
-  [getFetchTypes(actionTypes.CREATE_QUESTION).succeeded]: storeQuestion,
-  [getFetchTypes(actionTypes.UPDATE_QUESTION).succeeded]: storeQuestion
-});
+const questions = createReducer(initialState, {});
 
 export default questions;
 
 export const selectors = {
   selectCorrectAnswerByQuestionId: (state, questionId) =>
-    get(state.byId, [questionId, "correctAnswer"])
+    get(state, ["byId", questionId, "correctAnswer"])
 };

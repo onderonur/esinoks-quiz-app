@@ -73,7 +73,7 @@ const entitiesSelectors = bindSelectors(
 );
 
 const selectQuizQuestions = (state, quizId) => {
-  const quizQuestionIds = quizQuestionsSelectors.selectQuestionIdsByQuizId(
+  const quizQuestionIds = entitiesSelectors.selectQuizQuestionIds(
     state,
     quizId
   );
@@ -96,7 +96,7 @@ const selectCorrectAnswersByQuizId = (state, quizId) => {
 };
 
 const selectGivenAnswersByQuizId = (state, quizId) => {
-  const quizQuestionIds = quizQuestionsSelectors.selectQuestionIdsByQuizId(
+  const quizQuestionIds = entitiesSelectors.selectQuizQuestionIds(
     state,
     quizId
   );
@@ -120,7 +120,7 @@ const selectGivenAnswersByQuizId = (state, quizId) => {
 };
 
 const selectCorrectGivenAnswerCountByQuizId = (state, quizId) => {
-  const quizQuestionIds = quizQuestionsSelectors.selectQuestionIdsByQuizId(
+  const quizQuestionIds = entitiesSelectors.selectQuizQuestionIds(
     state,
     quizId
   );

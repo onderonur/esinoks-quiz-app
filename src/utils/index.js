@@ -11,3 +11,7 @@ export const getFetchTypes = fetchType => {
 
 export const getFirestoreTimeStamp = date =>
   app.firestore.Timestamp.fromDate(date);
+
+export const removeItemFromArrayMutation = (array, item) => {
+  array.splice(array.indexOf(item));
+};

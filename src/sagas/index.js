@@ -72,7 +72,7 @@ function* fetchQuizQuestions(quizId) {
     yield put({ type: requested, quizId });
     const snapshot = yield call(getQuizQuestions, quizId);
     const questions = getCollectionFromSnapshot(snapshot);
-    const response = normalize(questions, [schemas.question]);
+    const response = normalize({ quizId, questions }, schemas.quizQuestion);
     yield put({ type: succeeded, quizId, response });
   } catch (error) {
     yield put({ type: failed, quizId, error });

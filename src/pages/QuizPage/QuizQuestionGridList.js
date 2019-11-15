@@ -14,7 +14,7 @@ const QuizQuestionGridList = () => {
     selectors.selectIsFetchingQuizQuestions(state, quizId)
   );
   const quizQuestionIds = useSelector(state =>
-    selectors.selectQuestionIdsByQuizId(state, quizId)
+    selectors.selectQuizQuestionIds(state, quizId)
   );
 
   useEffect(() => {
