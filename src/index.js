@@ -8,10 +8,12 @@ import configureStore from "store";
 import FirebaseProvider from "components/FirebaseProvider";
 import Root from "components/Root";
 import { BrowserRouter } from "react-router-dom";
+import rootSaga from "sagas";
 
 // TODO: Kullanılmayan dosyaları ve fonksiyonları sil
 
 const store = configureStore();
+store.runSaga(rootSaga);
 
 ReactDOM.render(
   <FirebaseProvider>

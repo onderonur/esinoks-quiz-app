@@ -1,5 +1,5 @@
 import * as actionTypes from "constants/actionTypes";
-import { getFetchActionTypes, getFirestoreTimeStamp } from "utils";
+import { getFetchTypes, getFirestoreTimeStamp } from "utils";
 
 export const selectQuestion = questionId => ({
   type: actionTypes.SELECT_QUESTION,
@@ -138,7 +138,7 @@ export const listenAuthState = () => ({
 });
 
 export const listenAuthStateCancel = () => ({
-  type: getFetchActionTypes(actionTypes.LISTEN_AUTH_STATE).cancelType
+  type: getFetchTypes(actionTypes.LISTEN_AUTH_STATE).cancelled
 });
 
 export const fetchAuthUserQuizzes = () => ({
@@ -155,3 +155,12 @@ export const fetchQuizQuestions = quizId => ({
   type: actionTypes.FETCH_QUIZ_QUESTIONS,
   quizId
 });
+
+export const navigate = (history, path, action) => ({
+  type: actionTypes.NAVIGATE,
+  history,
+  path,
+  action
+});
+
+export const navigateTo404 = history => navigate(history, "/not-found-404");

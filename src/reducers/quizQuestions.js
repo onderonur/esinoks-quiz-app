@@ -1,28 +1,24 @@
 import createReducer from "./higherOrderReducers/createReducer";
 import * as actionTypes from "constants/actionTypes";
-import { getFetchActionTypes } from "utils";
+import { getFetchTypes } from "utils";
 
 const initialState = {
   byQuizId: {}
 };
 
 const quizQuestions = createReducer(initialState, {
-  [getFetchActionTypes(actionTypes.FETCH_QUIZ_QUESTIONS).successType]: (
+  [getFetchTypes(actionTypes.FETCH_QUIZ_QUESTIONS).succeeded]: (
     state,
     action
   ) => {
     const { quizId, response } = action;
-    const questionIds = response.map(question => question.id);
-    state.byQuizId[quizId] = questionIds;
+    state.byQuizId[quizId] = response.result;
   },
-  [getFetchActionTypes(actionTypes.CREATE_QUESTION).successType]: (
-    state,
-    action
-  ) => {
+  [getFetchTypes(actionTypes.CREATE_QUESTION).succeeded]: (state, action) => {
     const { quizId, question } = action;
     state.byQuizId[quizId].push(question.id);
   },
-  [getFetchActionTypes(actionTypes.DELETE_QUIZ_CONFIRMED).successType]: (
+  [getFetchTypes(actionTypes.DELETE_QUIZ_CONFIRMED).succeeded]: (
     state,
     action
   ) => {
@@ -30,7 +26,7 @@ const quizQuestions = createReducer(initialState, {
     // Removing the question references of the deleted quiz.
     delete state.byQuizId[quizId];
   },
-  [getFetchActionTypes(actionTypes.DELETE_QUESTION_CONFIRMED).successType]: (
+  [getFetchTypes(actionTypes.DELETE_QUESTION_CONFIRMED).succeeded]: (
     state,
     action
   ) => {

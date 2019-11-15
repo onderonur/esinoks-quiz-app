@@ -46,7 +46,7 @@ const QuestionFormDialog = () => {
   const isNew = questionId === "new";
 
   const question = useSelector(state =>
-    isNew ? null : selectors.selectQuestionById(state, questionId)
+    isNew ? null : selectors.selectQuestion(state, questionId)
   );
 
   const initialValues = {

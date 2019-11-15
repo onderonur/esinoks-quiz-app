@@ -1,12 +1,12 @@
 import app from "firebase/app";
 
-export const getFetchActionTypes = fetchType => {
-  const requestType = `${fetchType}_REQUEST`;
-  const successType = `${fetchType}_SUCCESS`;
-  const errorType = `${fetchType}_ERROR`;
-  const cancelType = `${fetchType}_CANCELLED`;
+export const getFetchTypes = fetchType => {
+  const requested = `${fetchType}_REQUESTED`;
+  const succeeded = `${fetchType}_SUCCEEDED`;
+  const failed = `${fetchType}_FAILED`;
+  const cancelled = `${fetchType}_CANCELLED`;
 
-  return { requestType, successType, errorType, cancelType };
+  return { requested, succeeded, failed, cancelled };
 };
 
 export const getFirestoreTimeStamp = date =>

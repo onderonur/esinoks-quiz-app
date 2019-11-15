@@ -15,7 +15,7 @@ import { Planet } from "react-kawaii";
 const QuestionGridListItem = ({ questionId, index }) => {
   const dispatch = useDispatch();
   const question = useSelector(state =>
-    selectors.selectQuestionById(state, questionId)
+    selectors.selectQuestion(state, questionId)
   );
   const answerIndex = useSelector(state =>
     selectors.selectGivenAnswerByQuestionId(state, questionId)

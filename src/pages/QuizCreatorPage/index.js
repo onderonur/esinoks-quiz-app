@@ -29,7 +29,7 @@ const QuizCreatorPage = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { quizId } = useParams();
-  const quiz = useSelector(state => selectors.selectQuizById(state, quizId));
+  const quiz = useSelector(state => selectors.selectQuiz(state, quizId));
   const isFetching = useSelector(state =>
     selectors.selectIsFetchingQuiz(state, quizId)
   );

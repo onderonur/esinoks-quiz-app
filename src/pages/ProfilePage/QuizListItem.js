@@ -10,7 +10,7 @@ import RouterLink from "components/RouterLink";
 import QuizListItemMenu from "./QuizListItemMenu";
 
 const QuizListItem = ({ quizId, index }) => {
-  const quiz = useSelector(state => selectors.selectQuizById(state, quizId));
+  const quiz = useSelector(state => selectors.selectQuiz(state, quizId));
   // const questionCount = useSelector(state =>
   //   selectors.selectTotalQuestionCountByQuizId(state, quizId)
   // );

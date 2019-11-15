@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 const QuizQuestionListItem = ({ index, quizId, questionId }) => {
   const classes = useStyles();
   const question = useSelector(state =>
-    selectors.selectQuestionById(state, questionId)
+    selectors.selectQuestion(state, questionId)
   );
   const dialogProps = useSelector(state =>
     selectors.selectQuestionFormDialogProps(state)

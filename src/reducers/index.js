@@ -1,3 +1,4 @@
+import { TOTAL_HEARTS_COUNT } from "pages/QuizPage/Hearts";
 import { combineReducers } from "redux";
 import bindSelectors from "./utils/bindSelectors";
 import questions, * as fromQuestions from "./questions";
@@ -5,22 +6,23 @@ import activeQuestionId, * as fromActiveQuestionId from "./activeQuestionId";
 import givenAnswers, * as fromGivenAnswers from "./givenAnswers";
 import authUser, * as fromAuthUser from "./authUser";
 import dialogs, * as fromDialogs from "./dialogs";
-import quizzes, * as fromQuizzes from "./quizzes";
 import quizQuestions, * as fromQuizQuestions from "./quizQuestions";
 import isFetching, * as fromIsFetching from "./isFetching";
-import { TOTAL_HEARTS_COUNT } from "pages/QuizPage/Hearts";
+import authUserQuizzes, * as fromAuthUserQuizzes from "./authUserQuizzes";
+import entities, * as fromEntities from "./entities";
 
 // TODO: Simplify and clean reducers
 
 const rootReducer = combineReducers({
+  entities,
+  isFetching,
   questions,
   activeQuestionId,
   givenAnswers,
   authUser,
   dialogs,
-  quizzes,
   quizQuestions,
-  isFetching
+  authUserQuizzes
 });
 
 export default rootReducer;
@@ -45,11 +47,6 @@ const authUserSelectors = bindSelectors(
   fromAuthUser.selectors
 );
 
-const quizzesSelectors = bindSelectors(
-  state => state.quizzes,
-  fromQuizzes.selectors
-);
-
 const quizQuestionsSelectors = bindSelectors(
   state => state.quizQuestions,
   fromQuizQuestions.selectors
@@ -65,13 +62,23 @@ const isFetchingSelectors = bindSelectors(
   fromIsFetching.selectors
 );
 
+const authUserQuizzesSelectors = bindSelectors(
+  state => state.authUserQuizzes,
+  fromAuthUserQuizzes.selectors
+);
+
+const entitiesSelectors = bindSelectors(
+  state => state.entities,
+  fromEntities.selectors
+);
+
 const selectQuizQuestions = (state, quizId) => {
   const quizQuestionIds = quizQuestionsSelectors.selectQuestionIdsByQuizId(
     state,
     quizId
   );
   const quizQuestions = quizQuestionIds.map(questionId =>
-    questionsSelectors.selectQuestionById(state, questionId)
+    entitiesSelectors.selectQuestion(state, questionId)
   );
   return quizQuestions;
 };
@@ -142,22 +149,14 @@ export const selectors = {
   ...questionsSelectors,
   ...givenAnswersSelectors,
   ...authUserSelectors,
-  ...quizzesSelectors,
   ...quizQuestionsSelectors,
   ...dialogsSelectors,
   ...isFetchingSelectors,
-  selectAuthUserQuizIds: state => {
-    const authUser = authUserSelectors.selectAuthUser(state);
-    const { uid } = authUser;
-    const authUserQuizIds = quizzesSelectors.selectQuizIdsByAuthorId(
-      state,
-      uid
-    );
-    return authUserQuizIds;
-  },
+  ...authUserQuizzesSelectors,
+  ...entitiesSelectors,
   selectActiveQuestion: state => {
     const id = activeQuestionIdSelectors.selectActiveQuestionId(state);
-    const activeQuestion = questionsSelectors.selectQuestionById(state, id);
+    const activeQuestion = entitiesSelectors.selectQuestion(state, id);
     return activeQuestion;
   },
   selectCorrectGivenAnswerCountByQuizId,

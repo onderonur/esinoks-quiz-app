@@ -17,6 +17,7 @@ const EditableChoiceList = ({ name, formik }) => {
   const [selectedChoiceIndex, setSelectedChoiceIndex] = useState();
 
   const { values, errors, setFieldValue } = formik;
+  // TODO: Use getIn at other files too.
   const error = getIn(errors, name);
 
   const isFetching = useSelector(

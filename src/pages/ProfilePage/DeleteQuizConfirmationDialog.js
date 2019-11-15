@@ -13,7 +13,7 @@ const DeleteQuizConfirmationDialog = () => {
     selectors.selectIsFetchingDeleteQuiz(state)
   );
 
-  const quiz = useSelector(state => selectors.selectQuizById(state, quizId));
+  const quiz = useSelector(state => selectors.selectQuiz(state, quizId));
 
   const handleExited = useCallback(() => {
     dispatch(deleteQuizCancelled());

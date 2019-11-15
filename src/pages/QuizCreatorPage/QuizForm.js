@@ -36,7 +36,7 @@ const QuizForm = () => {
   const { quizId } = useParams();
   const isNew = quizId === "new";
   const quiz = useSelector(state =>
-    isNew ? null : selectors.selectQuizById(state, quizId)
+    isNew ? null : selectors.selectQuiz(state, quizId)
   );
 
   const { authUser } = useSelectAuthUser();

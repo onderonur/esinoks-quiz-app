@@ -1,17 +1,15 @@
-import { getFetchActionTypes } from "utils";
+import { getFetchTypes } from "utils";
 import createReducer from "./createReducer";
 
 const initialState = false;
 
 const createIsFetching = fetchType => {
-  const { requestType, successType, errorType } = getFetchActionTypes(
-    fetchType
-  );
+  const { requested, succeeded, failed } = getFetchTypes(fetchType);
 
   const reducer = createReducer(initialState, {
-    [requestType]: () => true,
-    [successType]: () => false,
-    [errorType]: () => false
+    [requested]: () => true,
+    [succeeded]: () => false,
+    [failed]: () => false
   });
 
   return reducer;
