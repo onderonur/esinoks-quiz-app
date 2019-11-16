@@ -8,14 +8,16 @@ const initialState = {
   byQuestionId: {}
 };
 
+const answerQuestion = (state, action) => {
+  const { questionId, choiceIndex } = action;
+  set(state.byQuestionId, [questionId], choiceIndex);
+};
+
 const givenAnswers = createReset(
   [actionTypes.RESTART_QUIZ_CONFIRMED, actionTypes.EXITED_FROM_QUIZ],
   initialState,
   createReducer(initialState, {
-    [actionTypes.ANSWER_QUESTION]: (state, action) => {
-      const { questionId, choiceIndex } = action;
-      set(state.byQuestionId, [questionId], choiceIndex);
-    }
+    [actionTypes.ANSWER_QUESTION]: answerQuestion
   })
 );
 

@@ -1,6 +1,15 @@
 import * as actionTypes from "constants/actionTypes";
 import { utilTypes, getFirestoreTimeStamp } from "utils";
 
+export const navigate = (history, path, action) => ({
+  type: actionTypes.NAVIGATE,
+  history,
+  path,
+  action
+});
+
+export const navigateTo404 = history => navigate(history, "/not-found-404");
+
 export const selectQuestion = questionId => ({
   type: actionTypes.SELECT_QUESTION,
   questionId
@@ -154,12 +163,3 @@ export const fetchQuizQuestions = quizId => ({
   type: actionTypes.FETCH_QUIZ_QUESTIONS,
   quizId
 });
-
-export const navigate = (history, path, action) => ({
-  type: actionTypes.NAVIGATE,
-  history,
-  path,
-  action
-});
-
-export const navigateTo404 = history => navigate(history, "/not-found-404");

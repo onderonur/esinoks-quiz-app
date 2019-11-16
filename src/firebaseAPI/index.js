@@ -37,12 +37,26 @@ class FirebaseAPI {
       .doc(questionId);
   questions = quizId => this.quiz(quizId).collection("questions");
 
+  getDocFromSnapshot = snapshot => {
+    const data = {
+      id: snapshot.id,
+      ...snapshot.data()
+    };
+    return data;
+  };
+
+  getCollectionFromSnapshot = snapshot => {
+    const { docs } = snapshot;
+    const collection = docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    return collection;
+  };
+
   doSignInWithGoogle = () => this.auth.signInWithPopup(this.googleProvider);
   doSignOut = () => this.auth.signOut();
 
   getQuiz = quizId => this.quiz(quizId).get();
-  createQuiz = ({ title, createdAt }) =>
-    this.quizzes().add({ title, authorId: this.authUser().uid, createdAt });
+  createQuiz = ({ title, authorId, createdAt }) =>
+    this.quizzes().add({ title, authorId, createdAt });
   updateQuiz = (quizId, { title }) => this.quiz(quizId).update({ title });
   createQuestion = (quizId, { body, choices, correctAnswer, createdAt }) =>
     this.questions(quizId).add({ body, choices, correctAnswer, createdAt });
@@ -52,9 +66,9 @@ class FirebaseAPI {
     this.questions(quizId)
       .orderBy("createdAt")
       .get();
-  getAuthUserQuizzes = () =>
+  getAuthorQuizzes = authorId =>
     this.quizzes()
-      .where("authorId", "==", this.authUser().uid)
+      .where("authorId", "==", authorId)
       .orderBy("createdAt")
       .get();
 }
