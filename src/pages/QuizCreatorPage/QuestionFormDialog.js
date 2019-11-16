@@ -60,7 +60,7 @@ const QuestionFormDialog = () => {
   }, [dispatch]);
 
   return (
-    <BaseDialog isOpen={isOpen} onExited={handleExited}>
+    <BaseDialog isOpen={isOpen} onExited={handleExited} disableBackdropClick>
       <Formik
         enableReinitialize={true}
         initialValues={initialValues}
@@ -70,7 +70,7 @@ const QuestionFormDialog = () => {
           const { body, choices, correctAnswer } = values;
 
           if (isNew) {
-            dispatch(createQuestion({ quizId, body, choices, correctAnswer }));
+            dispatch(createQuestion(quizId, { body, choices, correctAnswer }));
           } else {
             dispatch(
               updateQuestion({

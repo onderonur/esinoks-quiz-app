@@ -1,5 +1,5 @@
 import React from "react";
-import useFirebase from "hooks/useFirebase";
+import useFirebaseAPI from "hooks/useFirebaseAPI";
 import useSelectAuthUser from "hooks/useSelectAuthUser";
 import { ReactComponent as GoogleIcon } from "assets/google-icon.svg";
 import { makeStyles } from "@material-ui/core";
@@ -49,15 +49,15 @@ const useStyles = makeStyles(theme => ({
 // Thanks to: https://codepen.io/slukas23/pen/qwMevr
 const GoogleSignInButton = () => {
   const classes = useStyles();
-  const firebase = useFirebase();
+  const firebaseAPI = useFirebaseAPI();
   const { isLoggedIn } = useSelectAuthUser();
 
   const handleClick = async () => {
     try {
-      const socialAuthUser = await firebase.doSignInWithGoogle();
+      const socialAuthUser = await firebaseAPI.doSignInWithGoogle();
       const { user } = socialAuthUser;
       // Saving user info to application db
-      await firebase.user(user.uid).set({
+      await firebaseAPI.user(user.uid).set({
         displayName: user.displayName,
         email: user.email,
         photoURL: user.photoURL

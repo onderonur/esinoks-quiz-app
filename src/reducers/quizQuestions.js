@@ -1,48 +1,57 @@
-import createReducer from "./higherOrderReducers/createReducer";
+import { utilTypes, removeItemFromArrayMutation } from "utils";
 import * as actionTypes from "constants/actionTypes";
-import { getFetchTypes, removeItemFromArrayMutation } from "utils";
+import createReducer from "./higherOrderReducers/createReducer";
 
-const initialState = {
-  byQuizId: {}
-};
+const initialState = {};
 
+// Bu slice'ları ve ilgili selector'lerini ayrı dosyalara al
 const quizQuestions = createReducer(initialState, {
-  [getFetchTypes(actionTypes.FETCH_QUIZ_QUESTIONS).succeeded]: (
+  [utilTypes(actionTypes.FETCH_QUIZ_QUESTIONS).succeeded]: (
     state,
     action
   ) => {
     const { quizId, response } = action;
-    state.byQuizId[quizId] = response.entities.quizQuestions[quizId].questions;
+    state[quizId] = response.result;
   },
-  [getFetchTypes(actionTypes.DELETE_QUIZ_CONFIRMED).succeeded]: (
+  [utilTypes(actionTypes.CREATE_QUESTION).succeeded]: (state, action) => {
+    const { quizId, response } = action;
+    const newQuestionId = response.result;
+    const quizQuestionIds = selectQuizQuestionIds(state, quizId);
+    quizQuestionIds.push(newQuestionId);
+  },
+  [utilTypes(actionTypes.DELETE_QUIZ_CONFIRMED).succeeded]: (
     state,
     action
   ) => {
     const { quizId } = action;
-    // Removing the question references of the deleted quiz.
-    delete state.byQuizId[quizId];
+    delete state[quizId];
   },
-  [getFetchTypes(actionTypes.DELETE_QUESTION_CONFIRMED).succeeded]: (
+  [utilTypes(actionTypes.DELETE_QUESTION_CONFIRMED).succeeded]: (
     state,
     action
   ) => {
     const { quizId, questionId } = action;
-    removeItemFromArrayMutation(state.byQuizId[quizId], questionId);
+    const quizQuestionIds = state[quizId];
+    removeItemFromArrayMutation(quizQuestionIds, questionId);
   }
 });
 
 export default quizQuestions;
 
-const selectQuizQuestionIds = (state, quizId) => state.byQuizId[quizId] || [];
+const selectQuizQuestionIds = (state, quizId) => state[quizId] || [];
+const selectTotalQuestionCountByQuizId = (state, quizId) => {
+  const quizQuestionIds = selectQuizQuestionIds(state, quizId);
+  const { length } = quizQuestionIds;
+  return length;
+};
+const selectQuizQuestionIndex = (state, quizId, questionId) => {
+  const quizQuestionIds = selectQuizQuestionIds(state, quizId);
+  const quizQuestionIndex = quizQuestionIds.indexOf(questionId);
+  return quizQuestionIndex;
+};
 
 export const selectors = {
   selectQuizQuestionIds,
-  selectQuestionIndex: (state, quizId, questionId) => {
-    const questionIds = selectQuizQuestionIds(state, quizId);
-    return questionIds.indexOf(questionId);
-  },
-  selectTotalQuestionCountByQuizId: (state, quizId) => {
-    const questionIds = selectQuizQuestionIds(state, quizId);
-    return questionIds.length;
-  }
+  selectTotalQuestionCountByQuizId,
+  selectQuizQuestionIndex
 };

@@ -26,7 +26,7 @@ const ActiveQuestionDialog = () => {
 
   const questionIndex = useSelector(state =>
     activeQuestion
-      ? selectors.selectQuestionIndex(state, quizId, activeQuestion.id)
+      ? selectors.selectQuizQuestionIndex(state, quizId, activeQuestion.id)
       : null
   );
 

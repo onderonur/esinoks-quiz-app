@@ -1,36 +1,21 @@
 import { take, put, call, fork, all, select } from "redux-saga/effects";
-import { getFetchTypes } from "utils";
+import { utilTypes } from "utils";
 import * as actionTypes from "constants/actionTypes";
-import firebase from "app-firebase";
+import firebaseAPI from "firebaseAPI";
 import { selectors } from "reducers";
 import { navigateTo404, navigate } from "actions";
 import { normalize } from "normalizr";
 import schemas from "schemas";
 
-const fetchQuizTypes = getFetchTypes(actionTypes.FETCH_QUIZ);
-const fetchQuizQuestionsTypes = getFetchTypes(actionTypes.FETCH_QUIZ_QUESTIONS);
-const fetchAuthUserQuizzesTypes = getFetchTypes(
+const fetchQuizTypes = utilTypes(actionTypes.FETCH_QUIZ);
+const fetchQuizQuestionsTypes = utilTypes(actionTypes.FETCH_QUIZ_QUESTIONS);
+const fetchAuthUserQuizzesTypes = utilTypes(
   actionTypes.FETCH_AUTH_USER_QUIZZES
 );
-const createQuizTypes = getFetchTypes(actionTypes.CREATE_QUIZ);
-const updateQuizTypes = getFetchTypes(actionTypes.UPDATE_QUIZ);
-
-const getQuiz = quizId => firebase.quiz(quizId).get();
-const getQuizQuestions = quizId =>
-  firebase
-    .questions(quizId)
-    .orderBy("createdAt")
-    .get();
-const getAuthUserQuizzes = authorId =>
-  firebase
-    .quizzes()
-    .where("authorId", "==", authorId)
-    .orderBy("createdAt")
-    .get();
-const createQuiz = ({ title, authorId, createdAt }) =>
-  firebase.quizzes().add({ title, authorId, createdAt });
-const updateQuiz = (quizId, { title }) =>
-  firebase.quiz(quizId).update({ title });
+const createQuizTypes = utilTypes(actionTypes.CREATE_QUIZ);
+const updateQuizTypes = utilTypes(actionTypes.UPDATE_QUIZ);
+const createQuestionTypes = utilTypes(actionTypes.CREATE_QUESTION);
+const updateQuestionTypes = utilTypes(actionTypes.UPDATE_QUESTION);
 
 const getDocFromSnapshot = snapshot => {
   const data = {
@@ -46,46 +31,45 @@ const getCollectionFromSnapshot = snapshot => {
   return collection;
 };
 
-function* navigateTo(history, path, action = "push") {
+function* navigateSaga(history, path, action = "push") {
   yield call([history, action], path);
 }
 
-function* fetchQuiz(quizId, history) {
+function* fetchQuizSaga(quizId, history) {
+  const { requested, succeeded, failed } = fetchQuizTypes;
   try {
-    yield put({ type: fetchQuizTypes.requested, quizId });
-    const snapshot = yield call(getQuiz, quizId);
+    yield put({ type: requested, quizId });
+    const snapshot = yield call(firebaseAPI.getQuiz, quizId);
     if (snapshot.exists) {
       const quiz = getDocFromSnapshot(snapshot);
       const response = normalize(quiz, schemas.quiz);
-      yield put({ type: fetchQuizTypes.succeeded, response, quizId });
+      yield put({ type: succeeded, response, quizId });
     } else {
       yield put(navigateTo404(history));
     }
   } catch (error) {
-    yield put({ type: fetchQuizTypes.failed, error });
+    yield put({ type: failed, error, quizId });
   }
 }
 
-function* fetchQuizQuestions(quizId) {
+function* fetchQuizQuestionsSaga(quizId) {
   const { requested, succeeded, failed } = fetchQuizQuestionsTypes;
   try {
     yield put({ type: requested, quizId });
-    const snapshot = yield call(getQuizQuestions, quizId);
+    const snapshot = yield call(firebaseAPI.getQuizQuestions, quizId);
     const questions = getCollectionFromSnapshot(snapshot);
-    const response = normalize({ quizId, questions }, schemas.quizQuestion);
+    const response = normalize(questions, [schemas.question]);
     yield put({ type: succeeded, quizId, response });
   } catch (error) {
-    yield put({ type: failed, quizId, error });
+    yield put({ type: failed, error, quizId });
   }
 }
 
-function* fetchAuthUserQuizzes() {
+function* fetchAuthUserQuizzesSaga() {
   const { requested, succeeded, failed } = fetchAuthUserQuizzesTypes;
   try {
     yield put({ type: requested });
-    const authUser = yield select(selectors.selectAuthUser);
-    const authUserId = authUser.uid;
-    const snapshot = yield call(getAuthUserQuizzes, authUserId);
+    const snapshot = yield call(firebaseAPI.getAuthUserQuizzes);
     const quizzes = getCollectionFromSnapshot(snapshot);
     const response = normalize(quizzes, [schemas.quiz]);
     yield put({ type: succeeded, response });
@@ -95,12 +79,15 @@ function* fetchAuthUserQuizzes() {
 }
 
 // TODO: Standartize namings
-function* createQuizSaga({ title, authorId, createdAt, history }) {
+function* createQuizSaga({ title, createdAt, history }) {
   const { requested, succeeded, failed } = createQuizTypes;
   try {
     yield put({ type: requested });
-    const docRef = yield call(createQuiz, { title, authorId, createdAt });
-    const quizId = docRef.id;
+    const docRef = yield call(firebaseAPI.createQuiz, {
+      title,
+      createdAt
+    });
+    const { id: quizId } = docRef;
     yield put({ type: succeeded, quizId });
     // Navigating to the quiz page after successfully creating it.
     // Because that the quiz will be fetched when we navigated to the page,
@@ -118,7 +105,7 @@ function* updateQuizSaga(quizId, { title }) {
     const updatedValues = {
       title
     };
-    yield call(updateQuiz, quizId, updatedValues);
+    yield call(firebaseAPI.updateQuiz, quizId, updatedValues);
     let quiz = yield select(selectors.selectQuiz, quizId);
     quiz = {
       ...quiz,
@@ -131,14 +118,70 @@ function* updateQuizSaga(quizId, { title }) {
   }
 }
 
+function* createQuestionSaga(
+  quizId,
+  { body, choices, correctAnswer, createdAt }
+) {
+  const { requested, succeeded, failed } = createQuestionTypes;
+  try {
+    yield put({ type: requested });
+    let newQuestion = {
+      body,
+      choices,
+      correctAnswer,
+      createdAt
+    };
+    const questionRef = yield call(
+      firebaseAPI.createQuestion,
+      quizId,
+      newQuestion
+    );
+    const { id } = questionRef;
+    newQuestion = {
+      ...newQuestion,
+      id
+    };
+    const response = normalize(newQuestion, schemas.question);
+    yield put({ type: succeeded, quizId, response });
+  } catch (error) {
+    yield put({ type: failed, error });
+  }
+}
+
+function* updateQuestionSaga(
+  quizId,
+  questionId,
+  { body, choices, correctAnswer }
+) {
+  const { requested, succeeded, failed } = updateQuestionTypes;
+  try {
+    yield put({ type: requested });
+    const updatedValues = {
+      body,
+      choices,
+      correctAnswer
+    };
+    yield call(firebaseAPI.updateQuestion, quizId, questionId, updatedValues);
+    let question = yield select(selectors.selectQuestion, questionId);
+    question = {
+      ...question,
+      ...updatedValues
+    };
+    const response = normalize(question, schemas.question);
+    yield put({ type: succeeded, response });
+  } catch (error) {
+    yield put({ type: failed, error });
+  }
+}
+
 /******************************************************************************/
 /******************************* WATCHERS *************************************/
 /******************************************************************************/
 
-function* watchNavigateTo() {
+function* watchNavigate() {
   while (true) {
     const { history, path, action } = yield take(actionTypes.NAVIGATE);
-    yield fork(navigateTo, history, path, action);
+    yield fork(navigateSaga, history, path, action);
   }
 }
 
@@ -146,7 +189,7 @@ function* watchFetchQuiz() {
   while (true) {
     const { quizId, history } = yield take(actionTypes.FETCH_QUIZ);
     if (quizId !== "new") {
-      yield fork(fetchQuiz, quizId, history);
+      yield fork(fetchQuizSaga, quizId, history);
     }
   }
 }
@@ -154,14 +197,14 @@ function* watchFetchQuiz() {
 function* watchFetchQuizQuestions() {
   while (true) {
     const { quizId } = yield take(actionTypes.FETCH_QUIZ_QUESTIONS);
-    yield fork(fetchQuizQuestions, quizId);
+    yield fork(fetchQuizQuestionsSaga, quizId);
   }
 }
 
 function* watchFetchAuthUserQuizzes() {
   while (true) {
     yield take(actionTypes.FETCH_AUTH_USER_QUIZZES);
-    yield fork(fetchAuthUserQuizzes);
+    yield fork(fetchAuthUserQuizzesSaga);
   }
 }
 
@@ -181,13 +224,42 @@ function* watchUpdateQuiz() {
   }
 }
 
+function* watchCreateQuestion() {
+  while (true) {
+    const { quizId, body, choices, correctAnswer, createdAt } = yield take(
+      actionTypes.CREATE_QUESTION
+    );
+    yield fork(createQuestionSaga, quizId, {
+      body,
+      choices,
+      correctAnswer,
+      createdAt
+    });
+  }
+}
+
+function* watchUpdateQuestion() {
+  while (true) {
+    const { quizId, questionId, body, choices, correctAnswer } = yield take(
+      actionTypes.UPDATE_QUESTION
+    );
+    yield fork(updateQuestionSaga, quizId, questionId, {
+      body,
+      choices,
+      correctAnswer
+    });
+  }
+}
+
 export default function* root() {
   yield all([
     fork(watchFetchQuiz),
     fork(watchFetchQuizQuestions),
-    fork(watchNavigateTo),
+    fork(watchNavigate),
     fork(watchFetchAuthUserQuizzes),
     fork(watchCreateQuiz),
-    fork(watchUpdateQuiz)
+    fork(watchUpdateQuiz),
+    fork(watchCreateQuestion),
+    fork(watchUpdateQuestion)
   ]);
 }

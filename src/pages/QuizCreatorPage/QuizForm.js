@@ -7,7 +7,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectors } from "reducers";
 import { createQuiz, updateQuiz } from "actions";
 import BaseButton from "components/BaseButton";
-import useSelectAuthUser from "hooks/useSelectAuthUser";
 import { useParams, useHistory, Prompt } from "react-router-dom";
 import SaveIcon from "@material-ui/icons/Save";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
@@ -39,13 +38,11 @@ const QuizForm = () => {
     isNew ? null : selectors.selectQuiz(state, quizId)
   );
 
-  const { authUser } = useSelectAuthUser();
-
   const handleSubmit = values => {
     const { title } = values;
 
     if (isNew) {
-      dispatch(createQuiz({ title, authorId: authUser.uid, history }));
+      dispatch(createQuiz({ title, history }));
     } else {
       dispatch(updateQuiz({ quizId, title }));
     }

@@ -1,10 +1,10 @@
 import React from "react";
-import useFirebase from "hooks/useFirebase";
+import useFirebaseAPI from "hooks/useFirebaseAPI";
 import RouterLink from "./RouterLink";
 import BaseMenu from "./BaseMenu";
 
 const UserMenu = ({ renderTrigger }) => {
-  const firebase = useFirebase();
+  const firebaseAPI = useFirebaseAPI();
 
   return (
     <BaseMenu
@@ -19,7 +19,7 @@ const UserMenu = ({ renderTrigger }) => {
         {
           key: "signOut",
           title: "Çıkış",
-          onClick: () => firebase.doSignOut()
+          onClick: () => firebaseAPI.doSignOut()
         }
       ]}
     />

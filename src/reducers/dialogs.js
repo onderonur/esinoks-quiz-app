@@ -1,21 +1,21 @@
 import * as actionTypes from "constants/actionTypes";
-import { getFetchTypes } from "utils";
+import { utilTypes } from "utils";
 import createDialog, * as fromCreateDialog from "./higherOrderReducers/createDialog";
 import { combineReducers } from "redux";
 
 const dialogs = combineReducers({
   questionForm: createDialog(actionTypes.OPEN_QUESTION_FORM_DIALOG, [
     actionTypes.CLOSE_QUESTION_FORM_DIALOG,
-    getFetchTypes(actionTypes.CREATE_QUESTION).succeeded,
-    getFetchTypes(actionTypes.UPDATE_QUESTION).succeeded
+    utilTypes(actionTypes.CREATE_QUESTION).succeeded,
+    utilTypes(actionTypes.UPDATE_QUESTION).succeeded
   ]),
   deleteQuizConfirmation: createDialog(actionTypes.DELETE_QUIZ, [
     actionTypes.DELETE_QUIZ_CANCELLED,
-    getFetchTypes(actionTypes.DELETE_QUIZ_CONFIRMED).succeeded
+    utilTypes(actionTypes.DELETE_QUIZ_CONFIRMED).succeeded
   ]),
   deleteQuestionConfirmation: createDialog(actionTypes.DELETE_QUESTION, [
     actionTypes.DELETE_QUESTION_CANCELLED,
-    getFetchTypes(actionTypes.DELETE_QUESTION_CONFIRMED).succeeded
+    utilTypes(actionTypes.DELETE_QUESTION_CONFIRMED).succeeded
   ]),
   restartQuizConfirmation: createDialog(actionTypes.RESTART_QUIZ, [
     actionTypes.RESTART_QUIZ_CANCELLED,

@@ -1,10 +1,10 @@
-import { getFetchTypes } from "utils";
+import { utilTypes } from "utils";
 import createReducer from "./createReducer";
 
 const initialState = false;
 
 const createIsFetching = fetchType => {
-  const { requested, succeeded, failed } = getFetchTypes(fetchType);
+  const { requested, succeeded, failed } = utilTypes(fetchType);
 
   const reducer = createReducer(initialState, {
     [requested]: () => true,

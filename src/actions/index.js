@@ -1,5 +1,5 @@
 import * as actionTypes from "constants/actionTypes";
-import { getFetchTypes, getFirestoreTimeStamp } from "utils";
+import { utilTypes, getFirestoreTimeStamp } from "utils";
 
 export const selectQuestion = questionId => ({
   type: actionTypes.SELECT_QUESTION,
@@ -49,7 +49,7 @@ export const closeQuestionFormDialog = () => ({
   type: actionTypes.CLOSE_QUESTION_FORM_DIALOG
 });
 
-export const createQuestion = ({ quizId, body, choices, correctAnswer }) => ({
+export const createQuestion = (quizId, { body, choices, correctAnswer }) => ({
   type: actionTypes.CREATE_QUESTION,
   quizId,
   body,
@@ -91,10 +91,9 @@ export const deleteQuestionCancelled = () => ({
   type: actionTypes.DELETE_QUESTION_CANCELLED
 });
 
-export const createQuiz = ({ title, authorId, history }) => ({
+export const createQuiz = ({ title, history }) => ({
   type: actionTypes.CREATE_QUIZ,
   title,
-  authorId,
   // TODO: May add this "createdAt" field with cloud functions
   createdAt: getFirestoreTimeStamp(new Date()),
   history
@@ -138,7 +137,7 @@ export const listenAuthState = () => ({
 });
 
 export const listenAuthStateCancel = () => ({
-  type: getFetchTypes(actionTypes.LISTEN_AUTH_STATE).cancelled
+  type: utilTypes(actionTypes.LISTEN_AUTH_STATE).cancelled
 });
 
 export const fetchAuthUserQuizzes = () => ({

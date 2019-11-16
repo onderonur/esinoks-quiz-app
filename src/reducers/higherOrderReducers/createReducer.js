@@ -7,7 +7,12 @@ const createReducer = (initialState, handlers) => {
       const caseReducer = handlers[action.type];
       return produce(state, draft => caseReducer(draft, action));
     } else {
-      return state;
+      const { default: defaultHandler } = handlers;
+      if (defaultHandler) {
+        return produce(state, draft => defaultHandler(draft, action));
+      } else {
+        return state;
+      }
     }
   };
 };

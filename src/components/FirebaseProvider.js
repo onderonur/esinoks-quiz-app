@@ -1,11 +1,11 @@
 import React from "react";
-import firebase from "app-firebase";
+import firebaseAPI from "firebaseAPI";
 
 export const FirebaseContext = React.createContext();
 
 const FirebaseProvider = ({ children }) => {
   return (
-    <FirebaseContext.Provider value={firebase}>
+    <FirebaseContext.Provider value={firebaseAPI}>
       {children}
     </FirebaseContext.Provider>
   );

@@ -9,7 +9,8 @@ const BaseDialog = ({
   children,
   fullWidth = true,
   disablePortal,
-  responsive = true
+  responsive = true,
+  disableBackdropClick
 }) => {
   const [isVisible, setIsVisible] = useState(isOpen);
   const isMobile = useDetectMobile();
@@ -44,6 +45,7 @@ const BaseDialog = ({
       // We wait for the closing animation to end, then call the "onExited" callback.
       onExited={onExited}
       fullScreen={responsive && isMobile}
+      disableBackdropClick={disableBackdropClick}
     >
       <BaseDialogContext.Provider value={close}>
         {children}

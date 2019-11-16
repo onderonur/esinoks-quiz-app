@@ -1,14 +1,14 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useField, useFormikContext } from "formik";
 import { FormControl, FormLabel, FormHelperText } from "@material-ui/core";
-import firebase from "app-firebase";
+import firebaseAPI from "firebaseAPI";
 import { makeStyles } from "@material-ui/core/styles";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import LoadingOverlay from "./LoadingOverlay";
 
 const uploadFile = async (file, path) => {
-  const storageRef = firebase.storage.ref();
+  const storageRef = firebaseAPI.storage.ref();
   // TODO: Aynı file name denk gelip varolan bir şeyi ezmemesi için yöntem?
   // quizId ve questionId bazlı tutulabilir image'lar.
   const fileRef = storageRef.child(`${path}/${new Date().getTime()}`);

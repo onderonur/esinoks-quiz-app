@@ -1,22 +1,31 @@
-import createReducer from "./higherOrderReducers/createReducer";
-import * as actionTypes from "constants/actionTypes";
 import get from "lodash.get";
-import { getFetchTypes } from "utils";
+import { utilTypes } from "utils";
+import * as actionTypes from "constants/actionTypes";
+import createEntitiesSlice from "./higherOrderReducers/createEntitiesSlice";
 
-const initialState = {
-  byId: {}
-};
-
-const storeQuestion = (state, action) => {
-  const { question } = action;
-  state.byId[question.id] = question;
-};
-
-const questions = createReducer(initialState, {});
+const questions = createEntitiesSlice(
+  "questions",
+  {},
+  {
+    [utilTypes(actionTypes.DELETE_QUESTION_CONFIRMED).succeeded]: (
+      state,
+      action
+    ) => {
+      const { questionId } = action;
+      delete state[questionId];
+    }
+  }
+);
 
 export default questions;
 
+const selectQuestion = (state, questionId) => state[questionId];
+const selectCorrectAnswerByQuestionId = (state, questionId) => {
+  const question = selectQuestion(state, questionId);
+  return get(question, "correctAnswer");
+};
+
 export const selectors = {
-  selectCorrectAnswerByQuestionId: (state, questionId) =>
-    get(state, ["byId", questionId, "correctAnswer"])
+  selectQuestion,
+  selectCorrectAnswerByQuestionId
 };
