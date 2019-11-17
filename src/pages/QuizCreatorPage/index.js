@@ -35,7 +35,7 @@ const QuizCreatorPage = () => {
   );
 
   useEffect(() => {
-    dispatch(fetchQuiz(quizId, history));
+    dispatch(fetchQuiz.base(quizId, history));
   }, [dispatch, history, quizId]);
 
   return (

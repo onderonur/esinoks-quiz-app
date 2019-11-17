@@ -1,24 +1,24 @@
 import { combineReducers } from "redux";
 import createIsFetching from "./higherOrderReducers/createIsFetching";
-import * as actionTypes from "constants/actionTypes";
+import * as actions from "actions";
 import createByKey from "./higherOrderReducers/createByKey";
 
 const isFetching = combineReducers({
-  authState: createIsFetching(actionTypes.LISTEN_AUTH_STATE),
-  authUserQuizzes: createIsFetching(actionTypes.FETCH_AUTH_USER_QUIZZES),
-  createQuiz: createIsFetching(actionTypes.CREATE_QUIZ),
-  updateQuiz: createIsFetching(actionTypes.UPDATE_QUIZ),
-  deleteQuiz: createIsFetching(actionTypes.DELETE_QUIZ_CONFIRMED),
-  createQuestion: createIsFetching(actionTypes.CREATE_QUESTION),
-  updateQuestion: createIsFetching(actionTypes.UPDATE_QUESTION),
-  deleteQuestion: createIsFetching(actionTypes.DELETE_QUESTION_CONFIRMED),
+  authState: createIsFetching(actions.LISTEN_AUTH_STATE),
+  authUserQuizzes: createIsFetching(actions.FETCH_AUTH_USER_QUIZZES),
+  createQuiz: createIsFetching(actions.CREATE_QUIZ),
+  updateQuiz: createIsFetching(actions.UPDATE_QUIZ),
+  deleteQuiz: createIsFetching(actions.DELETE_QUIZ),
+  createQuestion: createIsFetching(actions.CREATE_QUESTION),
+  updateQuestion: createIsFetching(actions.UPDATE_QUESTION),
+  deleteQuestion: createIsFetching(actions.DELETE_QUESTION),
   quiz: createByKey(
     action => action.quizId,
-    createIsFetching(actionTypes.FETCH_QUIZ)
+    createIsFetching(actions.FETCH_QUIZ)
   ),
   quizQuestions: createByKey(
     action => action.quizId,
-    createIsFetching(actionTypes.FETCH_QUIZ_QUESTIONS)
+    createIsFetching(actions.FETCH_QUIZ_QUESTIONS)
   )
 });
 

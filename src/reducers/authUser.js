@@ -1,6 +1,5 @@
 import createReducer from "./higherOrderReducers/createReducer";
-import * as actionTypes from "constants/actionTypes";
-import { utilTypes } from "utils";
+import * as actions from "actions";
 
 const initialState = {
   isLoggedIn: undefined,
@@ -8,12 +7,12 @@ const initialState = {
 };
 
 const authUser = createReducer(initialState, {
-  [utilTypes(actionTypes.LISTEN_AUTH_STATE).succeeded]: (state, action) => {
+  [actions.LISTEN_AUTH_STATE._SUCCEEDED]: (state, action) => {
     const { authUser } = action;
     state.isLoggedIn = !!authUser;
     state.authUser = authUser;
   },
-  [utilTypes(actionTypes.LISTEN_AUTH_STATE).failed]: state => {
+  [actions.LISTEN_AUTH_STATE._FAILED]: state => {
     state.isLoggedIn = false;
     state.authUser = null;
   }

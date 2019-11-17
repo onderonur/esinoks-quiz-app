@@ -1,5 +1,5 @@
-import { utilTypes, removeItemFromArrayMutation } from "utils";
-import * as actionTypes from "constants/actionTypes";
+import { removeItemFromArrayMutation } from "utils";
+import * as actions from "actions";
 import createReducer from "./higherOrderReducers/createReducer";
 
 const initialState = {};
@@ -11,9 +11,9 @@ const receiveQuizQuestions = (state, action) => {
 
 const addQuizQuestion = (state, action) => {
   const { quizId, response } = action;
-  const newQuestionId = response.result;
   const quizQuestionIds = selectQuizQuestionIds(state, quizId);
-  quizQuestionIds.push(newQuestionId);
+  const { result: newQuizId } = response;
+  quizQuestionIds.push(newQuizId);
 };
 
 const removeQuiz = (state, action) => {
@@ -29,11 +29,10 @@ const removeQuizQuestion = (state, action) => {
 
 // Bu slice'ları ve ilgili selector'lerini ayrı dosyalara al
 const quizQuestions = createReducer(initialState, {
-  [utilTypes(actionTypes.FETCH_QUIZ_QUESTIONS).succeeded]: receiveQuizQuestions,
-  [utilTypes(actionTypes.CREATE_QUESTION).succeeded]: addQuizQuestion,
-  [utilTypes(actionTypes.DELETE_QUIZ_CONFIRMED).succeeded]: removeQuiz,
-  [utilTypes(actionTypes.DELETE_QUESTION_CONFIRMED)
-    .succeeded]: removeQuizQuestion
+  [actions.FETCH_QUIZ_QUESTIONS._SUCCEEDED]: receiveQuizQuestions,
+  [actions.CREATE_QUESTION._SUCCEEDED]: addQuizQuestion,
+  [actions.DELETE_QUIZ._SUCCEEDED]: removeQuiz,
+  [actions.DELETE_QUESTION._SUCCEEDED]: removeQuizQuestion
 });
 
 export default quizQuestions;

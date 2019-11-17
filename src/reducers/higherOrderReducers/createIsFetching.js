@@ -1,15 +1,14 @@
-import { utilTypes } from "utils";
 import createReducer from "./createReducer";
+import { _REQUESTED, _SUCCEEDED, _FAILED, _CANCELLED } from "actions";
 
 const initialState = false;
 
-const createIsFetching = fetchType => {
-  const { requested, succeeded, failed } = utilTypes(fetchType);
-
+const createIsFetching = fetchTypes => {
   const reducer = createReducer(initialState, {
-    [requested]: () => true,
-    [succeeded]: () => false,
-    [failed]: () => false
+    [fetchTypes[_REQUESTED]]: () => true,
+    [fetchTypes[_SUCCEEDED]]: () => false,
+    [fetchTypes[_FAILED]]: () => false,
+    [fetchTypes[_CANCELLED]]: () => false
   });
 
   return reducer;

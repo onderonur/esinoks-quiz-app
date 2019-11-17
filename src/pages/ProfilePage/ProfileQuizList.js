@@ -20,7 +20,7 @@ const ProfileQuizList = () => {
   );
 
   useEffect(() => {
-    dispatch(fetchAuthUserQuizzes());
+    dispatch(fetchAuthUserQuizzes.base());
   }, [dispatch]);
 
   return (

@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectors } from "reducers";
-import { deleteQuestionConfirmed, deleteQuestionCancelled } from "actions";
+import { deleteQuestion } from "actions";
 import ConfirmationDialog from "components/ConfirmationDialog";
 
 const DeleteQuestionConfirmationDialog = () => {
@@ -14,7 +14,7 @@ const DeleteQuestionConfirmationDialog = () => {
   );
 
   const handleClose = useCallback(() => {
-    dispatch(deleteQuestionCancelled());
+    dispatch(deleteQuestion.cancelled());
   }, [dispatch]);
 
   return (
@@ -25,7 +25,7 @@ const DeleteQuestionConfirmationDialog = () => {
       message="Bu soruyu silmek istediğinize emin misiniz?"
       confirmText="Sil"
       onConfirm={() => {
-        dispatch(deleteQuestionConfirmed(quizId, questionId));
+        dispatch(deleteQuestion.confirmed(quizId, questionId));
       }}
       onExited={handleClose}
     />

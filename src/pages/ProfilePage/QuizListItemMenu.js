@@ -20,7 +20,7 @@ const QuizListItemMenu = ({ quizId }) => {
         {
           key: "share",
           title: "Paylaş",
-          onClick: () => dispatch(shareQuizCode(quizId))
+          onClick: () => dispatch(shareQuizCode.base(quizId))
         },
         {
           key: "edit",
@@ -31,7 +31,7 @@ const QuizListItemMenu = ({ quizId }) => {
         {
           key: "delete",
           title: "Sil",
-          onClick: () => dispatch(deleteQuiz(quizId))
+          onClick: () => dispatch(deleteQuiz.base(quizId))
         }
       ]}
     />

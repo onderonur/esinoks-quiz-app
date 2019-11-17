@@ -1,5 +1,5 @@
 import createReducer from "./higherOrderReducers/createReducer";
-import * as actionTypes from "constants/actionTypes";
+import * as actions from "actions";
 import set from "lodash.set";
 import get from "lodash.get";
 import createReset from "./higherOrderReducers/createReset";
@@ -14,10 +14,10 @@ const answerQuestion = (state, action) => {
 };
 
 const givenAnswers = createReset(
-  [actionTypes.RESTART_QUIZ_CONFIRMED, actionTypes.EXITED_FROM_QUIZ],
+  [actions.RESTART_QUIZ._CONFIRMED, actions.EXITED_FROM_QUIZ],
   initialState,
   createReducer(initialState, {
-    [actionTypes.ANSWER_QUESTION]: answerQuestion
+    [actions.ANSWER_QUESTION]: answerQuestion
   })
 );
 

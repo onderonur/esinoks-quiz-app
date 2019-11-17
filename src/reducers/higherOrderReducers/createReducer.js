@@ -1,15 +1,15 @@
 import { produce } from "immer";
 
-const createReducer = (initialState, handlers) => {
+const createReducer = (initialState, caseReducers) => {
   return function reducer(state = initialState, action) {
-    if (handlers.hasOwnProperty(action.type)) {
+    if (caseReducers.hasOwnProperty(action.type)) {
       // Using immer to allow state mutations to simplify reducers
-      const caseReducer = handlers[action.type];
+      const caseReducer = caseReducers[action.type];
       return produce(state, draft => caseReducer(draft, action));
     } else {
-      const { default: defaultHandler } = handlers;
-      if (defaultHandler) {
-        return produce(state, draft => defaultHandler(draft, action));
+      const { default: defaultCaseReducer } = caseReducers;
+      if (defaultCaseReducer) {
+        return produce(state, draft => defaultCaseReducer(draft, action));
       } else {
         return state;
       }

@@ -58,10 +58,13 @@ class FirebaseAPI {
   createQuiz = ({ title, authorId, createdAt }) =>
     this.quizzes().add({ title, authorId, createdAt });
   updateQuiz = (quizId, { title }) => this.quiz(quizId).update({ title });
+  deleteQuiz = quizId => this.quiz(quizId).delete();
   createQuestion = (quizId, { body, choices, correctAnswer, createdAt }) =>
     this.questions(quizId).add({ body, choices, correctAnswer, createdAt });
   updateQuestion = (quizId, questionId, { body, choices, correctAnswer }) =>
     this.question(quizId, questionId).update({ body, choices, correctAnswer });
+  deleteQuestion = (quizId, questionId) =>
+    this.question(quizId, questionId).delete();
   getQuizQuestions = quizId =>
     this.questions(quizId)
       .orderBy("createdAt")
@@ -71,6 +74,16 @@ class FirebaseAPI {
       .where("authorId", "==", authorId)
       .orderBy("createdAt")
       .get();
+
+  upload = async (file, path) => {
+    const storageRef = this.storage.ref();
+    // TODO: Aynı file name denk gelip varolan bir şeyi ezmemesi için yöntem?
+    // quizId ve questionId bazlı tutulabilir image'lar.
+    const fileRef = storageRef.child(`${path}/${new Date().getTime()}`);
+    const snapshot = await fileRef.put(file);
+    const downloadURL = await snapshot.ref.getDownloadURL();
+    return downloadURL;
+  };
 }
 
 const firebaseAPI = new FirebaseAPI();

@@ -1,6 +1,5 @@
 import get from "lodash.get";
-import { utilTypes } from "utils";
-import * as actionTypes from "constants/actionTypes";
+import * as actions from "actions";
 import createEntitiesSlice from "./higherOrderReducers/createEntitiesSlice";
 import schemas from "schemas";
 
@@ -10,10 +9,10 @@ const removeQuestion = (state, action) => {
 };
 
 const questions = createEntitiesSlice(
-  schemas.question.key,
+  schemas.questionSchema.key,
   {},
   {
-    [utilTypes(actionTypes.DELETE_QUESTION_CONFIRMED).succeeded]: removeQuestion
+    [actions.DELETE_QUESTION._SUCCEEDED]: removeQuestion
   }
 );
 

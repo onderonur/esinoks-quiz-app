@@ -25,7 +25,7 @@ const RestartQuizButton = ({ className }) => {
     <>
       <IconButton
         className={clsx(classes.button, className)}
-        onClick={() => dispatch(restartQuiz())}
+        onClick={() => dispatch(restartQuiz.base())}
       >
         <ReplayIcon />
       </IconButton>

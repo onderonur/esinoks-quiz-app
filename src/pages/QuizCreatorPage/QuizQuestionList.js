@@ -16,7 +16,7 @@ const QuizQuestionList = ({ quizId }) => {
   );
 
   useEffect(() => {
-    dispatch(fetchQuizQuestions(quizId));
+    dispatch(fetchQuizQuestions.base(quizId));
   }, [dispatch, quizId]);
 
   return (

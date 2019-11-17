@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectors } from "reducers";
-import { deleteQuizConfirmed, deleteQuizCancelled } from "actions";
+import { deleteQuiz } from "actions";
 import ConfirmationDialog from "components/ConfirmationDialog";
 
 const DeleteQuizConfirmationDialog = () => {
@@ -16,7 +16,7 @@ const DeleteQuizConfirmationDialog = () => {
   const quiz = useSelector(state => selectors.selectQuiz(state, quizId));
 
   const handleExited = useCallback(() => {
-    dispatch(deleteQuizCancelled());
+    dispatch(deleteQuiz.cancelled());
   }, [dispatch]);
 
   return (
@@ -31,7 +31,7 @@ const DeleteQuizConfirmationDialog = () => {
       }
       confirmText="Sil"
       onConfirm={() => {
-        dispatch(deleteQuizConfirmed(quizId));
+        dispatch(deleteQuiz.confirmed(quizId));
       }}
       onExited={handleExited}
     />

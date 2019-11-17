@@ -3,8 +3,7 @@ import astronautPng from "assets/astronaut.png";
 import { makeStyles } from "@material-ui/styles";
 import { useSpring, animated } from "react-spring";
 import { useSelector } from "react-redux";
-import { selectors } from "reducers";
-import { useParams } from "react-router-dom";
+import { selectors, GAME_STATUSSES } from "reducers";
 import clsx from "clsx";
 import { DEFAULT_EARTH_SIZE } from "./Earth";
 
@@ -44,33 +43,14 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Astronaut = () => {
+const Astronaut = ({ quizId }) => {
   const classes = useStyles();
-  const { quizId } = useParams();
 
-  const totalQuestionCount = useSelector(state =>
-    selectors.selectTotalQuestionCountByQuizId(state, quizId)
+  const { totalStepsToFinish, progressRate, status } = useSelector(state =>
+    selectors.selectQuizGameInfo(state, quizId)
   );
 
-  const isGameOver = useSelector(state =>
-    selectors.selectIsGameOver(state, quizId)
-  );
-
-  const wrongGivenAnswerCount = useSelector(state =>
-    selectors.selectWrongGivenAnswerCountByQuizId(state, quizId)
-  );
-
-  const correctGivenAnswerCount = useSelector(state =>
-    selectors.selectCorrectGivenAnswerCountByQuizId(state, quizId)
-  );
-
-  // We reduce the "steps to finish" by the wrong given answers count.
-  // So that the user can reach the finish point even if there are wrong answers.
-  const totalStepsToFinish = totalQuestionCount
-    ? totalQuestionCount - wrongGivenAnswerCount
-    : null;
-
-  const progressRate = correctGivenAnswerCount / totalStepsToFinish;
+  const isGameOver = status === GAME_STATUSSES.GAME_OVER;
 
   const props = useSpring({
     from: {

@@ -70,12 +70,12 @@ const QuestionFormDialog = () => {
           const { body, choices, correctAnswer } = values;
 
           if (isNew) {
-            dispatch(createQuestion(quizId, { body, choices, correctAnswer }));
+            dispatch(
+              createQuestion.base(quizId, { body, choices, correctAnswer })
+            );
           } else {
             dispatch(
-              updateQuestion({
-                quizId,
-                questionId,
+              updateQuestion.base(quizId, questionId, {
                 body,
                 choices,
                 correctAnswer

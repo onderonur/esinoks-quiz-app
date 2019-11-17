@@ -1,12 +1,13 @@
 import createReducer from "./higherOrderReducers/createReducer";
-import * as actionTypes from "constants/actionTypes";
-import { utilTypes, removeItemFromArrayMutation } from "utils";
+import * as actions from "actions";
+import { removeItemFromArrayMutation } from "utils";
 
 const initialState = [];
 
 const receiveQuizzes = (state, action) => action.response.result;
 const addQuiz = (state, action) => {
-  const { quizId } = action;
+  const { response } = action;
+  const { result: quizId } = response;
   state.push(quizId);
 };
 const removeQuiz = (state, action) => {
@@ -15,9 +16,9 @@ const removeQuiz = (state, action) => {
 };
 
 const authUserQuizzes = createReducer(initialState, {
-  [utilTypes(actionTypes.FETCH_AUTH_USER_QUIZZES).succeeded]: receiveQuizzes,
-  [utilTypes(actionTypes.CREATE_QUIZ).succeeded]: addQuiz,
-  [utilTypes(actionTypes.DELETE_QUIZ_CONFIRMED).succeeded]: removeQuiz
+  [actions.FETCH_AUTH_USER_QUIZZES._SUCCEEDED]: receiveQuizzes,
+  [actions.CREATE_QUIZ._SUCCEEDED]: addQuiz,
+  [actions.DELETE_QUIZ._SUCCEEDED]: removeQuiz
 });
 
 export default authUserQuizzes;

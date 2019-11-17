@@ -1,5 +1,5 @@
 import createReducer from "./higherOrderReducers/createReducer";
-import * as actionTypes from "constants/actionTypes";
+import * as actionTypes from "actions";
 import createReset from "./higherOrderReducers/createReset";
 
 const initialState = null;
@@ -8,7 +8,7 @@ const activeQuestionId = createReset(
   [
     actionTypes.UNSELECT_QUESTION,
     actionTypes.EXITED_FROM_QUIZ,
-    actionTypes.RESTART_QUIZ_CONFIRMED
+    actionTypes.RESTART_QUIZ._CONFIRMED
   ],
   initialState,
   createReducer(initialState, {

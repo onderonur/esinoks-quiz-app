@@ -1,4 +1,3 @@
-import { TOTAL_HEARTS_COUNT } from "pages/QuizPage/Hearts";
 import { combineReducers } from "redux";
 import bindSelectors from "./utils/bindSelectors";
 import get from "lodash.get";
@@ -13,6 +12,13 @@ import questions, * as fromQuestions from "./questions";
 import quizQuestions, * as fromQuizQuestions from "./quizQuestions";
 
 // TODO: Simplify and clean reducers
+const TOTAL_HEARTS_COUNT = 3;
+
+export const GAME_STATUSSES = {
+  PLAYING: "PLAYING",
+  WINNER: "WINNER",
+  GAME_OVER: "GAME_OVER"
+};
 
 const rootReducer = combineReducers({
   isFetching,
@@ -146,6 +152,61 @@ const selectWrongGivenAnswerCountByQuizId = (state, quizId) => {
   return givenAnswersCount - correctGivenAnswerCount;
 };
 
+const selectQuizGameInfo = (state, quizId) => {
+  const correctGivenAnswerCount = selectCorrectGivenAnswerCountByQuizId(
+    state,
+    quizId
+  );
+  const wrongGivenAnswerCount = selectWrongGivenAnswerCountByQuizId(
+    state,
+    quizId
+  );
+  const totalQuestionCount = quizQuestionsSelectors.selectTotalQuestionCountByQuizId(
+    state,
+    quizId
+  );
+
+  const totalHearts = TOTAL_HEARTS_COUNT;
+
+  let remainingHearts = totalHearts - wrongGivenAnswerCount;
+
+  const isGameOver = remainingHearts < 0;
+
+  let status = GAME_STATUSSES.PLAYING;
+
+  if (
+    totalQuestionCount &&
+    correctGivenAnswerCount + wrongGivenAnswerCount === totalQuestionCount &&
+    !isGameOver
+  ) {
+    status = GAME_STATUSSES.WINNER;
+  } else if (isGameOver) {
+    status = GAME_STATUSSES.GAME_OVER;
+  }
+
+  // TODO: ÖNEMLİ: Toplam soru sayısı, toplam kalp sayısından azsa veya eşitse (3) sorun çıkıyor. Kontrol et.
+  // Full yanlış cevap verse bile "tebrikler" diyor ama astronot yerinde kalıyor.
+
+  // We reduce the "steps to finish" by the wrong given answers count.
+  // So that the user can reach the finish point even if there are wrong answers.
+  const totalStepsToFinish = totalQuestionCount
+    ? totalQuestionCount - wrongGivenAnswerCount
+    : null;
+
+  const progressRate = correctGivenAnswerCount / totalStepsToFinish;
+
+  return {
+    correctGivenAnswerCount,
+    wrongGivenAnswerCount,
+    totalQuestionCount,
+    totalStepsToFinish,
+    progressRate,
+    totalHearts,
+    remainingHearts,
+    status
+  };
+};
+
 export const selectors = {
   ...isFetchingSelectors,
   ...quizzesSelectors,
@@ -160,13 +221,5 @@ export const selectors = {
     const activeQuestion = questionsSelectors.selectQuestion(state, id);
     return activeQuestion;
   },
-  selectCorrectGivenAnswerCountByQuizId,
-  selectWrongGivenAnswerCountByQuizId,
-  selectIsGameOver: (state, quizId) => {
-    const wrongGivenAnswersCount = selectWrongGivenAnswerCountByQuizId(
-      state,
-      quizId
-    );
-    return TOTAL_HEARTS_COUNT - wrongGivenAnswersCount < 0;
-  }
+  selectQuizGameInfo
 };

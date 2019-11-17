@@ -42,9 +42,9 @@ const QuizForm = () => {
     const { title } = values;
 
     if (isNew) {
-      dispatch(createQuiz({ title, history }));
+      dispatch(createQuiz.base({ title, history }));
     } else {
-      dispatch(updateQuiz({ quizId, title }));
+      dispatch(updateQuiz.base(quizId, { title }));
     }
   };
 

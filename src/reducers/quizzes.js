@@ -1,5 +1,4 @@
-import { utilTypes } from "utils";
-import * as actionTypes from "constants/actionTypes";
+import * as actions from "actions";
 import createEntitiesSlice from "./higherOrderReducers/createEntitiesSlice";
 import schemas from "schemas";
 
@@ -8,10 +7,10 @@ const removeQuiz = (state, action) => {
 };
 
 const quizzes = createEntitiesSlice(
-  schemas.quiz.key,
+  schemas.quizSchema.key,
   {},
   {
-    [utilTypes(actionTypes.DELETE_QUIZ_CONFIRMED).succeeded]: removeQuiz
+    [actions.DELETE_QUIZ._SUCCEEDED]: removeQuiz
   }
 );
 

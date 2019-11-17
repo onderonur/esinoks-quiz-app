@@ -1,28 +1,27 @@
-import * as actionTypes from "constants/actionTypes";
-import { utilTypes } from "utils";
+import * as actions from "actions";
 import createDialog, * as fromCreateDialog from "./higherOrderReducers/createDialog";
 import { combineReducers } from "redux";
 
 const dialogs = combineReducers({
-  questionForm: createDialog(actionTypes.OPEN_QUESTION_FORM_DIALOG, [
-    actionTypes.CLOSE_QUESTION_FORM_DIALOG,
-    utilTypes(actionTypes.CREATE_QUESTION).succeeded,
-    utilTypes(actionTypes.UPDATE_QUESTION).succeeded
+  questionForm: createDialog(actions.OPEN_QUESTION_FORM_DIALOG, [
+    actions.CLOSE_QUESTION_FORM_DIALOG,
+    actions.CREATE_QUESTION._SUCCEEDED,
+    actions.UPDATE_QUESTION._SUCCEEDED
   ]),
-  deleteQuizConfirmation: createDialog(actionTypes.DELETE_QUIZ, [
-    actionTypes.DELETE_QUIZ_CANCELLED,
-    utilTypes(actionTypes.DELETE_QUIZ_CONFIRMED).succeeded
+  deleteQuizConfirmation: createDialog(actions.DELETE_QUIZ._BASE, [
+    actions.DELETE_QUIZ._CANCELLED,
+    actions.DELETE_QUIZ._SUCCEEDED
   ]),
-  deleteQuestionConfirmation: createDialog(actionTypes.DELETE_QUESTION, [
-    actionTypes.DELETE_QUESTION_CANCELLED,
-    utilTypes(actionTypes.DELETE_QUESTION_CONFIRMED).succeeded
+  deleteQuestionConfirmation: createDialog(actions.DELETE_QUESTION._BASE, [
+    actions.DELETE_QUESTION._CANCELLED,
+    actions.DELETE_QUESTION._SUCCEEDED
   ]),
-  restartQuizConfirmation: createDialog(actionTypes.RESTART_QUIZ, [
-    actionTypes.RESTART_QUIZ_CANCELLED,
-    actionTypes.RESTART_QUIZ_CONFIRMED
+  restartQuizConfirmation: createDialog(actions.RESTART_QUIZ._BASE, [
+    actions.RESTART_QUIZ._CANCELLED,
+    actions.RESTART_QUIZ._CONFIRMED
   ]),
-  shareQuizCode: createDialog(actionTypes.SHARE_QUIZ_CODE, [
-    actionTypes.SHARE_QUIZ_CODE_COMPLETED
+  shareQuizCode: createDialog(actions.SHARE_QUIZ_CODE._BASE, [
+    actions.SHARE_QUIZ_CODE._SUCCEEDED
   ])
 });
 

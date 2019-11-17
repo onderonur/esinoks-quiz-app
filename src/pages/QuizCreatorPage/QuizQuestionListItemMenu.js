@@ -18,7 +18,7 @@ const QuizQuestionListItemMenu = ({ renderTrigger, quizId, questionId }) => {
         {
           key: "delete",
           title: "Sil",
-          onClick: () => dispatch(deleteQuestion(quizId, questionId))
+          onClick: () => dispatch(deleteQuestion.base(quizId, questionId))
         }
       ]}
     />

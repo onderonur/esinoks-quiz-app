@@ -11,7 +11,7 @@ import {
   DialogContentText
 } from "@material-ui/core";
 import BaseDialogTitle from "components/BaseDialogTitle";
-import { shareQuizCodeCompleted } from "actions";
+import { shareQuizCode } from "actions";
 import CopyToClipboard from "components/CopyToClipboard";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
 import BaseDialogActions from "components/BaseDialogActions";
@@ -31,7 +31,7 @@ const ShareQuizCodeDialog = () => {
   );
 
   const handleExited = useCallback(() => {
-    dispatch(shareQuizCodeCompleted());
+    dispatch(shareQuizCode.succeeded());
   }, [dispatch]);
 
   return (

@@ -1,11 +1,15 @@
 import { schema } from "normalizr";
 
-const quiz = new schema.Entity("quizzes");
-const question = new schema.Entity("questions");
+const quizSchema = new schema.Entity("quizzes");
+const questionSchema = new schema.Entity("questions");
+const quizListSchema = [quizSchema];
+const questionListSchema = [questionSchema];
 
 const schemas = {
-  quiz,
-  question
+  quizSchema,
+  questionSchema,
+  quizListSchema,
+  questionListSchema
 };
 
 export default schemas;

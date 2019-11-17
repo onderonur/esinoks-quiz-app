@@ -7,16 +7,6 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import LoadingOverlay from "./LoadingOverlay";
 
-const uploadFile = async (file, path) => {
-  const storageRef = firebaseAPI.storage.ref();
-  // TODO: Aynı file name denk gelip varolan bir şeyi ezmemesi için yöntem?
-  // quizId ve questionId bazlı tutulabilir image'lar.
-  const fileRef = storageRef.child(`${path}/${new Date().getTime()}`);
-  const snapshot = await fileRef.put(file);
-  const downloadUrl = await snapshot.ref.getDownloadURL();
-  return downloadUrl;
-};
-
 const formats = [
   "bold",
   "italic",
@@ -96,7 +86,10 @@ const BaseRichTextEditor = ({
               this.quill.setSelection(range.index + 1);
 
               setIsUploading(true);
-              const downloadUrl = await uploadFile(file, fileUploadPath);
+              const downloadUrl = await firebaseAPI.upload(
+                file,
+                fileUploadPath
+              );
               setIsUploading(false);
 
               // Remove placeholder image
